@@ -49,9 +49,9 @@ public class DerbyDataSourceTest
     {
         return options(
             regressionDefaults(),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc", "0.0.1-SNAPSHOT" ),
-            mavenBundle( "org.apache.derby", "derby", "10.8.2.2" ),
-            mavenBundle( "org.osgi", "org.osgi.enterprise", "4.2.0" ) );
+            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
+            mavenBundle( "org.apache.derby", "derby" ).versionAsInProject(),
+            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
     @Test

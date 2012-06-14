@@ -50,9 +50,9 @@ public class MysqlDataSourceTest
     {
         return options(
             regressionDefaults(),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc", "0.0.1-SNAPSHOT" ),
-            wrappedBundle( "mvn:mysql/mysql-connector-java/5.1.18"),
-            mavenBundle( "org.osgi", "org.osgi.enterprise", "4.2.0" ) );
+            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
+            wrappedBundle( mavenBundle ("mysql", "mysql-connector-java" ).versionAsInProject() ),
+            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
     @Test
