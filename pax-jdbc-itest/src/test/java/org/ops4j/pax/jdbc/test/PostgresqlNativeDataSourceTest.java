@@ -30,6 +30,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -41,6 +42,9 @@ import org.osgi.service.jdbc.DataSourceFactory;
 @RunWith( PaxExam.class )
 public class PostgresqlNativeDataSourceTest
 {
+    @Rule
+    public PostgresqlRule postgresql = new PostgresqlRule();
+    
     @Inject
     @Filter( "(osgi.jdbc.driver.name=postgresql)" )
     private DataSourceFactory dsf;

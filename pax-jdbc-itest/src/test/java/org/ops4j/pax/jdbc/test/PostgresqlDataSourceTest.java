@@ -30,6 +30,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -41,6 +42,9 @@ import org.osgi.service.jdbc.DataSourceFactory;
 @RunWith( PaxExam.class )
 public class PostgresqlDataSourceTest
 {
+    @Rule
+    public PostgresqlRule postgresql = new PostgresqlRule();
+    
     @Inject
     @Filter( "(osgi.jdbc.driver.class=org.postgresql.Driver)" )
     private DataSourceFactory dsf;
@@ -59,10 +63,12 @@ public class PostgresqlDataSourceTest
     public void createDataSourceAndConnection() throws SQLException
     {
         assertNotNull( dsf );
+        ServerConfiguration config = new ServerConfiguration( "postgresql" );
+        
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:postgresql://localhost/PaxJdbc" );
-        props.setProperty( DataSourceFactory.JDBC_USER, "pax" );
-        props.setProperty( DataSourceFactory.JDBC_PASSWORD, "pax" );
+        props.setProperty( DataSourceFactory.JDBC_URL, config.getUrl() );
+        props.setProperty( DataSourceFactory.JDBC_USER, config.getUser() );
+        props.setProperty( DataSourceFactory.JDBC_PASSWORD, config.getPassword() );
         DataSource dataSource = dsf.createDataSource( props );
         assertNotNull( dataSource );
         Connection connection = dataSource.getConnection();

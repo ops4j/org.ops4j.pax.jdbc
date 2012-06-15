@@ -30,6 +30,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -41,6 +42,9 @@ import org.osgi.service.jdbc.DataSourceFactory;
 @RunWith( PaxExam.class )
 public class MysqlDataSourceTest
 {
+    @Rule
+    public MysqlRule mysql = new MysqlRule();
+    
     @Inject
     @Filter("(osgi.jdbc.driver.class=com.mysql.jdbc.Driver)")
     private DataSourceFactory dsf;
@@ -59,10 +63,12 @@ public class MysqlDataSourceTest
     public void createDataSourceAndConnection() throws SQLException
     {
         assertNotNull( dsf );
+        ServerConfiguration config = new ServerConfiguration( "mysql" );
+        
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:mysql://localhost/test" );
-        props.setProperty( DataSourceFactory.JDBC_USER, "root" );
-        props.setProperty( DataSourceFactory.JDBC_PASSWORD, "sesammysql" );
+        props.setProperty( DataSourceFactory.JDBC_URL, config.getUrl() );
+        props.setProperty( DataSourceFactory.JDBC_USER, config.getUser() );
+        props.setProperty( DataSourceFactory.JDBC_PASSWORD, config.getPassword() );
         DataSource dataSource = dsf.createDataSource( props );        
         assertNotNull( dataSource );
         Connection connection = dataSource.getConnection();
