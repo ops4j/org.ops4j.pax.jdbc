@@ -28,8 +28,16 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.url;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
+
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default configuration for native container regression tests, overriding the default test
@@ -44,6 +52,8 @@ import org.ops4j.pax.exam.util.PathUtils;
  */
 public class TestConfiguration
 {
+    private static final Logger LOG = LoggerFactory.getLogger( TestConfiguration.class ); 
+    
     public static Option regressionDefaults()
     {        
         return composite(
@@ -76,5 +86,68 @@ public class TestConfiguration
             systemProperty( "osgi.console" ).value( "6666" ),
             junitBundles()
             );
+    }
+    
+    public static boolean isPostgresqlAvailable() {
+        ServerConfiguration config = new ServerConfiguration( "postgresql" );
+        config.getUrl();
+        
+        String serverName = config.getServerName();
+        String portNumber = config.getPortNumber();
+        int port = (portNumber == null) ? 5432 : Integer.parseInt( portNumber ); 
+        
+        boolean success = checkSocketConnection( serverName, port );
+        if (!success)
+        {
+            LOG.warn("cannot connect to PostgreSQL at {}:{}, ignoring test", serverName, port);
+        }
+        return success;
+    }
+
+    public static boolean isMysqlAvailable() {
+        ServerConfiguration config = new ServerConfiguration( "mysql" );
+        config.getUrl();
+        
+        String serverName = config.getServerName();
+        String portNumber = config.getPortNumber();
+        int port = (portNumber == null) ? 3306 : Integer.parseInt( portNumber ); 
+        
+        boolean success = checkSocketConnection( serverName, port );
+        if (!success)
+        {
+            LOG.warn("cannot connect to MySQL at {}:{}, ignoring test", serverName, port);
+        }
+        return success;
+    }
+
+    public static boolean checkSocketConnection( String serverName, int port )
+    {
+        Socket socket = new Socket();
+        try
+        {
+            InetSocketAddress endpoint = new InetSocketAddress( serverName, port );
+            socket.connect( endpoint, (int) TimeUnit.SECONDS.toMillis( 5 ) );
+            return true;
+        }
+        catch ( UnknownHostException exc )
+        {
+            return false;
+        }
+        catch ( IOException exc )
+        {
+            return false;
+        }
+        finally {
+            if (socket != null) {
+                try
+                {
+                    socket.close();
+                }
+                catch ( IOException e )
+                {
+                    
+                }
+            }
+        }
     }
 }
