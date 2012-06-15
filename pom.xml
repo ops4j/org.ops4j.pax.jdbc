@@ -26,6 +26,8 @@
 
     <modules>
         <module>pax-jdbc</module>
+        <module>pax-jdbc-postgresql</module>
+
         <module>pax-jdbc-itest</module>
     </modules>
 
