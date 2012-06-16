@@ -220,7 +220,7 @@
             <name>Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
             <comments>
-                Copyright 2008,2009,2010,2011 Toni Menzel, Stuart McCulloch, Alin Dreghiciu.
+                Copyright 2012 Harald Wellmann.
 
                 Licensed under the Apache License, Version 2.0 (the "License");
                 you may not use this file except in compliance with the License.
@@ -258,6 +258,5 @@
             <timezone>UTC+1</timezone>
         </developer>
     </developers>
-    
-    
+        
 </project>

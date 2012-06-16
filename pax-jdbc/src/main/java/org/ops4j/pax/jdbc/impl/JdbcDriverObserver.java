@@ -38,19 +38,19 @@ import org.slf4j.LoggerFactory;
 
 public class JdbcDriverObserver implements BundleObserver<URL>
 {
-
     private static Logger log = LoggerFactory.getLogger( JdbcDriverObserver.class );
 
     @Override
     public void addingEntries( Bundle bundle, List<URL> entries )
     {
         URL url = entries.get( 0 );
-        log.info( "found driver {}", url );
+        log.info( "found JDBC driver service in bundle [{} {}]", bundle.getSymbolicName(),
+            bundle.getVersion() );
 
         List<String> names = parse( Driver.class, url );
-        for(String impl : names )
+        for( String impl : names )
         {
-            log.info( "driver impl: {}", impl );
+            log.info( "JDBC driver class: {}", impl );
             try
             {
                 Class<?> driverClass = bundle.loadClass( impl );
@@ -80,7 +80,9 @@ public class JdbcDriverObserver implements BundleObserver<URL>
     @Override
     public void removingEntries( Bundle bundle, List<URL> entries )
     {
-        log.info( "removed driver {}", entries.get( 0 ) );
+        log.info( "removing drivers registered on behalf of bundle {} {}",
+            bundle.getSymbolicName(), bundle.getVersion() );
+        // services get unregistered automatically when the extended bundle stops
     }
 
     private void parseLine( List<String> names, String line )
@@ -112,9 +114,9 @@ public class JdbcDriverObserver implements BundleObserver<URL>
                 parseLine( names, line );
             }
         }
-        catch ( IOException x )
+        catch ( IOException exc )
         {
-            throw new RuntimeException( x );
+            throw new Ops4jException( exc );
         }
         finally
         {

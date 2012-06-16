@@ -47,12 +47,12 @@ public class DriverDataSourceFactory implements DataSourceFactory
     public ConnectionPoolDataSource createConnectionPoolDataSource( Properties props )
         throws SQLException
     {
-        throw new SQLException( "not supported" );
+        throw new SQLException( "not supported - use a driver adapter org.ops4j.pax.jdbc.<subprotocol>" );
     }
 
     public XADataSource createXADataSource( Properties props ) throws SQLException
     {
-        throw new SQLException( "not supported" );
+        throw new SQLException( "not supported - use a driver adapter org.ops4j.pax.jdbc.<subprotocol>" );
     }
 
     public Driver createDriver( Properties props ) throws SQLException

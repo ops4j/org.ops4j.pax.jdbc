@@ -23,90 +23,101 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DriverDataSource implements DataSource
 {
+    private static Logger log = LoggerFactory.getLogger( DriverDataSource.class );
+
     private Driver driver;
     private String url;
     private String user;
     private String password;
-    
-    public DriverDataSource(Driver driver, String url, String user, String password)
+
+    public DriverDataSource( Driver driver, String url, String user, String password )
     {
         this.driver = driver;
         this.url = url;
         this.user = user;
         this.password = password;
     }
-    
+
     @Override
     public PrintWriter getLogWriter() throws SQLException
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setLogWriter( PrintWriter out ) throws SQLException
     {
-        // TODO Auto-generated method stub
-        
+        log.warn( "setLogWriter() has no effect" );
     }
 
     @Override
     public void setLoginTimeout( int seconds ) throws SQLException
     {
-        // TODO Auto-generated method stub
-        
+        log.warn( "setLoginTimeout() has no effect" );
     }
 
     @Override
     public int getLoginTimeout() throws SQLException
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public <T> T unwrap( Class<T> iface ) throws SQLException
     {
-        throw new SQLException("not a wrapper");
+        if( iface.isAssignableFrom( DriverDataSource.class ) )
+        {
+            return iface.cast( this );
+        }
+        throw new SQLException( DriverDataSource.class.getName() + " cannot be unwrapped to "
+                + iface.getName() );
     }
 
     @Override
     public boolean isWrapperFor( Class<?> iface ) throws SQLException
     {
-        return false;
+        return iface.isAssignableFrom( DriverDataSource.class );
     }
 
     @Override
     public Connection getConnection() throws SQLException
     {
-        return getConnection(user, password);
+        return getConnection( user, password );
     }
 
     @Override
     public Connection getConnection( String username, String password ) throws SQLException
     {
         Properties props = new Properties();
-        if (user != null)
+        if( username != null )
         {
-            props.setProperty( DataSourceFactory.JDBC_USER, user );
+            props.setProperty( DataSourceFactory.JDBC_USER, username );
         }
-        if (password != null)
+        if( password != null )
         {
             props.setProperty( DataSourceFactory.JDBC_PASSWORD, password );
         }
         return driver.connect( url, props );
     }
 
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException
+    /**
+     * Method added in JDBC 4.1/JDK 7. By not adding the {@code @Override} annotation we stay
+     * compatible with JDK 6.
+     * 
+     * @return
+     * @throws SQLFeatureNotSupportedException
+     */
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException
     {
-        throw new SQLFeatureNotSupportedException("this datasource does not use java.util.logging");
+        throw new SQLFeatureNotSupportedException( "this datasource does not use java.util.logging" );
     }
 }
