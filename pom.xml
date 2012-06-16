@@ -29,6 +29,7 @@
         <module>pax-jdbc-postgresql</module>
 
         <module>pax-jdbc-itest</module>
+        <module>pax-jdbc-derby</module>
     </modules>
 
     <dependencyManagement>

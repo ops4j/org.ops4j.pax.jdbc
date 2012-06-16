@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jdbc</artifactId>
+        <groupId>org.ops4j.pax</groupId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <groupId>org.ops4j.pax.jdbc</groupId>
+    <artifactId>pax-jdbc-derby</artifactId>
+    <packaging>bundle</packaging>
+    <properties>
+        <bundle.symbolicName>org.ops4j.pax.jdbc.derby</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.jdbc.derby</bundle.namespace>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.enterprise</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.8.2.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
