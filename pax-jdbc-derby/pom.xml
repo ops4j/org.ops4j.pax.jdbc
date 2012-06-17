@@ -10,6 +10,9 @@
     <groupId>org.ops4j.pax.jdbc</groupId>
     <artifactId>pax-jdbc-derby</artifactId>
     <packaging>bundle</packaging>
+
+    <name>OPS4J Pax JDBC Apache Derby Driver Adapter</name>
+
     <properties>
         <bundle.symbolicName>org.ops4j.pax.jdbc.derby</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.jdbc.derby</bundle.namespace>

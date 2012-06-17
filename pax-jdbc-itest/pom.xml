@@ -9,6 +9,9 @@
     <groupId>org.ops4j.pax.jdbc</groupId>
     <artifactId>pax-jdbc-itest</artifactId>
 
+    <name>OPS4J Pax JDBC Integration Tests</name>
+
+
     <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
