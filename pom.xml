@@ -31,9 +31,9 @@
     <modules>
         <module>pax-jdbc</module>
         <module>pax-jdbc-postgresql</module>
-
-        <module>pax-jdbc-itest</module>
         <module>pax-jdbc-derby</module>
+        <module>pax-jdbc-h2</module>
+        <module>pax-jdbc-itest</module>
     </modules>
 
     <dependencyManagement>

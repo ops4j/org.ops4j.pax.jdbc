@@ -1,0 +1,86 @@
+/*
+ * Copyright 2012 Chris Dolan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.ops4j.pax.jdbc.h2.impl;
+
+import org.h2.jdbcx.JdbcDataSource;
+import org.osgi.service.jdbc.DataSourceFactory;
+
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
+import javax.sql.XADataSource;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.Properties;
+
+public class H2DataSourceFactory implements DataSourceFactory
+{
+
+    @Override
+    public DataSource createDataSource( Properties props ) throws SQLException
+    {
+        JdbcDataSource ds = new JdbcDataSource();
+        setProperties( ds, props );
+        return ds;
+    }
+
+    private void setProperties( JdbcDataSource ds, Properties properties ) throws SQLException
+    {
+        Properties props = (Properties) properties.clone();
+        String databaseName = (String) props.remove( DataSourceFactory.JDBC_DATABASE_NAME );
+        if( databaseName == null )
+        {
+            throw new SQLException( "missing required property "
+                    + DataSourceFactory.JDBC_DATABASE_NAME );
+        }
+        ds.setURL( "jdbc:h2:" + databaseName );
+
+        String password = (String) props.remove( DataSourceFactory.JDBC_PASSWORD );
+        ds.setPassword( password );
+
+        String user = (String) props.remove( DataSourceFactory.JDBC_USER );
+        ds.setUser( user );
+
+        if( !props.isEmpty() )
+        {
+            throw new SQLException( "cannot set properties " + props.keySet() );
+        }
+    }
+
+    @Override
+    public ConnectionPoolDataSource createConnectionPoolDataSource( Properties props )
+        throws SQLException
+    {
+        JdbcDataSource ds = new JdbcDataSource();
+        setProperties( ds, props );
+        return ds;
+    }
+
+    @Override
+    public XADataSource createXADataSource( Properties props ) throws SQLException
+    {
+        JdbcDataSource ds = new JdbcDataSource();
+        setProperties( ds, props );
+        return ds;
+    }
+
+    @Override
+    public Driver createDriver( Properties props ) throws SQLException
+    {
+        return new org.h2.Driver();
+    }
+}
