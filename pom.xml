@@ -33,6 +33,7 @@
         <module>pax-jdbc-postgresql</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-h2</module>
+        <module>pax-jdbc-mysql</module>
         <module>pax-jdbc-itest</module>
     </modules>
 
