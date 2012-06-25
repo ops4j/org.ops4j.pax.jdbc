@@ -31,66 +31,74 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlXADataSource;
 
-public class MysqlDataSourceFactory implements DataSourceFactory {
-
+public class MysqlDataSourceFactory implements DataSourceFactory
+{
     @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource createDataSource( Properties props ) throws SQLException
+    {
         MysqlDataSource ds = new MysqlDataSource();
-        setProperties(ds, props);
+        setProperties( ds, props );
         return ds;
     }
 
-    private void setProperties(MysqlDataSource ds, Properties properties)
-            throws SQLException {
+    private void setProperties( MysqlDataSource ds, Properties properties )
+        throws SQLException
+    {
         Properties props = (Properties) properties.clone();
         String databaseName = (String) props
-                .remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null) {
-            throw new SQLException("missing required property "
-                    + DataSourceFactory.JDBC_DATABASE_NAME);
+            .remove( DataSourceFactory.JDBC_DATABASE_NAME );
+        if( databaseName == null )
+        {
+            throw new SQLException( "missing required property "
+                    + DataSourceFactory.JDBC_DATABASE_NAME );
         }
-        ds.setDatabaseName(databaseName);
+        ds.setDatabaseName( databaseName );
 
         String password = (String) props
-                .remove(DataSourceFactory.JDBC_PASSWORD);
-        ds.setPassword(password);
+            .remove( DataSourceFactory.JDBC_PASSWORD );
+        ds.setPassword( password );
 
         String portNumber = (String) props
-                .remove(DataSourceFactory.JDBC_PORT_NUMBER);
-        if (portNumber != null) {
-            ds.setPortNumber(Integer.parseInt(portNumber));
+            .remove( DataSourceFactory.JDBC_PORT_NUMBER );
+        if( portNumber != null )
+        {
+            ds.setPortNumber( Integer.parseInt( portNumber ) );
         }
 
         String serverName = (String) props
-                .remove(DataSourceFactory.JDBC_SERVER_NAME);
-        ds.setServerName(serverName);
+            .remove( DataSourceFactory.JDBC_SERVER_NAME );
+        ds.setServerName( serverName );
 
-        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
-        ds.setUser(user);
+        String user = (String) props.remove( DataSourceFactory.JDBC_USER );
+        ds.setUser( user );
 
-        if (!props.isEmpty()) {
-            throw new SQLException("cannot set properties " + props.keySet());
+        if( !props.isEmpty() )
+        {
+            throw new SQLException( "cannot set properties " + props.keySet() );
         }
     }
 
     @Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(
-            Properties props) throws SQLException {
+            Properties props ) throws SQLException
+    {
         MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-        setProperties(ds, props);
+        setProperties( ds, props );
         return ds;
     }
 
     @Override
-    public XADataSource createXADataSource(Properties props)
-            throws SQLException {
+    public XADataSource createXADataSource( Properties props )
+        throws SQLException
+    {
         MysqlXADataSource ds = new MysqlXADataSource();
-        setProperties(ds, props);
+        setProperties( ds, props );
         return ds;
     }
 
     @Override
-    public Driver createDriver(Properties props) throws SQLException {
+    public Driver createDriver( Properties props ) throws SQLException
+    {
         com.mysql.jdbc.Driver driver = new com.mysql.jdbc.Driver();
         return driver;
     }

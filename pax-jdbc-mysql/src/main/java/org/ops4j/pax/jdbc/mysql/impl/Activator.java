@@ -26,21 +26,22 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mysql.jdbc.Driver;
 
-public class Activator implements BundleActivator {
-
+public class Activator implements BundleActivator
+{
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start( BundleContext context ) throws Exception
+    {
         MysqlDataSourceFactory dsf = new MysqlDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
-        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
-                Driver.class.getName());
-        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "mysql");
-        context.registerService(DataSourceFactory.class.getName(), dsf, props);
+        props.put( DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
+            Driver.class.getName() );
+        props.put( DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "mysql" );
+        context.registerService( DataSourceFactory.class.getName(), dsf, props );
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
-        // TODO Auto-generated method stub
-
+    public void stop( BundleContext context ) throws Exception
+    {
+        // empty
     }
 }
