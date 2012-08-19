@@ -21,7 +21,7 @@ import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.Constants.START_LEVEL_TEST_BUNDLE;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
-import static org.ops4j.pax.exam.CoreOptions.composite;
+import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -54,6 +54,8 @@ public class TestConfiguration
 {
     private static final Logger LOG = LoggerFactory.getLogger( TestConfiguration.class ); 
     
+    private static boolean equinoxConsole = false;
+    
     public static Option regressionDefaults()
     {        
         return composite(
@@ -83,7 +85,7 @@ public class TestConfiguration
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value( "file:" + PathUtils.getBaseDir() +
             		"/src/test/resources/logback.xml" ),            		
-            systemProperty( "osgi.console" ).value( "6666" ),
+            when(equinoxConsole).useOptions(systemProperty("osgi.console").value( "6666" )),
             junitBundles()
             );
     }

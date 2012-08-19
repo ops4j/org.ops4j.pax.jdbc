@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.test;
+package org.ops4j.pax.jdbc.test.derby;
 
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -40,13 +40,10 @@ import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith( PaxExam.class )
-public class PostgresqlNativeDataSourceTest
+public class DerbyNativeDataSourceTest
 {
-    @Rule
-    public PostgresqlRule postgresql = new PostgresqlRule();
-    
     @Inject
-    @Filter( "(osgi.jdbc.driver.name=postgresql)" )
+    @Filter( "(osgi.jdbc.driver.name=derby)" )
     private DataSourceFactory dsf;
 
     @Configuration
@@ -54,8 +51,8 @@ public class PostgresqlNativeDataSourceTest
     {
         return options(
             regressionDefaults(),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-postgresql" ).versionAsInProject(),
-            wrappedBundle( mavenBundle( "postgresql", "postgresql" ).versionAsInProject() ),
+            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-derby" ).versionAsInProject(),
+            mavenBundle( "org.apache.derby", "derby" ).versionAsInProject(),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
@@ -64,7 +61,7 @@ public class PostgresqlNativeDataSourceTest
     {
         assertNotNull( dsf );
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_DATABASE_NAME, "PaxJdbc" );
+        props.setProperty( DataSourceFactory.JDBC_DATABASE_NAME, "memory:pax;create=true" );
         props.setProperty( DataSourceFactory.JDBC_USER, "pax" );
         props.setProperty( DataSourceFactory.JDBC_PASSWORD, "pax" );
         DataSource dataSource = dsf.createDataSource( props );

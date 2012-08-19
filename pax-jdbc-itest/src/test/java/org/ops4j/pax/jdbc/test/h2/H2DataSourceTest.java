@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2012 Chris Dolan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.test;
+package org.ops4j.pax.jdbc.test.h2;
 
-import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -39,14 +25,22 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
+
 @RunWith( PaxExam.class )
-public class MysqlDataSourceTest
+public class H2DataSourceTest
 {
-    @Rule
-    public MysqlRule mysql = new MysqlRule();
-    
     @Inject
-    @Filter("(osgi.jdbc.driver.class=com.mysql.jdbc.Driver)")
+    @Filter("(osgi.jdbc.driver.class=org.h2.Driver)")
     private DataSourceFactory dsf;
     
     @Configuration
@@ -55,7 +49,7 @@ public class MysqlDataSourceTest
         return options(
             regressionDefaults(),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
-            wrappedBundle( mavenBundle ("mysql", "mysql-connector-java" ).versionAsInProject() ),
+            mavenBundle( "com.h2database", "h2" ).versionAsInProject(),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
@@ -63,13 +57,9 @@ public class MysqlDataSourceTest
     public void createDataSourceAndConnection() throws SQLException
     {
         assertNotNull( dsf );
-        ServerConfiguration config = new ServerConfiguration( "mysql" );
-        
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, config.getUrl() );
-        props.setProperty( DataSourceFactory.JDBC_USER, config.getUser() );
-        props.setProperty( DataSourceFactory.JDBC_PASSWORD, config.getPassword() );
-        DataSource dataSource = dsf.createDataSource( props );        
+        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax" );
+        DataSource dataSource = dsf.createDataSource( props );
         assertNotNull( dataSource );
         Connection connection = dataSource.getConnection();
         assertNotNull( connection );

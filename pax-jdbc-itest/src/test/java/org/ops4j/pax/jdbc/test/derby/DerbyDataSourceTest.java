@@ -15,12 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.test;
+package org.ops4j.pax.jdbc.test.derby;
 
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.sql.Connection;
@@ -30,7 +29,6 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -40,22 +38,19 @@ import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith( PaxExam.class )
-public class PostgresqlDataSourceTest
+public class DerbyDataSourceTest
 {
-    @Rule
-    public PostgresqlRule postgresql = new PostgresqlRule();
-    
     @Inject
-    @Filter( "(osgi.jdbc.driver.class=org.postgresql.Driver)" )
+    @Filter("(osgi.jdbc.driver.class=org.apache.derby.jdbc.AutoloadedDriver)")
     private DataSourceFactory dsf;
-
+    
     @Configuration
     public Option[] config()
     {
         return options(
             regressionDefaults(),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
-            wrappedBundle( mavenBundle( "postgresql", "postgresql" ).versionAsInProject() ),
+            mavenBundle( "org.apache.derby", "derby" ).versionAsInProject(),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
@@ -63,12 +58,8 @@ public class PostgresqlDataSourceTest
     public void createDataSourceAndConnection() throws SQLException
     {
         assertNotNull( dsf );
-        ServerConfiguration config = new ServerConfiguration( "postgresql" );
-        
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, config.getUrl() );
-        props.setProperty( DataSourceFactory.JDBC_USER, config.getUser() );
-        props.setProperty( DataSourceFactory.JDBC_PASSWORD, config.getPassword() );
+        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:derby:memory:pax;create=true" );
         DataSource dataSource = dsf.createDataSource( props );
         assertNotNull( dataSource );
         Connection connection = dataSource.getConnection();
