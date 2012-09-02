@@ -16,7 +16,8 @@
 
    <properties>
         <logback.version>0.9.20</logback.version>
-        <pax.exam.version>3.0.0.M3</pax.exam.version>
+        <ops4j.base.version>1.4.0-SNAPSHOT</ops4j.base.version>
+        <pax.exam.version>3.0.0-SNAPSHOT</pax.exam.version>
         <pax.swissbox.version>1.5.1</pax.swissbox.version>
         <pax.url.version>1.4.2</pax.url.version>
         <slf4j.version>1.5.11</slf4j.version>
@@ -43,8 +44,26 @@
 
             <dependency>
                 <groupId>org.ops4j.pax.swissbox</groupId>
+                <artifactId>pax-swissbox-core</artifactId>
+                <version>${pax.swissbox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.swissbox</groupId>
                 <artifactId>pax-swissbox-extender</artifactId>
                 <version>${pax.swissbox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.base</groupId>
+                <artifactId>ops4j-base-lang</artifactId>
+                <version>${ops4j.base.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.base</groupId>
+                <artifactId>ops4j-base-spi</artifactId>
+                <version>${ops4j.base.version}</version>
             </dependency>
 
             <dependency>
