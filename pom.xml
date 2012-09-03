@@ -16,7 +16,7 @@
 
    <properties>
         <logback.version>0.9.20</logback.version>
-        <ops4j.base.version>1.4.0-SNAPSHOT</ops4j.base.version>
+        <ops4j.base.version>1.4.0</ops4j.base.version>
         <pax.exam.version>3.0.0-SNAPSHOT</pax.exam.version>
         <pax.swissbox.version>1.5.1</pax.swissbox.version>
         <pax.url.version>1.4.2</pax.url.version>
