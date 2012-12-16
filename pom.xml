@@ -285,6 +285,16 @@
             </roles>
             <timezone>UTC+1</timezone>
         </developer>
+        <developer>
+            <id>chrisdolan</id>
+            <name>Chris Dolan</name>
+            <email>chrisdolan@apache.org</email>
+        </developer>
+        <developer>
+            <id>dschmitz</id>
+            <name>David Schmitz</name>
+            <email>david-schmitz@gmx.net</email>
+        </developer>
     </developers>
 
 </project>
