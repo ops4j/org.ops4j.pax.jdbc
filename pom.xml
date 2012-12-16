@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.ops4j.pax</groupId>
@@ -12,9 +13,9 @@
         <version>3.1.0</version>
     </parent>
 
-   <name>OPS4J Pax JDBC (Reactor POM)</name>
+    <name>OPS4J Pax JDBC (Reactor POM)</name>
 
-   <properties>
+    <properties>
         <logback.version>0.9.20</logback.version>
         <ops4j.base.version>1.4.0</ops4j.base.version>
         <pax.exam.version>3.0.0.RC1</pax.exam.version>
@@ -27,8 +28,8 @@
         <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.jdbc.git</connection>
         <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.jdbc.git</developerConnection>
         <url>git@github.com:ops4j/org.ops4j.pax.jdbc.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <modules>
         <module>pax-jdbc</module>
@@ -36,6 +37,7 @@
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-h2</module>
         <module>pax-jdbc-mysql</module>
+        <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-itest</module>
     </modules>
 
@@ -240,7 +242,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -284,5 +286,5 @@
             <timezone>UTC+1</timezone>
         </developer>
     </developers>
-        
+
 </project>
