@@ -20,8 +20,8 @@ package org.ops4j.pax.jdbc.test.sqlite;
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -43,7 +43,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class SqliteNativeDataSourceTest
 {
     @Inject
-    @Filter( "(osgi.jdbc.driver.name=sqlite)" )
+    @Filter( value = "(osgi.jdbc.driver.name=sqlite)", timeout = 20000000 )
     private DataSourceFactory dsf;
 
     @Configuration
@@ -51,8 +51,9 @@ public class SqliteNativeDataSourceTest
     {
         return options(
             regressionDefaults(),
+            systemProperty("osgi.console").value("6666"),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-sqlite" ).versionAsInProject(),
-            mavenBundle( "org.xerial", "sqlite-jdbc" ).versionAsInProject(),
+            wrappedBundle( mavenBundle( "org.xerial", "sqlite-jdbc" ).versionAsInProject() ),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
