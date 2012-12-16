@@ -42,21 +42,21 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class SqliteDataSourceTest
 {
     @Inject
-    @Filter("(osgi.jdbc.driver.class=org.sqlite.JDBC)")
+    @Filter( "(osgi.jdbc.driver.class=org.sqlite.JDBC)" )
     private DataSourceFactory dsf;
-    
+
     @Configuration
     public Option[] config()
     {
         return options(
             regressionDefaults(),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
-            mavenBundle( "org.xerial", "sqlite-jdbc").versionAsInProject(),
+            mavenBundle( "org.xerial", "sqlite-jdbc" ).versionAsInProject(),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
     @Test
-    @Ignore("fails as sqlite does not register itself in META-INF/services")
+    @Ignore( "fails as sqlite does not register itself in META-INF/services" )
     public void createDataSourceAndConnection() throws SQLException
     {
         assertNotNull( dsf );

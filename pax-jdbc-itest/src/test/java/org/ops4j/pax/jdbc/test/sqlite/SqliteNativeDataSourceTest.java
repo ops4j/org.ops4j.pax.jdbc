@@ -51,7 +51,7 @@ public class SqliteNativeDataSourceTest
     {
         return options(
             regressionDefaults(),
-            systemProperty("osgi.console").value("6666"),
+            systemProperty( "osgi.console" ).value( "6666" ),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-sqlite" ).versionAsInProject(),
             wrappedBundle( mavenBundle( "org.xerial", "sqlite-jdbc" ).versionAsInProject() ),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
