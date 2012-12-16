@@ -20,8 +20,9 @@ package org.ops4j.pax.jdbc.test.sqlite;
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.*;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,7 +31,6 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;

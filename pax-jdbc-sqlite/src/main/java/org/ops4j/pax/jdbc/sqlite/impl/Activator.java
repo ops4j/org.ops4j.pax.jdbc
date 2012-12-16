@@ -22,11 +22,8 @@ import java.util.Hashtable;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.sqlite.JDBC;
-
-import org.ops4j.pax.jdbc.sqlite.impl.SqliteDataSourceFactory;
 
 public class Activator implements BundleActivator
 {
@@ -44,8 +41,7 @@ public class Activator implements BundleActivator
     @Override
     public void stop( BundleContext context ) throws Exception
     {
-        // TODO Auto-generated method stub
-
+        // nothing to do
     }
 
 }
