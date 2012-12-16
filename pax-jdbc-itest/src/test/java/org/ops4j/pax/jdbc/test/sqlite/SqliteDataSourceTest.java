@@ -61,7 +61,7 @@ public class SqliteDataSourceTest
     {
         assertNotNull( dsf );
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:sqlite:memory:pax" );
+        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:sqlite::memory:" );
         DataSource dataSource = dsf.createDataSource( props );
         assertNotNull( dataSource );
         Connection connection = dataSource.getConnection();

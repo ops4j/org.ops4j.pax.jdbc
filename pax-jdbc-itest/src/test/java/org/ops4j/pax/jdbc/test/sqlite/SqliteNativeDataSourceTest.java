@@ -62,7 +62,7 @@ public class SqliteNativeDataSourceTest
     {
         assertNotNull( dsf );
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_DATABASE_NAME, "memory:pax:sqlite" );
+        props.setProperty( DataSourceFactory.JDBC_DATABASE_NAME, ":memory:" );
         DataSource dataSource = dsf.createDataSource( props );
         assertNotNull( dataSource );
         Connection connection = dataSource.getConnection();
