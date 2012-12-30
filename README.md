@@ -1,5 +1,5 @@
-Pax CDI
-=======
+Pax JDBC
+========
 
 Thanks for looking into Pax JDBC - an OSGi JDBC Service implementation. 
 
