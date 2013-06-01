@@ -45,9 +45,14 @@ public class MysqlDataSourceFactory implements DataSourceFactory
         throws SQLException
     {
         Properties props = (Properties) properties.clone();
+        String url = (String) props.remove( DataSourceFactory.JDBC_URL );
+        if ( url != null )
+        {
+            ds.setUrl( url );
+        }
         String databaseName = (String) props
             .remove( DataSourceFactory.JDBC_DATABASE_NAME );
-        if( databaseName == null )
+        if( databaseName == null && url == null )
         {
             throw new SQLException( "missing required property "
                     + DataSourceFactory.JDBC_DATABASE_NAME );
