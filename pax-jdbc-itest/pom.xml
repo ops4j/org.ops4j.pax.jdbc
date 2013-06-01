@@ -167,9 +167,9 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.18</version>
+            <groupId>org.ops4j.pax.tipi</groupId>
+            <artifactId>org.ops4j.pax.tipi.mysql.connector.java</artifactId>
+            <version>5.1.22.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
