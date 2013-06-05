@@ -220,10 +220,11 @@
     </licenses>
 
     <url>http://team.ops4j.org/wiki/display/paxjdbc/</url>
+    <inceptionYear>2012</inceptionYear>
 
     <issueManagement>
         <system>jira</system>
-        <url>http://issues.ops4j.org/jira/browse/PAXJDBC</url>
+        <url>http://team.ops4j.org/browse/PAXJDBC</url>
     </issueManagement>
 
     <developers>
