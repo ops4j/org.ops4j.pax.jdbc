@@ -56,7 +56,6 @@ public class SqliteDataSourceTest
     }
 
     @Test
-    @Ignore( "fails as sqlite does not register itself in META-INF/services" )
     public void createDataSourceAndConnection() throws SQLException
     {
         assertNotNull( dsf );
