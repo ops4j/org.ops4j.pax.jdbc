@@ -56,7 +56,7 @@ public class PostgresqlDataSourceTest
         return options(
             regressionDefaults(),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
-            wrappedBundle( mavenBundle( "postgresql", "postgresql" ).versionAsInProject() ),
+            wrappedBundle( mavenBundle( "org.postgresql", "postgresql" ).versionAsInProject() ),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
