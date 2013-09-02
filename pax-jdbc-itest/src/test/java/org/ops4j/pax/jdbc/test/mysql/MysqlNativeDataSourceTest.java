@@ -62,7 +62,7 @@ public class MysqlNativeDataSourceTest {
         return options(regressionDefaults(),
                 mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-mysql")
                         .versionAsInProject(),
-                mavenBundle ("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.mysql.connector.java" )
+                mavenBundle ("mysql", "mysql-connector-java" )
                         .versionAsInProject(),
                 mavenBundle("org.osgi", "org.osgi.enterprise")
                         .versionAsInProject());
