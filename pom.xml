@@ -20,7 +20,7 @@
         <h2.version>1.3.172</h2.version>
         <logback.version>1.0.6</logback.version>
         <mysql.version>5.1.26</mysql.version>
-        <postgresql.version>9.2-1003-jdbc4</postgresql.version>
+        <postgresql.version>9.1.901.jdbc4.1-rc9</postgresql.version>
         <ops4j.base.version>1.4.0</ops4j.base.version>
         <pax.exam.version>3.2.0</pax.exam.version>
         <pax.swissbox.version>1.7.0</pax.swissbox.version>
@@ -183,9 +183,10 @@
                 <version>${h2.version}</version>
             </dependency>
 
+            <!--  The official PostgreSQL driver is not an OSGi bundle. -->
             <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
+                <groupId>org.ancoron.postgresql</groupId>
+                <artifactId>org.postgresql</artifactId>
                 <version>${postgresql.version}</version>
             </dependency>
 

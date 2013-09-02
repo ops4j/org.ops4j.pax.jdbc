@@ -4,7 +4,6 @@
         <artifactId>jdbc</artifactId>
         <groupId>org.ops4j.pax</groupId>
         <version>0.3.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
     <groupId>org.ops4j.pax.jdbc</groupId>
     <artifactId>pax-jdbc-itest</artifactId>
@@ -157,8 +156,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>org.ancoron.postgresql</groupId>
+            <artifactId>org.postgresql</artifactId>
             <scope>provided</scope>
         </dependency>
 

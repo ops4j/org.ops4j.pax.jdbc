@@ -20,7 +20,6 @@ package org.ops4j.pax.jdbc.test.postgresql;
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.sql.Connection;
@@ -55,7 +54,7 @@ public class PostgresqlNativeDataSourceTest
         return options(
             regressionDefaults(),
             mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-postgresql" ).versionAsInProject(),
-            wrappedBundle( mavenBundle( "org.postgresql", "postgresql" ).versionAsInProject() ),
+            mavenBundle( "org.ancoron.postgresql", "org.postgresql" ).versionAsInProject(),
             mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
     }
 
