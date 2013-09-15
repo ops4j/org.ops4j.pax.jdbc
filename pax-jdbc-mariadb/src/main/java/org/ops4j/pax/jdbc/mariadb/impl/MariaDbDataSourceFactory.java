@@ -87,20 +87,18 @@ public class MariaDbDataSourceFactory implements DataSourceFactory
     public ConnectionPoolDataSource createConnectionPoolDataSource(
             Properties props ) throws SQLException
     {
-//        MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-//        setProperties( ds, props );
-//        return ds;
-        return null;
+        MySQLDataSource ds = new MySQLDataSource();
+        setProperties( ds, props );
+        return ds;
     }
 
     @Override
     public XADataSource createXADataSource( Properties props )
         throws SQLException
     {
-//        MysqlXADataSource ds = new MysqlXADataSource();
-//        setProperties( ds, props );
-//        return ds;
-        return null;
+        MySQLDataSource ds = new MySQLDataSource();
+        setProperties( ds, props );
+        return ds;
     }
 
     @Override
