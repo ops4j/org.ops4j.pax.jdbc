@@ -50,7 +50,7 @@ public class TestConfiguration
 {
     private static final Logger LOG = LoggerFactory.getLogger( TestConfiguration.class ); 
     
-    private static boolean equinoxConsole = false;
+    private static boolean equinoxConsole = true;
     
     public static Option regressionDefaults()
     {        
@@ -99,6 +99,22 @@ public class TestConfiguration
         if (!success)
         {
             LOG.warn("cannot connect to MySQL at {}:{}, ignoring test", serverName, port);
+        }
+        return success;
+    }
+
+    public static boolean isMariaDbAvailable() {
+        ServerConfiguration config = new ServerConfiguration( "mariadb" );
+        config.getUrl();
+        
+        String serverName = config.getServerName();
+        String portNumber = config.getPortNumber();
+        int port = (portNumber == null) ? 3306 : Integer.parseInt( portNumber ); 
+        
+        boolean success = checkSocketConnection( serverName, port );
+        if (!success)
+        {
+            LOG.warn("cannot connect to MariaDB at {}:{}, ignoring test", serverName, port);
         }
         return success;
     }
