@@ -45,6 +45,7 @@
         <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-mariadb</module>
+        <module>pax-jdbc-config</module>
     </modules>
 
     <dependencyManagement>
