@@ -60,6 +60,13 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-config</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
@@ -142,6 +149,12 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.enterprise</artifactId>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.configadmin</artifactId>
+            <version>1.8.0</version>
         </dependency>
 
         <dependency>
