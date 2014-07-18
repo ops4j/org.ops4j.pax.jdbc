@@ -16,6 +16,8 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,11 +59,13 @@ public class DataSourceManager implements ManagedServiceFactory {
     private Logger LOG = LoggerFactory.getLogger(DataSourceManager.class);
     private BundleContext context;
     private Set<String> ignoredKeys;
+    private Map<String, Closeable> closeables;
     private Map<String, ServiceRegistration> serviceRegs;
             
     public DataSourceManager(BundleContext context) {
         this.context = context;
         this.ignoredKeys = new HashSet<String>(Arrays.asList(IGNORED_KEYS));
+        this.closeables = new HashMap<String, Closeable>();
         this.serviceRegs = new HashMap<String, ServiceRegistration>();
     }
     
@@ -145,6 +149,9 @@ public class DataSourceManager implements ManagedServiceFactory {
         throws ConfigurationException {
         try {
             DataSource ds = dsf.createDataSource(toProperties(config));
+            if (ds instanceof Closeable) {
+                closeables.put(pid, (Closeable)ds);
+            }
             ServiceRegistration reg = context.registerService(DataSource.class.getName(), ds, config);
             serviceRegs.put(pid, reg);
         } catch (SQLException e) {
@@ -187,6 +194,17 @@ public class DataSourceManager implements ManagedServiceFactory {
         ServiceRegistration reg = serviceRegs.get(id);
         if (reg != null) {
             reg.unregister();
+        }
+        safeClose(closeables.get(id));
+    }
+
+    private void safeClose(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                LOG.warn("Error closing " + closeable.getClass() + ": " + e.getMessage(), e);
+            }
         }
     }
 

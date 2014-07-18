@@ -31,7 +31,6 @@ import org.apache.commons.dbcp2.ConnectionFactory;
 import org.apache.commons.dbcp2.DataSourceConnectionFactory;
 import org.apache.commons.dbcp2.PoolableConnection;
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
-import org.apache.commons.dbcp2.PoolingDataSource;
 import org.apache.commons.dbcp2.managed.DataSourceXAConnectionFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
@@ -77,7 +76,8 @@ public class PooledDataSourceFactory implements DataSourceFactory {
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, poolProps);
             pool.setConfig(conf);
-            return new PoolingDataSource<PoolableConnection>(pool);
+            
+            return new CloseablePoolingDataSource<PoolableConnection>(pool);
         }  catch (Throwable e) {
            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
            if (e instanceof SQLException) {
@@ -94,7 +94,7 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         Map<String, String> poolProps = new HashMap<String, String>();
         for (Object keyO : props.keySet()) {
             String key = (String)keyO;
-            if (!key.startsWith(POOL_PREFIX)) {
+            if (key.startsWith(POOL_PREFIX)) {
                 String strippedKey = key.substring(POOL_PREFIX.length());
                 poolProps.put(strippedKey, (String)props.get(key));
             }
