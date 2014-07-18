@@ -27,7 +27,6 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.dbcp2.ConnectionFactory;
 import org.apache.commons.dbcp2.DataSourceConnectionFactory;
 import org.apache.commons.dbcp2.PoolableConnection;
@@ -74,9 +73,9 @@ public class PooledDataSourceFactory implements DataSourceFactory {
             ConnectionFactory cf = useXA ? createXAConnectionFactory(dsProps) : createConnectionFactory(dsProps);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, new ObjectName("pool", "test", "1"));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
-            Map<String, ? extends Object> poolProps = getPoolProps(props);
+            Map<String, String> poolProps = getPoolProps(props);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
-            BeanUtils.populate(conf, poolProps);
+            BeanConfig.configure(conf, poolProps);
             pool.setConfig(conf);
             return new PoolingDataSource<PoolableConnection>(pool);
         }  catch (Throwable e) {
@@ -91,13 +90,13 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    private Map<String, ? extends Object> getPoolProps(Properties props) {
-        Map<String, Object> poolProps = new HashMap<String, Object>();
+    private Map<String, String> getPoolProps(Properties props) {
+        Map<String, String> poolProps = new HashMap<String, String>();
         for (Object keyO : props.keySet()) {
             String key = (String)keyO;
             if (!key.startsWith(POOL_PREFIX)) {
                 String strippedKey = key.substring(POOL_PREFIX.length());
-                poolProps.put(strippedKey, props.get(key));
+                poolProps.put(strippedKey, (String)props.get(key));
             }
         }
         return poolProps;
