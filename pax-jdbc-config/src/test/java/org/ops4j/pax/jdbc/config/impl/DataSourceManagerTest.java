@@ -19,13 +19,16 @@ package org.ops4j.pax.jdbc.config.impl;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -53,13 +56,23 @@ public class DataSourceManagerTest {
         // Expect that a DataSource is created using the DataSourceFactory
         DataSource ds = c.createMock(DataSource.class);
         expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
+        
+        ConnectionPoolDataSource cpds = c.createMock(ConnectionPoolDataSource.class);
+        expect(dsf.createConnectionPoolDataSource(EasyMock.anyObject(Properties.class))).andReturn(cpds);
+
+        XADataSource xads = c.createMock(XADataSource.class);
+        expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(xads);
 
         // Expect DataSource is registered as a service
-        ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
-        expect(context.registerService(eq(DataSource.class.getName()), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
+        ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
+        ServiceRegistration cpdsSreg = c.createMock(ServiceRegistration.class);
+        ServiceRegistration xadsSreg = c.createMock(ServiceRegistration.class);
+        expect(context.registerService(eq(DataSource.class.getName()), eq(ds), anyObject(Dictionary.class))).andReturn(dsSreg);
+        expect(context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds), anyObject(Dictionary.class))).andReturn(cpdsSreg);
+        expect(context.registerService(eq(XADataSource.class.getName()), eq(xads), anyObject(Dictionary.class))).andReturn(xadsSreg);
 
         DataSourceManager dsManager = new DataSourceManager(context) {
-            protected DataSourceFactory findDSFactoryForDriverClass(String driverClass) {
+            protected DataSourceFactory findDSFactoryForDriverClass(String driverClass, String driverName) {
                 Assert.assertEquals(H2_DRIVER_CLASS, driverClass);
                 return dsf;
             }
@@ -75,10 +88,15 @@ public class DataSourceManagerTest {
         
         c.reset();
         
-        sreg.unregister();
-        EasyMock.expectLastCall();
+        dsSreg.unregister();
+        expectLastCall();
+        cpdsSreg.unregister();
+        expectLastCall();
+        xadsSreg.unregister();
+        expectLastCall();
+        
         c.replay();
-        dsManager.deleted(TESTPID);
+        dsManager.updated(TESTPID, null);
         c.verify();
     }
     
@@ -118,7 +136,7 @@ public class DataSourceManagerTest {
         expect(context.getService(ref)).andReturn(expectedDsf );
         DataSourceManager dsManager = new DataSourceManager(context);
         c.replay();
-        DataSourceFactory dsf = dsManager.findDSFactoryForDriverClass(H2_DRIVER_CLASS);
+        DataSourceFactory dsf = dsManager.findDSFactoryForDriverClass(H2_DRIVER_CLASS, null);
         Assert.assertSame(expectedDsf, dsf);
         c.verify();
     }
@@ -138,7 +156,7 @@ public class DataSourceManagerTest {
         DataSourceManager dsManager = new DataSourceManager(context);
         c.replay();
         try {
-            dsManager.findDSFactoryForDriverClass(H2_DRIVER_CLASS);
+            dsManager.findDSFactoryForDriverClass(H2_DRIVER_CLASS, null);
         } catch (ConfigurationException e) {
             Assert.assertEquals(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, e.getProperty());
             Assert.assertEquals("No DataSourceFactory service found for osgi.jdbc.driver.class=org.h2.Driver", e.getReason());

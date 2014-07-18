@@ -106,13 +106,11 @@ public class H2ConfigTest {
         Assert.assertEquals("h2test", ref.getProperty(JNDI_NAME));
     }
 
-    private void checkDataSourceIsDeletedWhenConfigIsDeleted(org.osgi.service.cm.Configuration config,
-                                                            ServiceTracker tracker) throws IOException,
-        InterruptedException {
-        DataSource dataSource;
+    private void checkDataSourceIsDeletedWhenConfigIsDeleted(org.osgi.service.cm.Configuration config, ServiceTracker tracker)
+        throws IOException, InterruptedException {
         config.delete();
         Thread.sleep(1000);
-        dataSource = (DataSource)tracker.getService();
+        DataSource  dataSource = (DataSource)tracker.getService();
         assertNull(dataSource);
     }
 

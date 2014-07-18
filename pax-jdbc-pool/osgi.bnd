@@ -1,0 +1,11 @@
+Bundle-Version>:\
+  ${pom.version}
+
+Bundle-SymbolicName:\
+  ${bundle.symbolicName}
+
+Bundle-Activator:\
+  org.ops4j.pax.jdbc.pool.impl.Activator
+  
+Import-Package:\
+  *
