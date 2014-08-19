@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+    <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}" resolver="(obr)">
+
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-core/${pax.swissbox.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle/${pax.swissbox.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-extender/${pax.swissbox.version}</bundle>
+        <bundle dependency="true">mvn:org.osgi/org.osgi.enterprise/4.2.0</bundle>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-derby" description="Provides JDBC Derbi DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">mvn:org.apache.derby/derby/${derby.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">mvn:com.h2database/h2/${h2.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-h2/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-mariadb" description="Provides JDBC Mariadb DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">mvn:org.jumpmind.symmetric.jdbc/mariadb-java-client/${mariadb.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mariadb/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-mysql" description="Provides JDBC MySQL DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mysql/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory"
+             version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">mvn:org.ancoron.postgresql/org.postgresql/${postgresql.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-postgresql/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory"
+             version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">wrap:mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-pool" description="Provides JDBC Pooling DataSourceFactory"
+             version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/2.0.1</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/2.2</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/3.0_1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool/${project.version}</bundle>
+    </feature>
+
+</features>

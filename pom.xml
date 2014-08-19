@@ -46,6 +46,7 @@
         <module>pax-jdbc-mariadb</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool</module>
+        <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
     </modules>
 
@@ -229,7 +230,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
-                            <_include>-osgi.bnd</_include>
+                            <_include>osgi.bnd</_include>
                         </instructions>
                     </configuration>
                 </plugin>
