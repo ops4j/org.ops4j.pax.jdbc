@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+<features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
     <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}" resolver="(obr)">
 

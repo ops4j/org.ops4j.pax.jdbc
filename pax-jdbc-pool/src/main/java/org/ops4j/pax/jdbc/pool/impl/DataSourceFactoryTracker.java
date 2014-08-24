@@ -15,6 +15,7 @@
  */
 package org.ops4j.pax.jdbc.pool.impl;
 
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -49,7 +50,7 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
         LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, null);
-        Properties props = createPropsForPoolingDataSourceFactory(reference);
+        Dictionary props = createPropsForPoolingDataSourceFactory(reference);
         ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf, props);
         serviceRegs.put(reference, reg);
         return null;
