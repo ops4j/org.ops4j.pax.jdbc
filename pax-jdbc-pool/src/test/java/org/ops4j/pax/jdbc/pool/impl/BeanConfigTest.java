@@ -22,7 +22,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class PoolConfigFactoryTest {
+public class BeanConfigTest {
 
     @Test
     public void testCreate() throws Exception {

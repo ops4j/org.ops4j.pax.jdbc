@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.management.ObjectName;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
@@ -34,6 +33,8 @@ import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.dbcp2.managed.DataSourceXAConnectionFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,16 +52,16 @@ public class PooledDataSourceFactory implements DataSourceFactory {
     private static final String POOL_USE_XA = "pool.usexa";
     private Logger LOG = LoggerFactory.getLogger(PooledDataSourceFactory.class);
     private DataSourceFactory dsFactory;
-    private TransactionManager tm;
+    private BundleContext context;
 
     /**
      * 
      * @param dsFactory non pooled DataSourceFactory we delegate to
      * @param tm transaction manager (Only needed for XA mode)
      */
-    public PooledDataSourceFactory(DataSourceFactory dsFactory, TransactionManager tm) {
+    public PooledDataSourceFactory(DataSourceFactory dsFactory, BundleContext context) {
         this.dsFactory = dsFactory;
-        this.tm = tm;
+        this.context = context;
     }
 
     @Override
@@ -70,7 +71,7 @@ public class PooledDataSourceFactory implements DataSourceFactory {
             Properties dsProps = getNonPoolProps(props);
             props.remove(POOL_USE_XA);
             ConnectionFactory cf = useXA ? createXAConnectionFactory(dsProps) : createConnectionFactory(dsProps);
-            PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, new ObjectName("pool", "test", "1"));
+            PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, null);
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
             Map<String, String> poolProps = getPoolProps(props);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
@@ -120,10 +121,19 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         return cf;
     }
     
+    /**
+     * TODO How to handle the case if TransactionManager is not yet present because of startup order
+     * @return TransactionManager from service or null if non is present
+     */
+    private TransactionManager getTransactionManager() {
+        ServiceReference<TransactionManager> ref =  context.getServiceReference(TransactionManager.class);
+        return context.getService(ref);
+    }
+    
     private DataSourceXAConnectionFactory createXAConnectionFactory(Properties props) throws SQLException {
+        TransactionManager tm = getTransactionManager();
         XADataSource ds = dsFactory.createXADataSource(props);
-        DataSourceXAConnectionFactory cf = new DataSourceXAConnectionFactory(tm, ds);
-        return cf;
+        return new DataSourceXAConnectionFactory(tm, ds);
     }
 
     @Override

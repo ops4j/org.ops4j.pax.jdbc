@@ -32,9 +32,13 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * Watches for DataSourceFactory services and creates/destroys
  * a PooledDataSourceFactory for each existing DataSourceFactory
  */
+@SuppressWarnings({
+    "unchecked", "rawtypes"
+})
 public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
     private BundleContext context;
+    
     private Map<ServiceReference, ServiceRegistration> serviceRegs;
             
     public DataSourceFactoryTracker(BundleContext context) {
@@ -42,18 +46,25 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
         this.serviceRegs = new HashMap<ServiceReference, ServiceRegistration>();
     }
 
+
     @Override
     public Object addingService(ServiceReference reference) {
         if (reference.getProperty("pooled") != null) {
+            // Make sure we do not react on our own service for the pooled factory
             return null;
         }
-        LOG.debug("Registering PooledDataSourceFactory");
-        DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, null);
-        Dictionary props = createPropsForPoolingDataSourceFactory(reference);
-        ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf, props);
+        ServiceRegistration reg = registerPooledDataSourceFactory(reference);
         serviceRegs.put(reference, reg);
         return null;
+    }
+
+    private ServiceRegistration registerPooledDataSourceFactory(ServiceReference reference) {
+        LOG.debug("Registering PooledDataSourceFactory");
+        DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
+        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, context);
+        Dictionary props = createPropsForPoolingDataSourceFactory(reference);
+        ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf, props);
+        return reg;
     }
 
     private Properties createPropsForPoolingDataSourceFactory(ServiceReference reference) {
