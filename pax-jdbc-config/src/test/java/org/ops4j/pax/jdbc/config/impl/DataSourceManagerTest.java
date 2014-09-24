@@ -36,7 +36,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-
+@SuppressWarnings({
+    "rawtypes", "unchecked"
+})
 public class DataSourceManagerTest {
 
     private static final String TESTPID = "testpid";
@@ -73,7 +75,6 @@ public class DataSourceManagerTest {
 
         DataSourceManager dsManager = new DataSourceManager(context) {
 
-            @SuppressWarnings("rawtypes")
             @Override
             protected DataSourcePublisher createPublisher(Dictionary config) {
                 return publisher;

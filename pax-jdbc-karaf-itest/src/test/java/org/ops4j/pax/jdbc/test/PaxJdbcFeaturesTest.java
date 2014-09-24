@@ -15,6 +15,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -69,43 +70,41 @@ public class PaxJdbcFeaturesTest {
 
     @Test
     public void testPaxJdbcH2FeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-h2")));
+        assertFeatureInstalled("pax-jdbc-h2");
     }
 
     @Test
     public void testPaxJdbcDerbyFeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-derby")));
+        assertFeatureInstalled("pax-jdbc-derby");
     }
 
     @Test
     public void testPaxJdbcSqliteFeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-sqlite")));
+        assertFeatureInstalled("pax-jdbc-sqlite");
     }
 
     @Test
     public void testPaxJdbcMariaDbFeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-mariadb")));
+        assertFeatureInstalled("pax-jdbc-mariadb");
     }
 
     @Test
     public void testPaxJdbcMysqlFeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-mysql")));
+        assertFeatureInstalled("pax-jdbc-mysql");
     }
 
     @Test
     public void testPaxJdbcPostgreSqlFeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-postgresql")));
+        assertFeatureInstalled("pax-jdbc-postgresql");
     }
 
     @Test
     public void testPaxJdbcPoolFeatureInstalls() throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature("pax-jdbc-pool")));
+        assertFeatureInstalled("pax-jdbc-pool");
     }
 
     @Test
     public void testH2FeatureIsDeployedAndUsable() throws SQLException {
-        assertNotNull(h2DataSourceFactory);
-
         DataSource dataSource = createDataSource();
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
@@ -122,10 +121,15 @@ public class PaxJdbcFeaturesTest {
     }
 
     private DataSource createDataSource() throws SQLException {
+        assertNotNull(h2DataSourceFactory);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "test");
         props.setProperty(DataSourceFactory.JDBC_USER, "SA");
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "");
         return h2DataSourceFactory.createDataSource(props);
+    }
+    
+    private void assertFeatureInstalled(String featureName) throws Exception {
+        assertTrue(featuresService.isInstalled(featuresService.getFeature(featureName)));
     }
 }

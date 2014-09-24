@@ -107,6 +107,7 @@ public class DataSourceManager implements ManagedServiceFactory {
             public void modifiedService(ServiceReference reference, Object service) {
             }
             
+            @SuppressWarnings("unchecked")
             @Override
             public Object addingService(ServiceReference reference) {
                 DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);

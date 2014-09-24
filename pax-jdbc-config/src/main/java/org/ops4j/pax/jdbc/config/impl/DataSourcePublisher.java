@@ -38,6 +38,9 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings({
+    "rawtypes", "unchecked"
+})
 public class DataSourcePublisher {
     private static String[] IGNORED_KEYS = {"service.pid", 
                                             DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, 
@@ -59,10 +62,8 @@ public class DataSourcePublisher {
      */
     private Collection<ServiceRegistration> serviceRegs;
     private BundleContext context;
-    @SuppressWarnings("rawtypes")
     private Dictionary config;
     
-    @SuppressWarnings("rawtypes")
     public DataSourcePublisher(BundleContext context, final Dictionary config) {
         this.context = context;
         this.config = config;
@@ -77,7 +78,6 @@ public class DataSourcePublisher {
         publishXADataSource(dsf);
     }
     
-    @SuppressWarnings("rawtypes")
     private Properties toProperties(Dictionary dict) {
         Properties props = new Properties();
         Enumeration keys = dict.keys();

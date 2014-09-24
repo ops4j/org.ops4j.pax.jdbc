@@ -39,7 +39,9 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-
+@SuppressWarnings({
+    "rawtypes", "unchecked"
+})
 public class DataSourcePublisherTest {
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
 
