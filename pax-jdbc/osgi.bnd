@@ -13,5 +13,6 @@ Import-Package:\
   
 #Export-Package:\
 #  ${bundle.namespace}; version="${pom.version}"
-  
+  !org.osgi.service.jdbc,\
+  org.osgi.service.jdbc.*;version=1.0
  
