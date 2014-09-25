@@ -20,13 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.transaction.TransactionManager;
+
+import org.ops4j.pax.jdbc.pool.impl.ds.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Watches for DataSourceFactory services and creates/destroys
@@ -40,12 +43,17 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     private BundleContext context;
     
     private Map<ServiceReference, ServiceRegistration> serviceRegs;
-            
+    private TransactionManager tm;
+
     public DataSourceFactoryTracker(BundleContext context) {
+        this(context, null);
+    }
+    
+    public DataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
+        this.tm = tm;
         this.context = context;
         this.serviceRegs = new HashMap<ServiceReference, ServiceRegistration>();
     }
-
 
     @Override
     public Object addingService(ServiceReference reference) {
@@ -61,7 +69,7 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     private ServiceRegistration createAndregisterPooledFactory(ServiceReference reference) {
         LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, context);
+        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
         Dictionary props = createPropsForPoolingDataSourceFactory(reference);
         ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf, props);
         return reg;
@@ -75,6 +83,9 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
             }
         }
         props.put("pooled", "true");
+        if (tm != null) {
+            props.put("xa", "true");
+        }
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, getPoolDriverName(reference));
         return props;
     }
@@ -84,7 +95,7 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
         if (origName == null) {
             origName = (String)reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         }
-        return origName + "-pool";
+        return origName + "-pool" + ((tm != null) ? "-xa" : "");
     }
 
     @Override

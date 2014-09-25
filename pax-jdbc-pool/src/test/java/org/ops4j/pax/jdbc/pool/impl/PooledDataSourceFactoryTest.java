@@ -11,8 +11,8 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.ops4j.pax.jdbc.pool.impl.ds.CloseablePoolingDataSource;
+import org.ops4j.pax.jdbc.pool.impl.ds.PooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class PooledDataSourceFactoryTest {
@@ -23,9 +23,8 @@ public class PooledDataSourceFactoryTest {
         DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         XADataSource xads = c.createMock(XADataSource.class);
         EasyMock.expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(xads);
-        BundleContext context = c.createMock(BundleContext.class);
-        expectTransactionManagerLookup(c, context);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf , context);
+        TransactionManager tm = c.createMock(TransactionManager.class);
+        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf , tm);
         c.replay();
         
         Properties props = new Properties();
@@ -41,23 +40,14 @@ public class PooledDataSourceFactoryTest {
         DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         DataSource exds = c.createMock(DataSource.class);
         EasyMock.expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(exds);
-        BundleContext context = c.createMock(BundleContext.class);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf , context);
+        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf);
         c.replay();
         
         Properties props = new Properties();
-        props.put("pool.usexa", "false");
         DataSource ds = pdsf.createDataSource(props);
         
         c.verify();
         Assert.assertEquals(CloseablePoolingDataSource.class, ds.getClass());
     }
 
-    @SuppressWarnings("unchecked")
-    private void expectTransactionManagerLookup(IMocksControl c, BundleContext context) {
-        ServiceReference<TransactionManager> ref = c.createMock(ServiceReference.class);
-        EasyMock.expect(context.getServiceReference(TransactionManager.class)).andReturn(ref);
-        TransactionManager tm = c.createMock(TransactionManager.class);
-        EasyMock.expect(context.getService(ref)).andReturn(tm);
-    }
 }

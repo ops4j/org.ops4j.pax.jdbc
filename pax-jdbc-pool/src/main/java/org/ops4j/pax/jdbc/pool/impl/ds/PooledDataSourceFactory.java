@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.impl;
+package org.ops4j.pax.jdbc.pool.impl.ds;
 
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -33,8 +33,6 @@ import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.dbcp2.managed.DataSourceXAConnectionFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,35 +47,39 @@ import org.slf4j.LoggerFactory;
  */
 public class PooledDataSourceFactory implements DataSourceFactory {
     private static final String POOL_PREFIX = "pool.";
-    private static final String POOL_USE_XA = "pool.usexa";
     private Logger LOG = LoggerFactory.getLogger(PooledDataSourceFactory.class);
     private DataSourceFactory dsFactory;
-    private BundleContext context;
+    private TransactionManager tm;
 
     /**
-     * 
+     * Initialize XA PoolingDataSourceFactory
      * @param dsFactory non pooled DataSourceFactory we delegate to
      * @param tm transaction manager (Only needed for XA mode)
      */
-    public PooledDataSourceFactory(DataSourceFactory dsFactory, BundleContext context) {
+    public PooledDataSourceFactory(DataSourceFactory dsFactory, TransactionManager tm) {
         this.dsFactory = dsFactory;
-        this.context = context;
+        this.tm = tm;
+    }
+    
+    /**
+     * Initialize non XA PoolingDataSourceFactory
+     * @param dsFactory non pooled DataSourceFactory we delegate to
+     */
+    public PooledDataSourceFactory(DataSourceFactory dsFactory) {
+        this(dsFactory, null);
     }
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
-            boolean useXA = Boolean.valueOf(props.getProperty(POOL_USE_XA, "true"));
             Properties dsProps = getNonPoolProps(props);
-            props.remove(POOL_USE_XA);
-            ConnectionFactory cf = useXA ? createXAConnectionFactory(dsProps) : createConnectionFactory(dsProps);
+            ConnectionFactory cf = createConnectionFactory(dsProps);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, null);
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
             Map<String, String> poolProps = getPoolProps(props);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, poolProps);
             pool.setConfig(conf);
-            
             return new CloseablePoolingDataSource<PoolableConnection>(pool);
         }  catch (Throwable e) {
            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
@@ -115,27 +117,16 @@ public class PooledDataSourceFactory implements DataSourceFactory {
     }
     
 
-    private DataSourceConnectionFactory createConnectionFactory(Properties props) throws SQLException {
-        DataSource ds = dsFactory.createDataSource(props);
-        DataSourceConnectionFactory cf = new DataSourceConnectionFactory(ds);
-        return cf;
+    private ConnectionFactory createConnectionFactory(Properties props) throws SQLException {
+        if (tm != null) {
+            XADataSource ds = dsFactory.createXADataSource(props);
+            return new DataSourceXAConnectionFactory(tm, ds);
+        } else {
+            DataSource ds = dsFactory.createDataSource(props);
+            return new DataSourceConnectionFactory(ds);
+        }
     }
     
-    /**
-     * TODO How to handle the case if TransactionManager is not yet present because of startup order
-     * @return TransactionManager from service or null if non is present
-     */
-    private TransactionManager getTransactionManager() {
-        ServiceReference<TransactionManager> ref =  context.getServiceReference(TransactionManager.class);
-        return ref==null ? null : context.getService(ref);
-    }
-    
-    private DataSourceXAConnectionFactory createXAConnectionFactory(Properties props) throws SQLException {
-        TransactionManager tm = getTransactionManager();
-        XADataSource ds = dsFactory.createXADataSource(props);
-        return new DataSourceXAConnectionFactory(tm, ds);
-    }
-
     @Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
         throw new SQLException("Not supported");

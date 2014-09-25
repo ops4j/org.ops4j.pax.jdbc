@@ -1,6 +1,8 @@
 package org.ops4j.pax.jdbc.test;
 
 import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
 
@@ -15,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
@@ -23,26 +24,19 @@ import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
- * Tests the automatic creation of pooled DataSourceFactory service from an existing DataSourceFactory
+ * Tests the automatic creation of pooled and non pooled DataSource from config admin configs
  * 
  * We assume that h2 publishes a DataSourceFactory with "osgi.jdbc.driver.name=h2".
- * 
- * pax-jdbc-pool should then create a pooled DataSourceFactory with "osgi.jdbc.driver.name=h2-pool".
- * If a TransactionManager service is available it will also create a XA pooled DataSourceFactory 
- * with "osgi.jdbc.driver.name=h2-pool-xa". Keep in mind that you need to use createDataSource() to create 
- * a transactional DataSource not createXADataSource().
+ * We let pax-jdbc-config create a DataSource for these DataSourceFactories by supplying a config. 
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class PaxJdbcPoolTest extends AbstractJdbcTest {
+public class PaxJdbcConfigTest extends AbstractJdbcTest {
+    private static final String DS_CONFIG = "etc/org.ops4j.datasource-h2.cfg";
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2-pool)")
-    DataSourceFactory pooledDataSourceFactory;
-
-    @Inject
-    @Filter("(osgi.jdbc.driver.name=h2-pool-xa)")
-    DataSourceFactory pooledXADataSourceFactory;
+    @Filter("(osgi.jndi.service.name=test2)")
+    DataSource dataSource;
 
     @Configuration
     public Option[] config() {
@@ -59,19 +53,17 @@ public class PaxJdbcPoolTest extends AbstractJdbcTest {
                         .unpackDirectory(new File("target/exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
-                KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2", "pax-jdbc-pool"),
+                features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-config"),
+                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "h2"),
+                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_DATABASE_NAME, "test2"),
+                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_USER, "sa"),
+                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_PASSWORD, ""),
+                editConfigurationFilePut(DS_CONFIG, "osgi.jndi.service.name", "test2"),
         };
     }
 
     @Test
-    public void testPooledDataSourceFactory() throws SQLException {
-        DataSource dataSource = createDataSource(pooledDataSourceFactory);
-        checkDataSource(dataSource);
-    }
-    
-    @Test
-    public void testPooledXADataSourceFactory() throws SQLException {
-        DataSource dataSource = createDataSource(pooledXADataSourceFactory);
+    public void testDataSourceFromConfig() throws SQLException {
         checkDataSource(dataSource);
     }
 

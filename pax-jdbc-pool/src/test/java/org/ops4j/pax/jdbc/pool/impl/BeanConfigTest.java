@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ops4j.pax.jdbc.pool.impl.ds.BeanConfig;
 
 public class BeanConfigTest {
 
