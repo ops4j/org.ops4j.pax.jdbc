@@ -4,10 +4,10 @@
     <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}" resolver="(obr)">
 
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-lang/${ops4j.base.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-core/${pax.swissbox.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle/${pax.swissbox.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-extender/${pax.swissbox.version}</bundle>
-        <bundle dependency="true">mvn:org.osgi/org.osgi.enterprise/4.2.0</bundle>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc/${project.version}</bundle>
     </feature>
