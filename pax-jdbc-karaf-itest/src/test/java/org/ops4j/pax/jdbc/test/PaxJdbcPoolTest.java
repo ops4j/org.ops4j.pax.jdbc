@@ -1,8 +1,6 @@
 package org.ops4j.pax.jdbc.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
@@ -12,7 +10,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -32,13 +29,13 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
+public class PaxJdbcPoolTest extends AbstractJdbcTest {
 
     @Inject
     FeaturesService featuresService;
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2)")
+    @Filter("(osgi.jdbc.driver.name=h2-pool)")
     DataSourceFactory h2DataSourceFactory;
 
     @Configuration
@@ -56,49 +53,13 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
                         .unpackDirectory(new File("target/exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
-                KarafDistributionOption.features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-derby", "pax-jdbc-sqlite",
-                        "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool"),
+                KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2", "pax-jdbc-pool"),
         };
     }
 
     @Test
-    public void testPaxJdbcH2FeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-h2");
-    }
-
-    @Test
-    public void testPaxJdbcDerbyFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-derby");
-    }
-
-    @Test
-    public void testPaxJdbcSqliteFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-sqlite");
-    }
-
-    @Test
-    public void testPaxJdbcMariaDbFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-mariadb");
-    }
-
-    @Test
-    public void testPaxJdbcMysqlFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-mysql");
-    }
-
-    @Test
-    public void testPaxJdbcPostgreSqlFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-postgresql");
-    }
-
-    @Test
-    public void testPaxJdbcPoolFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-pool");
-    }
-
-    @Test
     public void testH2FeatureIsDeployedAndUsable() throws SQLException {
-        DataSource dataSource = createDataSource();
+        DataSource dataSource = createDataSource(h2DataSourceFactory);
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
         statement.execute("CREATE TABLE PUBLIC.T1 (col1 INTEGER NOT NULL, col2 CHAR(25), PRIMARY KEY (COL1)) ");
@@ -113,16 +74,4 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
         connection.close();
     }
 
-    private DataSource createDataSource() throws SQLException {
-        assertNotNull(h2DataSourceFactory);
-        Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "test");
-        props.setProperty(DataSourceFactory.JDBC_USER, "SA");
-        props.setProperty(DataSourceFactory.JDBC_PASSWORD, "");
-        return h2DataSourceFactory.createDataSource(props);
-    }
-    
-    private void assertFeatureInstalled(String featureName) throws Exception {
-        assertTrue(featuresService.isInstalled(featuresService.getFeature(featureName)));
-    }
 }

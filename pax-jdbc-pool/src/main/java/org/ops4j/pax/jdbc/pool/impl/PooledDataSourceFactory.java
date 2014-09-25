@@ -127,7 +127,7 @@ public class PooledDataSourceFactory implements DataSourceFactory {
      */
     private TransactionManager getTransactionManager() {
         ServiceReference<TransactionManager> ref =  context.getServiceReference(TransactionManager.class);
-        return context.getService(ref);
+        return ref==null ? null : context.getService(ref);
     }
     
     private DataSourceXAConnectionFactory createXAConnectionFactory(Properties props) throws SQLException {

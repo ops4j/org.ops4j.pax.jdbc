@@ -53,12 +53,12 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
             // Make sure we do not react on our own service for the pooled factory
             return null;
         }
-        ServiceRegistration reg = registerPooledDataSourceFactory(reference);
+        ServiceRegistration reg = createAndregisterPooledFactory(reference);
         serviceRegs.put(reference, reg);
         return null;
     }
 
-    private ServiceRegistration registerPooledDataSourceFactory(ServiceReference reference) {
+    private ServiceRegistration createAndregisterPooledFactory(ServiceReference reference) {
         LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, context);
