@@ -46,6 +46,7 @@
         <module>pax-jdbc-mariadb</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool</module>
+        <module>pax-jdbc-aries</module>
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>
