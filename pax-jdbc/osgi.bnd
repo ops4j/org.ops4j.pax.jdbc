@@ -6,12 +6,11 @@ Bundle-SymbolicName:\
 
 Bundle-Activator:\
   ${bundle.namespace}.impl.Activator
-  
+
 Import-Package:\
   !org.ops4j.pax.jdbc,\
+  org.osgi.service.jdbc; version="[1.0,1.1)",\
   *
-  
-#Export-Package:\
-#  ${bundle.namespace}; version="${pom.version}"
-  
- 
+
+Export-Package:\
+  org.osgi.service.jdbc;uses:="javax.sql";version="1.0"

@@ -23,7 +23,7 @@
         <postgresql.version>9.1.901.jdbc4.1-rc9</postgresql.version>
         <ops4j.base.version>1.4.0</ops4j.base.version>
         <pax.exam.version>4.1.0</pax.exam.version>
-        <pax.swissbox.version>1.7.0</pax.swissbox.version>
+        <pax.swissbox.version>1.7.1</pax.swissbox.version>
         <pax.url.version>1.6.0</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.7.15-M1</sqlite.version>
