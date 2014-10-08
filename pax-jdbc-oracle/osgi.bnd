@@ -1,0 +1,15 @@
+Bundle-Version>:\
+  ${pom.version}
+
+Bundle-SymbolicName:\
+  ${bundle.symbolicName}
+
+Bundle-Activator:\
+  ${bundle.namespace}.impl.Activator
+
+Import-Package:\
+  !org.ops4j.pax.jdbc,\
+  oracle.jdbc,\
+  oracle.jdbc.pool,\
+  oracle.jdbc.xa.client,\
+  *

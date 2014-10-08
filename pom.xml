@@ -44,6 +44,7 @@
         <module>pax-jdbc-mysql</module>
         <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-mariadb</module>
+        <module>pax-jdbc-oracle</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool</module>
         <module>pax-jdbc-aries</module>

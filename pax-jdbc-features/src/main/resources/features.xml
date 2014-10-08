@@ -50,6 +50,13 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mysql/${project.version}</bundle>
     </feature>
 
+    <feature name="pax-jdbc-oracle" description="Provides JDBC Oracle DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-oracle/${project.version}</bundle>
+    </feature>
+
     <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory"
              version="${project.version}"
              resolver="(obr)">
