@@ -16,17 +16,16 @@
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
-import org.apache.aries.transaction.AriesTransactionManager;
-import org.ops4j.pax.jdbc.pool.aries.impl.ds.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.osgi.util.tracker.ServiceTracker;
+
+import org.apache.aries.transaction.AriesTransactionManager;
+import org.ops4j.pax.jdbc.pool.aries.impl.ds.PooledDataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +36,11 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({
     "unchecked", "rawtypes"
 })
-public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
+public class DataSourceFactoryTracker extends ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>>
+{
+
     private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
-    private BundleContext context;
-    
-    private Map<ServiceReference, ServiceRegistration> serviceRegs;
+
     private AriesTransactionManager tm;
 
     public DataSourceFactoryTracker(BundleContext context) {
@@ -49,32 +48,25 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     }
     
     public DataSourceFactoryTracker(BundleContext context, AriesTransactionManager tm) {
+        super(context, DataSourceFactory.class, null);
         this.tm = tm;
-        this.context = context;
-        this.serviceRegs = new HashMap<ServiceReference, ServiceRegistration>();
     }
 
     @Override
-    public Object addingService(ServiceReference reference) {
+    public ServiceRegistration<DataSourceFactory> addingService(ServiceReference<DataSourceFactory> reference) {
         if (reference.getProperty("pooled") != null) {
             // Make sure we do not react on our own service for the pooled factory
             return null;
         }
-        ServiceRegistration reg = createAndRegisterPooledFactory(reference);
-        serviceRegs.put(reference, reg);
-        return null;
-    }
 
-    private ServiceRegistration createAndRegisterPooledFactory(ServiceReference reference) {
         LOG.debug("Registering PooledDataSourceFactory");
-        DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
+        DataSourceFactory dsf = context.getService(reference);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
         Dictionary props = createPropsForPoolingDataSourceFactory(reference);
-        ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf, props);
-        return reg;
+        return context.registerService(DataSourceFactory.class, pdsf, props);
     }
 
-    private Properties createPropsForPoolingDataSourceFactory(ServiceReference reference) {
+    private Properties createPropsForPoolingDataSourceFactory(ServiceReference<DataSourceFactory> reference) {
         Properties props = new Properties();
         for (String key : reference.getPropertyKeys()) {
             if (!"service.id".equals(key)) {
@@ -98,17 +90,15 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     }
 
     @Override
-    public void modifiedService(ServiceReference reference, Object service) {
+    public void modifiedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration<DataSourceFactory> service) {
         
     }
 
     @Override
-    public void removedService(ServiceReference reference, Object service) {
-        ServiceRegistration reg = serviceRegs.get(reference);
-        if (reg != null) {
-            LOG.warn("Unregistering PooledDataSourceFactory");
-            reg.unregister();
-        }
+    public void removedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration<DataSourceFactory> service) {
+        LOG.warn("Unregistering PooledDataSourceFactory");
+        service.unregister();
+        context.ungetService(reference);
     }
 
 }

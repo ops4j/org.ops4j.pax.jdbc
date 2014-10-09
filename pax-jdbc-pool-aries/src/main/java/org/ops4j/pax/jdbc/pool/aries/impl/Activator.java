@@ -15,11 +15,8 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
-import javax.transaction.TransactionManager;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -31,11 +28,10 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        DataSourceFactoryTracker dsManager = new DataSourceFactoryTracker(context);
-        dsfTracker = new ServiceTracker(context, DataSourceFactory.class.getName(), dsManager);
+        dsfTracker = new DataSourceFactoryTracker(context);
         dsfTracker.open();
         
-        tmTracker = new ServiceTracker(context, TransactionManager.class.getName(), new TransactionManagerTracker(context));
+        tmTracker = new TransactionManagerTracker(context);
         tmTracker.open();
     }
 
