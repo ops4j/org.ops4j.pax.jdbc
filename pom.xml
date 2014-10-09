@@ -303,5 +303,18 @@
             <email>david-schmitz@gmx.net</email>
         </developer>
     </developers>
+	
+	<repositories>
+		<repository>
+			<id>apache-snapshots</id>
+			<url>https://repository.apache.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>
