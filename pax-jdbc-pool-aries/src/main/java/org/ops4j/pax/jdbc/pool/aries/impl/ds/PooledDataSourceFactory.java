@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.aries.impl.ds;
+package org.ops4j.pax.jdbc.pool.aries.impl.ds;
 
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -25,7 +25,6 @@ import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-import javax.transaction.TransactionManager;
 
 import org.apache.aries.transaction.AriesTransactionManager;
 import org.apache.aries.transaction.jdbc.RecoverableDataSource;

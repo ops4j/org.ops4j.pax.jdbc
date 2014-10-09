@@ -1,4 +1,4 @@
-package org.ops4j.pax.jdbc.aries.impl;
+package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import javax.transaction.TransactionManager;
 

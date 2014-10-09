@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.aries.impl;
+package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.transaction.TransactionManager;
-
 import org.apache.aries.transaction.AriesTransactionManager;
-import org.ops4j.pax.jdbc.aries.impl.ds.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.aries.impl.ds.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
