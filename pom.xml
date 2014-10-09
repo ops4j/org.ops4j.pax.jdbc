@@ -15,6 +15,7 @@
     <name>OPS4J Pax JDBC (Reactor POM)</name>
 
     <properties>
+        <aries.transaction.jdbc.version>2.1.0-SNAPSHOT</aries.transaction.jdbc.version>
         <derby.version>10.10.1.1</derby.version>
         <h2.version>1.3.172</h2.version>
         <logback.version>1.0.6</logback.version>
@@ -169,6 +170,12 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.aries.transaction</groupId>
+                <artifactId>org.apache.aries.transaction.jdbc</artifactId>
+                <version>${aries.transaction.jdbc.version}</version>
             </dependency>
 
             <!-- JDBC drivers -->

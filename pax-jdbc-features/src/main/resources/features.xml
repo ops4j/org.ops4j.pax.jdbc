@@ -88,7 +88,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-aries" description="Provides JDBC Pooling DataSourceFactory"
+    <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC"
              version="${project.version}"
              resolver="(obr)">
         <feature>pax-jdbc</feature>
@@ -99,8 +99,8 @@
         <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/3.1.1</bundle>
 
         <bundle dependency="true">mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/1.1.0</bundle>
-        <bundle dependency="true">mvn:org.apache.aries.transaction/org.apache.aries.transaction.jdbc/2.1.0-SNAPSHOT</bundle>
-        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-aries/${project.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.aries.transaction/org.apache.aries.transaction.jdbc/${aries.transaction.jdbc.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-aries/${project.version}</bundle>
     </feature>
 
 </features>
