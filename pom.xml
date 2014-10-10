@@ -48,8 +48,7 @@
         <module>pax-jdbc-oracle</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool</module>
-        <!-- experimental -->
-        <!--module>pax-jdbc-pool-aries</module-->
+        <module>pax-jdbc-pool-aries</module>
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>

@@ -97,6 +97,11 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
     }
 
     @Test
+    public void testPaxJdbcPoolAriesFeatureInstalls() throws Exception {
+        assertFeatureInstalled("pax-jdbc-pool-aries");
+    }
+
+    @Test
     public void testH2FeatureIsDeployedAndUsable() throws SQLException {
         DataSource dataSource = createDataSource();
         Connection connection = dataSource.getConnection();
