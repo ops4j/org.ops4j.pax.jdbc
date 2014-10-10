@@ -67,10 +67,17 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-pool</artifactId>
+            <artifactId>pax-jdbc-pool-dbcp2</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-pool-aries</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

@@ -5,7 +5,7 @@ Bundle-SymbolicName:\
   ${bundle.symbolicName}
 
 Bundle-Activator:\
-  org.ops4j.pax.jdbc.pool.impl.Activator
+  org.ops4j.pax.jdbc.pool.dbcp2.impl.Activator
   
 Import-Package:\
   *

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.impl;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import javax.transaction.TransactionManager;
 
-import org.ops4j.pax.jdbc.pool.impl.ds.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;

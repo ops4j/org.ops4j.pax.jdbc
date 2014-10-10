@@ -1,4 +1,4 @@
-package org.ops4j.pax.jdbc.pool.impl;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import javax.transaction.TransactionManager;
 

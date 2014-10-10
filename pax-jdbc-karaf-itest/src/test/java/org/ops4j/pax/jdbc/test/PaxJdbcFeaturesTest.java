@@ -57,7 +57,7 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
                 KarafDistributionOption.features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-derby", "pax-jdbc-sqlite",
-                        "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool"),
+                        "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool-dbcp2"),
         };
     }
 
@@ -92,8 +92,8 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
     }
 
     @Test
-    public void testPaxJdbcPoolFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-pool");
+    public void testPaxJdbcPoolDbcp2FeatureInstalls() throws Exception {
+        assertFeatureInstalled("pax-jdbc-pool-dbcp2");
     }
 
     @Test

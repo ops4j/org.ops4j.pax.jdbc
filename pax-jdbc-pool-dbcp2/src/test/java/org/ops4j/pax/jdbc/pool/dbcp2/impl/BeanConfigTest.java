@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.impl;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.junit.Assert;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.pool.impl.ds.BeanConfig;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.BeanConfig;
 
 public class BeanConfigTest {
 

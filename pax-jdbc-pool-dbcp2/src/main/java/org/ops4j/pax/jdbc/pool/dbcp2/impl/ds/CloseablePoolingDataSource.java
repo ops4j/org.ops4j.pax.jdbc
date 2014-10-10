@@ -1,4 +1,4 @@
-package org.ops4j.pax.jdbc.pool.impl.ds;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl.ds;
 
 import java.io.Closeable;
 import java.io.IOException;

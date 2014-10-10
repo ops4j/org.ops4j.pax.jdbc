@@ -47,7 +47,7 @@
         <module>pax-jdbc-mariadb</module>
         <module>pax-jdbc-oracle</module>
         <module>pax-jdbc-config</module>
-        <module>pax-jdbc-pool</module>
+        <module>pax-jdbc-pool-dbcp2</module>
         <module>pax-jdbc-pool-aries</module>
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>

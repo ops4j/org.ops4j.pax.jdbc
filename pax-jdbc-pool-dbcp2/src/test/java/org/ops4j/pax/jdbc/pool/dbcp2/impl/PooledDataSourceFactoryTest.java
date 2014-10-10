@@ -1,4 +1,4 @@
-package org.ops4j.pax.jdbc.pool.impl;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -11,8 +11,8 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.pool.impl.ds.CloseablePoolingDataSource;
-import org.ops4j.pax.jdbc.pool.impl.ds.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseablePoolingDataSource;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.PooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class PooledDataSourceFactoryTest {

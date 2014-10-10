@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.impl;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import javax.transaction.TransactionManager;
 

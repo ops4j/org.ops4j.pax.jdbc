@@ -59,7 +59,7 @@ public class PaxJdbcPoolTest extends AbstractJdbcTest {
                         .unpackDirectory(new File("target/exam"))
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
-                KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2", "pax-jdbc-pool"),
+                KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2", "pax-jdbc-pool-dbcp2"),
         };
     }
 
