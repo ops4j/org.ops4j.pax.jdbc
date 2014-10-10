@@ -1,12 +1,5 @@
 package org.ops4j.pax.jdbc.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,6 +9,8 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+
+import org.osgi.service.jdbc.DataSourceFactory;
 
 import org.apache.karaf.features.FeaturesService;
 import org.junit.Test;
@@ -28,11 +23,17 @@ import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
-import org.osgi.service.jdbc.DataSourceFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
+public class PaxJdbcFeaturesAriesTest extends AbstractJdbcTest {
 
     @Inject
     FeaturesService featuresService;
@@ -57,7 +58,7 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
                         .useDeployFolder(false),
                 keepRuntimeFolder(),
                 KarafDistributionOption.features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-derby", "pax-jdbc-sqlite",
-                        "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool"),
+                        "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool-aries"),
         };
     }
 
@@ -92,8 +93,8 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
     }
 
     @Test
-    public void testPaxJdbcPoolFeatureInstalls() throws Exception {
-        assertFeatureInstalled("pax-jdbc-pool");
+    public void testPaxJdbcPoolAriesFeatureInstalls() throws Exception {
+        assertFeatureInstalled("pax-jdbc-pool-aries");
     }
 
     @Test
