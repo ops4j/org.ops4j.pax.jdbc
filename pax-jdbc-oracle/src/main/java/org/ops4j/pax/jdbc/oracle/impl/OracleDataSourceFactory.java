@@ -32,16 +32,18 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     private static final String ORACLE_CONNECTIONPOOL_DATASOURCE_CLASS = "oracle.jdbc.pool.OracleConnectionPoolDataSource";
     private static final String ORACLE_XA_DATASOURCE_CLASS = "oracle.jdbc.xa.client.OracleXADataSource";
     private static final String ORACLE_DRIVER_CLASS = "oracle.jdbc.OracleDriver";
-    private final Class oracleDataSourceClass;
-    private final Class oracleConnectionPoolDataSourceClass;
-    private final Class oracleXaDataSourceClass;
-    private final Class oracleDriverClass;
+    private final Class<?> oracleDataSourceClass;
+    private final Class<?> oracleConnectionPoolDataSourceClass;
+    private final Class<?> oracleXaDataSourceClass;
+    private final Class<?> oracleDriverClass;
 
     public OracleDataSourceFactory() throws ClassNotFoundException {
-        this.oracleDataSourceClass = OracleDataSourceFactory.class.getClassLoader().loadClass(ORACLE_DATASOURCE_CLASS);
-        this.oracleConnectionPoolDataSourceClass = OracleDataSourceFactory.class.getClassLoader().loadClass(ORACLE_CONNECTIONPOOL_DATASOURCE_CLASS);
-        this.oracleXaDataSourceClass = OracleDataSourceFactory.class.getClassLoader().loadClass(ORACLE_XA_DATASOURCE_CLASS);
-        this.oracleDriverClass = OracleDataSourceFactory.class.getClassLoader().loadClass(ORACLE_DRIVER_CLASS);
+        ClassLoader classLoader = OracleDataSourceFactory.class.getClassLoader();
+        this.oracleDataSourceClass = classLoader.loadClass(ORACLE_DATASOURCE_CLASS);
+        this.oracleConnectionPoolDataSourceClass = classLoader
+            .loadClass(ORACLE_CONNECTIONPOOL_DATASOURCE_CLASS);
+        this.oracleXaDataSourceClass = classLoader.loadClass(ORACLE_XA_DATASOURCE_CLASS);
+        this.oracleDriverClass = classLoader.loadClass(ORACLE_DRIVER_CLASS);
     }
 
     @Override
@@ -50,12 +52,14 @@ public class OracleDataSourceFactory implements DataSourceFactory {
             DataSource ds = DataSource.class.cast(oracleDataSourceClass.newInstance());
             setProperties(ds, oracleDataSourceClass, props);
             return ds;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new SQLException(ex);
         }
     }
 
-    private void setProperties(CommonDataSource ds, Class clazz, Properties properties) throws Exception {
+    private void setProperties(CommonDataSource ds, Class<?> clazz, Properties properties)
+        throws Exception {
         Properties props = (Properties) properties.clone();
 
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);
@@ -65,7 +69,8 @@ public class OracleDataSourceFactory implements DataSourceFactory {
 
         String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
         if (databaseName == null && url == null) {
-            throw new SQLException("missing required property " + DataSourceFactory.JDBC_DATABASE_NAME);
+            throw new SQLException("missing required property "
+                + DataSourceFactory.JDBC_DATABASE_NAME);
         }
         clazz.getMethod("setDatabaseName", String.class).invoke(ds, databaseName);
 
@@ -74,7 +79,8 @@ public class OracleDataSourceFactory implements DataSourceFactory {
 
         String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
         if (portNumber != null) {
-            clazz.getMethod("setPortNumber", Integer.class).invoke(ds, Integer.parseInt(portNumber));
+            clazz.getMethod("setPortNumber", Integer.class)
+                .invoke(ds, Integer.parseInt(portNumber));
         }
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
@@ -89,12 +95,15 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
         try {
-            ConnectionPoolDataSource ds = ConnectionPoolDataSource.class.cast(oracleConnectionPoolDataSourceClass.newInstance());
+            ConnectionPoolDataSource ds = ConnectionPoolDataSource.class
+                .cast(oracleConnectionPoolDataSourceClass.newInstance());
             setProperties(ds, oracleXaDataSourceClass, props);
             return ds;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new SQLException(ex);
         }
     }
@@ -105,7 +114,8 @@ public class OracleDataSourceFactory implements DataSourceFactory {
             XADataSource ds = XADataSource.class.cast(oracleXaDataSourceClass.newInstance());
             setProperties(ds, oracleXaDataSourceClass, props);
             return ds;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new SQLException(ex);
         }
     }
@@ -114,9 +124,11 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     public Driver createDriver(Properties props) throws SQLException {
         try {
             return Driver.class.cast(oracleDriverClass.newInstance());
-        } catch (InstantiationException ex) {
+        }
+        catch (InstantiationException ex) {
             throw new SQLException(ex);
-        } catch (IllegalAccessException ex) {
+        }
+        catch (IllegalAccessException ex) {
             throw new SQLException(ex);
         }
     }
