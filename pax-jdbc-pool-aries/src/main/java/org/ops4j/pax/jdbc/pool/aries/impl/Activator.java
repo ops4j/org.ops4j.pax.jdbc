@@ -23,6 +23,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * Manage DataSourceFactory tracker
  */
 public class Activator implements BundleActivator {
+
     private ServiceTracker dsfTracker;
     private ServiceTracker tmTracker;
 
@@ -30,7 +31,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         dsfTracker = new DataSourceFactoryTracker(context);
         dsfTracker.open();
-        
+
         tmTracker = new TransactionManagerTracker(context);
         tmTracker.open();
     }

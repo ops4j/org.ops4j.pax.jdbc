@@ -10,15 +10,14 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-@SuppressWarnings({
-    "unchecked", "rawtypes"
-})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 final class TransactionManagerTracker implements ServiceTrackerCustomizer {
+
     private Logger LOG = LoggerFactory.getLogger(TransactionManager.class);
-    
+
     private BundleContext context;
     private ServiceTracker dsfTracker;
-    
+
     public TransactionManagerTracker(BundleContext context) {
         this.context = context;
         this.dsfTracker = null;
@@ -41,7 +40,7 @@ final class TransactionManagerTracker implements ServiceTrackerCustomizer {
     @Override
     public Object addingService(ServiceReference reference) {
         LOG.info("TransactionManager service detected. Providing support for XA DataSourceFactories");
-        TransactionManager tm = (TransactionManager)context.getService(reference);
+        TransactionManager tm = (TransactionManager) context.getService(reference);
         DataSourceFactoryTracker dsManager = new DataSourceFactoryTracker(context, tm);
         dsfTracker = new ServiceTracker(context, DataSourceFactory.class.getName(), dsManager);
         dsfTracker.open();

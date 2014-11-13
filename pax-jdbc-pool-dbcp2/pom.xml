@@ -7,7 +7,7 @@
   </parent>
   <groupId>org.ops4j.pax.jdbc</groupId>
   <artifactId>pax-jdbc-pool-dbcp2</artifactId>
-  <name>OPS4J Pax JDBC Pooling support Base on Commons-DBCP2</name>
+  <name>OPS4J Pax JDBC Pooling support using Commons-DBCP2</name>
   <packaging>bundle</packaging>
   
   <properties>

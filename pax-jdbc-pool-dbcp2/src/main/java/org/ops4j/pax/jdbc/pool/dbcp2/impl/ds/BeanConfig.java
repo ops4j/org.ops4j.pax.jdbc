@@ -23,18 +23,19 @@ import java.util.Map;
  * Configure a java bean from a given Map of properties.
  */
 public class BeanConfig {
+
     private Object bean;
     private Map<String, Method> setters;
 
     private BeanConfig(Object bean) {
         this.bean = bean;
-        this.setters = findSettersForBean(bean); 
+        this.setters = findSettersForBean(bean);
     }
 
     private static Map<String, Method> findSettersForBean(Object bean) {
         Map<String, Method> setters = new HashMap<String, Method>();
         for (Method method : bean.getClass().getMethods()) {
-            String name = method.getName(); 
+            String name = method.getName();
             if (name.startsWith("set") && method.getParameterTypes().length == 1) {
                 String key = name.substring(3, 4).toLowerCase() + name.substring(4);
                 setters.put(key, method);
@@ -42,12 +43,14 @@ public class BeanConfig {
         }
         return setters;
     }
-    
+
     /**
      * Configure a java bean from a given Map of properties.
      * 
-     * @param bean bean to populate
-     * @param props properties to set. The keys in the Map have to match the bean property names.
+     * @param bean
+     *            bean to populate
+     * @param props
+     *            properties to set. The keys in the Map have to match the bean property names.
      */
     public static void configure(Object bean, Map<String, String> props) {
         BeanConfig beanConfig = new BeanConfig(bean);
@@ -55,25 +58,31 @@ public class BeanConfig {
             beanConfig.trySetProperty(key, props.get(key));
         }
     }
-    
+
     private void trySetProperty(String key, String value) {
         try {
             Method method = setters.get(key);
             if (method == null) {
-                throw new IllegalArgumentException("No setter in " + bean.getClass() + " for property " + key);
+                throw new IllegalArgumentException("No setter in " + bean.getClass()
+                    + " for property " + key);
             }
             Class<?> paramClass = method.getParameterTypes()[0];
             if (paramClass == int.class) {
                 method.invoke(bean, new Integer(value).intValue());
-            } else if (paramClass == long.class) {
+            }
+            else if (paramClass == long.class) {
                 method.invoke(bean, new Long(value).longValue());
-            } else if (paramClass == boolean.class) {
-                method.invoke(bean, new Boolean(value).booleanValue());                
-            } else if (paramClass == String.class) {
+            }
+            else if (paramClass == boolean.class) {
+                method.invoke(bean, new Boolean(value).booleanValue());
+            }
+            else if (paramClass == String.class) {
                 method.invoke(bean, value);
             }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error setting property " + key + ":" + e.getMessage(), e);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Error setting property " + key + ":"
+                + e.getMessage(), e);
         }
     }
 

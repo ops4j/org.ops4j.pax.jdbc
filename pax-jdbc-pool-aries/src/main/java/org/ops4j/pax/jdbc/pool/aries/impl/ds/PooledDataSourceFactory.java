@@ -35,12 +35,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Creates pooled and optionally XA ready DataSources out of a non pooled DataSourceFactory.
  * 
- * XA transaction handling
- * Besides pooling this also supports to provide a DataSource that wraps a XADataSource and
- * handles the XA Resources. This kind of DataSource can then for example be used in persistence.xml
- * as jta-data-source
+ * XA transaction handling Besides pooling this also supports to provide a DataSource that wraps a
+ * XADataSource and handles the XA Resources. This kind of DataSource can then for example be used
+ * in persistence.xml as jta-data-source
  */
 public class PooledDataSourceFactory implements DataSourceFactory {
+
     private static final String POOL_PREFIX = "pool.";
     private Logger LOG = LoggerFactory.getLogger(PooledDataSourceFactory.class);
     private DataSourceFactory dsFactory;
@@ -48,17 +48,22 @@ public class PooledDataSourceFactory implements DataSourceFactory {
 
     /**
      * Initialize XA PoolingDataSourceFactory
-     * @param dsFactory non pooled DataSourceFactory we delegate to
-     * @param tm transaction manager (Only needed for XA mode)
+     * 
+     * @param dsFactory
+     *            non pooled DataSourceFactory we delegate to
+     * @param tm
+     *            transaction manager (Only needed for XA mode)
      */
     public PooledDataSourceFactory(DataSourceFactory dsFactory, AriesTransactionManager tm) {
         this.dsFactory = dsFactory;
         this.tm = tm;
     }
-    
+
     /**
      * Initialize non XA PoolingDataSourceFactory
-     * @param dsFactory non pooled DataSourceFactory we delegate to
+     * 
+     * @param dsFactory
+     *            non pooled DataSourceFactory we delegate to
      */
     public PooledDataSourceFactory(DataSourceFactory dsFactory) {
         this(dsFactory, null);
@@ -70,7 +75,8 @@ public class PooledDataSourceFactory implements DataSourceFactory {
             CommonDataSource ds;
             if (tm != null) {
                 ds = dsFactory.createXADataSource(getNonPoolProps(props));
-            } else {
+            }
+            else {
                 ds = dsFactory.createDataSource(getNonPoolProps(props));
             }
             RecoverableDataSource mds = new RecoverableDataSource();
@@ -79,25 +85,28 @@ public class PooledDataSourceFactory implements DataSourceFactory {
             BeanConfig.configure(mds, getPoolProps(props));
             mds.start();
             return mds;
-        }  catch (Throwable e) {
-           LOG.error("Error creating pooled datasource" + e.getMessage(), e);
-           if (e instanceof SQLException) {
-               throw (SQLException)e;
-           } else if (e instanceof RuntimeException){
-               throw (RuntimeException)e;
-           } else {
-               throw new RuntimeException(e.getMessage(), e);
-           }
+        }
+        catch (Throwable e) {
+            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            else if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            else {
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
     }
 
     private Map<String, String> getPoolProps(Properties props) {
         Map<String, String> poolProps = new HashMap<String, String>();
         for (Object keyO : props.keySet()) {
-            String key = (String)keyO;
+            String key = (String) keyO;
             if (key.startsWith(POOL_PREFIX)) {
                 String strippedKey = key.substring(POOL_PREFIX.length());
-                poolProps.put(strippedKey, (String)props.get(key));
+                poolProps.put(strippedKey, (String) props.get(key));
             }
         }
         return poolProps;
@@ -106,17 +115,17 @@ public class PooledDataSourceFactory implements DataSourceFactory {
     private Properties getNonPoolProps(Properties props) {
         Properties dsProps = new Properties();
         for (Object keyO : props.keySet()) {
-            String key = (String)keyO;
+            String key = (String) keyO;
             if (!key.startsWith(POOL_PREFIX)) {
                 dsProps.put(key, props.get(key));
             }
         }
         return dsProps;
     }
-    
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
         throw new SQLException("Not supported");
     }
 

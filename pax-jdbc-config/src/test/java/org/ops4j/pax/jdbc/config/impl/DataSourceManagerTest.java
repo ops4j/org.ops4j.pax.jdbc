@@ -18,6 +18,7 @@ package org.ops4j.pax.jdbc.config.impl;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.util.Dictionary;
@@ -25,7 +26,6 @@ import java.util.Hashtable;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -36,41 +36,41 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-@SuppressWarnings({
-    "rawtypes", "unchecked"
-})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourceManagerTest {
 
     private static final String TESTPID = "testpid";
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
 
     @Test
-    public void testUpdatedAndDeleted() throws ConfigurationException, InvalidSyntaxException, SQLException {
+    public void testUpdatedAndDeleted() throws ConfigurationException, InvalidSyntaxException,
+        SQLException {
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
-        
+
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
-        
+
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
-        
+
         Filter filter = FrameworkUtil.createFilter(expectedFilter);
-        expect(context.createFilter(expectedFilter)).andReturn(filter );
-        
+        expect(context.createFilter(expectedFilter)).andReturn(filter);
+
         expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
-        
-        context.addServiceListener(EasyMock.anyObject(ServiceListener.class), EasyMock.eq(expectedFilter));
+
+        context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
+            EasyMock.eq(expectedFilter));
         expectLastCall();
-        
+
         ServiceReference ref = c.createMock(ServiceReference.class);
-        ServiceReference[] refs = new ServiceReference[]{ref };
-        expect(context.getServiceReferences((String)null, expectedFilter)).andReturn(refs);
-        
+        ServiceReference[] refs = new ServiceReference[] { ref };
+        expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
+
         expect(context.getService(ref)).andReturn(dsf);
-        
+
         final DataSourcePublisher publisher = c.createMock(DataSourcePublisher.class);
         publisher.publish(dsf);
         expectLastCall();
-        
+
         expect(context.ungetService(ref)).andReturn(true);
 
         DataSourceManager dsManager = new DataSourceManager(context) {
@@ -79,7 +79,7 @@ public class DataSourceManagerTest {
             protected DataSourcePublisher createPublisher(Dictionary config) {
                 return publisher;
             }
-            
+
         };
 
         c.replay();
@@ -88,9 +88,9 @@ public class DataSourceManagerTest {
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         dsManager.updated(TESTPID, properties);
         c.verify();
-        
+
         c.reset();
-        
+
         context.removeServiceListener(EasyMock.anyObject(ServiceListener.class));
         publisher.unpublish();
         expectLastCall();
@@ -98,9 +98,10 @@ public class DataSourceManagerTest {
         dsManager.updated(TESTPID, null);
         c.verify();
     }
-    
+
     @Test
-    public void testNotEnoughInfoToFindDriver() throws ConfigurationException, InvalidSyntaxException, SQLException {
+    public void testNotEnoughInfoToFindDriver() throws ConfigurationException,
+        InvalidSyntaxException, SQLException {
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
         DataSourceManager dsManager = new DataSourceManager(context);
@@ -110,8 +111,10 @@ public class DataSourceManagerTest {
         properties.put("other", "value");
         try {
             dsManager.updated(TESTPID, properties);
-        } catch (ConfigurationException e) {
-            Assert.assertEquals("Could not determine driver to use. Specify either osgi.jdbc.driver.class or osgi.jdbc.driver.name", e.getReason());
+        }
+        catch (ConfigurationException e) {
+            assertEquals("Could not determine driver to use. "
+                + "Specify either osgi.jdbc.driver.class or osgi.jdbc.driver.name", e.getReason());
         }
         c.verify();
     }

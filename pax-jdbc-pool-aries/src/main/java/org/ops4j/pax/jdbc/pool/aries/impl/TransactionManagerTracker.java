@@ -8,19 +8,19 @@ import org.apache.aries.transaction.AriesTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({
-    "unchecked", "rawtypes"
-})
-final class TransactionManagerTracker extends ServiceTracker<AriesTransactionManager, DataSourceFactoryTracker> {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+final class TransactionManagerTracker extends
+    ServiceTracker<AriesTransactionManager, DataSourceFactoryTracker> {
 
     private Logger LOG = LoggerFactory.getLogger(TransactionManagerTracker.class);
-    
+
     public TransactionManagerTracker(BundleContext context) {
         super(context, AriesTransactionManager.class, null);
     }
 
     @Override
-    public DataSourceFactoryTracker addingService(ServiceReference<AriesTransactionManager> reference) {
+    public DataSourceFactoryTracker addingService(
+        ServiceReference<AriesTransactionManager> reference) {
         LOG.info("TransactionManager service detected. Providing support for XA DataSourceFactories");
         AriesTransactionManager tm = context.getService(reference);
         DataSourceFactoryTracker dsManager = new DataSourceFactoryTracker(context, tm);
@@ -29,11 +29,13 @@ final class TransactionManagerTracker extends ServiceTracker<AriesTransactionMan
     }
 
     @Override
-    public void modifiedService(ServiceReference<AriesTransactionManager> reference, DataSourceFactoryTracker service) {
+    public void modifiedService(ServiceReference<AriesTransactionManager> reference,
+        DataSourceFactoryTracker service) {
     }
 
     @Override
-    public void removedService(ServiceReference<AriesTransactionManager> reference, DataSourceFactoryTracker service) {
+    public void removedService(ServiceReference<AriesTransactionManager> reference,
+        DataSourceFactoryTracker service) {
         LOG.info("TransactionManager service lost. Shutting down support for XA DataSourceFactories");
         service.close();
         context.ungetService(reference);

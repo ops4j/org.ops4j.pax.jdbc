@@ -22,18 +22,19 @@ public class PooledDataSourceFactoryTest {
         IMocksControl c = EasyMock.createControl();
         DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         XADataSource xads = c.createMock(XADataSource.class);
-        EasyMock.expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(xads);
+        EasyMock.expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(
+            xads);
         TransactionManager tm = c.createMock(TransactionManager.class);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf , tm);
+        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
         c.replay();
-        
+
         Properties props = new Properties();
         DataSource ds = pdsf.createDataSource(props);
 
         c.verify();
         Assert.assertEquals(CloseablePoolingDataSource.class, ds.getClass());
     }
-    
+
     @Test
     public void testcreateDataSource() throws SQLException {
         IMocksControl c = EasyMock.createControl();
@@ -42,10 +43,10 @@ public class PooledDataSourceFactoryTest {
         EasyMock.expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(exds);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf);
         c.replay();
-        
+
         Properties props = new Properties();
         DataSource ds = pdsf.createDataSource(props);
-        
+
         c.verify();
         Assert.assertEquals(CloseablePoolingDataSource.class, ds.getClass());
     }

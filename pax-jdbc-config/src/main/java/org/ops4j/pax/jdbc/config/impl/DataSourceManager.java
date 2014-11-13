@@ -33,28 +33,31 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
- * Watches for DataSource configs in OSGi configuration admin and creates / destroys the
- * trackers for the DataSourceFactories
+ * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
+ * for the DataSourceFactories
  */
 public class DataSourceManager implements ManagedServiceFactory {
+
     private BundleContext context;
     private Map<String, ServiceTracker> trackers;
     private Map<String, DataSourcePublisher> publishers;
-            
+
     public DataSourceManager(BundleContext context) {
         this.context = context;
         this.trackers = new HashMap<String, ServiceTracker>();
         this.publishers = new HashMap<String, DataSourcePublisher>();
     }
-    
+
     private String getFilter(String driverClass, String driverName) throws ConfigurationException {
-        if (driverClass == null && driverName == null){
-            throw new ConfigurationException(null, "Could not determine driver to use. Specify either " 
-                + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + " or " + DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
+        if (driverClass == null && driverName == null) {
+            throw new ConfigurationException(null,
+                "Could not determine driver to use. Specify either "
+                    + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + " or "
+                    + DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         }
         List<String> filterList = new ArrayList<String>();
         filterList.add("objectClass=" + DataSourceFactory.class.getName());
-        if (driverClass != null)  {
+        if (driverClass != null) {
             filterList.add(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=" + driverClass);
         }
         if (driverName != null) {
@@ -63,7 +66,7 @@ public class DataSourceManager implements ManagedServiceFactory {
         String filter = andFilter(filterList);
         return filter;
     }
-    
+
     private String andFilter(List<String> filterList) {
         StringBuilder filter = new StringBuilder();
         if (filterList.size() > 1) {
@@ -87,30 +90,30 @@ public class DataSourceManager implements ManagedServiceFactory {
     @Override
     public void updated(final String pid, final Dictionary config) throws ConfigurationException {
         deleted(pid);
-        
+
         if (config == null) {
             return;
         }
-        
-        String driverClass = (String)config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
-        String driverName = (String)config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
+
+        String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
+        String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         String filter = getFilter(driverClass, driverName);
         final DataSourcePublisher publisher = createPublisher(config);
         ServiceTrackerCustomizer customizer = new ServiceTrackerCustomizer() {
-            
+
             @Override
             public void removedService(ServiceReference reference, Object service) {
                 publisher.unpublish();
             }
-            
+
             @Override
             public void modifiedService(ServiceReference reference, Object service) {
             }
-            
+
             @SuppressWarnings("unchecked")
             @Override
             public Object addingService(ServiceReference reference) {
-                DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
+                DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
                 publisher.publish(dsf);
                 context.ungetService(reference);
                 return null;
@@ -118,12 +121,13 @@ public class DataSourceManager implements ManagedServiceFactory {
 
         };
         try {
-            Filter  filterO = context.createFilter(filter);
+            Filter filterO = context.createFilter(filter);
             ServiceTracker tracker = new ServiceTracker(context, filterO, customizer);
             tracker.open();
             trackers.put(pid, tracker);
             publishers.put(pid, publisher);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch (InvalidSyntaxException e) {
         }
 
     }
@@ -132,7 +136,7 @@ public class DataSourceManager implements ManagedServiceFactory {
     protected DataSourcePublisher createPublisher(final Dictionary config) {
         return new DataSourcePublisher(context, config);
     }
-    
+
     @Override
     public void deleted(String pid) {
         ServiceTracker tracker = trackers.get(pid);

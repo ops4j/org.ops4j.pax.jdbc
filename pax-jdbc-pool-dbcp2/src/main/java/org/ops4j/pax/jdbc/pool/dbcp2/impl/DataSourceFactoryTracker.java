@@ -32,23 +32,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Watches for DataSourceFactory services and creates/destroys
- * a PooledDataSourceFactory for each existing DataSourceFactory
+ * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
+ * existing DataSourceFactory
  */
-@SuppressWarnings({
-    "unchecked", "rawtypes"
-})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
+
     private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
     private BundleContext context;
-    
+
     private Map<ServiceReference, ServiceRegistration> serviceRegs;
     private TransactionManager tm;
 
     public DataSourceFactoryTracker(BundleContext context) {
         this(context, null);
     }
-    
+
     public DataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
         this.tm = tm;
         this.context = context;
@@ -68,10 +67,11 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
 
     private ServiceRegistration createAndregisterPooledFactory(ServiceReference reference) {
         LOG.debug("Registering PooledDataSourceFactory");
-        DataSourceFactory dsf = (DataSourceFactory)context.getService(reference);
+        DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
         Dictionary props = createPropsForPoolingDataSourceFactory(reference);
-        ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf, props);
+        ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf,
+            props);
         return reg;
     }
 
@@ -91,16 +91,16 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     }
 
     private String getPoolDriverName(ServiceReference reference) {
-        String origName = (String)reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
+        String origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (origName == null) {
-            origName = (String)reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
+            origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         }
         return origName + "-pool" + ((tm != null) ? "-xa" : "");
     }
 
     @Override
     public void modifiedService(ServiceReference reference, Object service) {
-        
+
     }
 
     @Override

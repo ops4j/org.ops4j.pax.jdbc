@@ -38,34 +38,33 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({
-    "rawtypes", "unchecked"
-})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourcePublisher {
+
     private static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
-    private static String[] IGNORED_KEYS = {"service.pid", 
-                                            DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, 
-                                            DataSourceFactory.OSGI_JDBC_DRIVER_NAME,
-                                            DataSourceFactory.JDBC_DATASOURCE_NAME,
-                                            "service.factoryPid",
-                                            "felix.fileinstall.filename",
-                                            JNDI_SERVICE_NAME
-                                            };
+    private static String[] IGNORED_KEYS = {
+        "service.pid",
+        DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
+        DataSourceFactory.OSGI_JDBC_DRIVER_NAME,
+        DataSourceFactory.JDBC_DATASOURCE_NAME,
+        "service.factoryPid",
+        "felix.fileinstall.filename",
+        JNDI_SERVICE_NAME };
     private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private Set<String> ignoredKeys;
-    
+
     /**
-     * Map from pid + extension to Closeable which holds the object to close for e.g. a DataSource 
+     * Map from pid + extension to Closeable which holds the object to close for e.g. a DataSource
      */
     private Collection<Closeable> closeables;
-    
+
     /**
-     * Map from pid + extension to ServiceRegistration 
+     * Map from pid + extension to ServiceRegistration
      */
     private Collection<ServiceRegistration> serviceRegs;
     private BundleContext context;
     private Dictionary config;
-    
+
     public DataSourcePublisher(BundleContext context, final Dictionary config) {
         this.context = context;
         this.config = config;
@@ -83,12 +82,12 @@ public class DataSourcePublisher {
         publishConnectionPoolDataSource(dsf);
         publishXADataSource(dsf);
     }
-    
+
     private Properties toProperties(Dictionary dict) {
         Properties props = new Properties();
         Enumeration keys = dict.keys();
         while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
+            String key = (String) keys.nextElement();
             if (!ignoredKeys.contains(key)) {
                 props.put(key, dict.get(key));
             }
@@ -100,31 +99,37 @@ public class DataSourcePublisher {
         try {
             DataSource ds = dsf.createDataSource(toProperties(config));
             if (ds instanceof Closeable) {
-                closeables.add((Closeable)ds);
+                closeables.add((Closeable) ds);
             }
-            ServiceRegistration reg = context.registerService(DataSource.class.getName(), ds, config);
+            ServiceRegistration reg = context.registerService(DataSource.class.getName(), ds,
+                config);
             serviceRegs.add(reg);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             LOG.warn("Error creating DataSource. " + e.getMessage(), e);
         }
     }
-    
+
     private void publishConnectionPoolDataSource(DataSourceFactory dsf) {
         try {
             ConnectionPoolDataSource ds = dsf.createConnectionPoolDataSource(toProperties(config));
-            ServiceRegistration reg = context.registerService(ConnectionPoolDataSource.class.getName(), ds, config);
+            ServiceRegistration reg = context.registerService(
+                ConnectionPoolDataSource.class.getName(), ds, config);
             serviceRegs.add(reg);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             LOG.debug("Error creating ConnectionPoolDataSource. " + e.getMessage(), e);
         }
     }
-    
+
     private void publishXADataSource(DataSourceFactory dsf) {
         try {
             XADataSource ds = dsf.createXADataSource(toProperties(config));
-            ServiceRegistration reg = context.registerService(XADataSource.class.getName(), ds, config);
+            ServiceRegistration reg = context.registerService(XADataSource.class.getName(), ds,
+                config);
             serviceRegs.add(reg);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             LOG.debug("Error creating XADataSource. " + e.getMessage(), e);
         }
     }
@@ -137,12 +142,13 @@ public class DataSourcePublisher {
             safeClose(closeable);
         }
     }
-    
+
     private void safeClose(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOG.warn("Error closing " + closeable.getClass() + ": " + e.getMessage(), e);
             }
         }

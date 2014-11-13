@@ -30,14 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Watches for DataSourceFactory services and creates/destroys
- * a PooledDataSourceFactory for each existing DataSourceFactory
+ * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
+ * existing DataSourceFactory
  */
-@SuppressWarnings({
-    "unchecked", "rawtypes"
-})
-public class DataSourceFactoryTracker extends ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>>
-{
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class DataSourceFactoryTracker extends
+    ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> {
 
     private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
 
@@ -46,14 +44,15 @@ public class DataSourceFactoryTracker extends ServiceTracker<DataSourceFactory, 
     public DataSourceFactoryTracker(BundleContext context) {
         this(context, null);
     }
-    
+
     public DataSourceFactoryTracker(BundleContext context, AriesTransactionManager tm) {
         super(context, DataSourceFactory.class, null);
         this.tm = tm;
     }
 
     @Override
-    public ServiceRegistration<DataSourceFactory> addingService(ServiceReference<DataSourceFactory> reference) {
+    public ServiceRegistration<DataSourceFactory> addingService(
+        ServiceReference<DataSourceFactory> reference) {
         if (reference.getProperty("pooled") != null) {
             // Make sure we do not react on our own service for the pooled factory
             return null;
@@ -66,7 +65,8 @@ public class DataSourceFactoryTracker extends ServiceTracker<DataSourceFactory, 
         return context.registerService(DataSourceFactory.class, pdsf, props);
     }
 
-    private Properties createPropsForPoolingDataSourceFactory(ServiceReference<DataSourceFactory> reference) {
+    private Properties createPropsForPoolingDataSourceFactory(
+        ServiceReference<DataSourceFactory> reference) {
         Properties props = new Properties();
         for (String key : reference.getPropertyKeys()) {
             if (!"service.id".equals(key)) {
@@ -82,20 +82,22 @@ public class DataSourceFactoryTracker extends ServiceTracker<DataSourceFactory, 
     }
 
     private String getPoolDriverName(ServiceReference reference) {
-        String origName = (String)reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
+        String origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (origName == null) {
-            origName = (String)reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
+            origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         }
         return origName + "-pool" + ((tm != null) ? "-xa" : "");
     }
 
     @Override
-    public void modifiedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration<DataSourceFactory> service) {
-        
+    public void modifiedService(ServiceReference<DataSourceFactory> reference,
+        ServiceRegistration<DataSourceFactory> service) {
+
     }
 
     @Override
-    public void removedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration<DataSourceFactory> service) {
+    public void removedService(ServiceReference<DataSourceFactory> reference,
+        ServiceRegistration<DataSourceFactory> service) {
         LOG.warn("Unregistering PooledDataSourceFactory");
         service.unregister();
         context.ungetService(reference);
