@@ -42,12 +42,14 @@ import org.slf4j.LoggerFactory;
     "rawtypes", "unchecked"
 })
 public class DataSourcePublisher {
+    private static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
     private static String[] IGNORED_KEYS = {"service.pid", 
                                             DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, 
                                             DataSourceFactory.OSGI_JDBC_DRIVER_NAME,
+                                            DataSourceFactory.JDBC_DATASOURCE_NAME,
                                             "service.factoryPid",
                                             "felix.fileinstall.filename",
-                                            "osgi.jndi.service.name"
+                                            JNDI_SERVICE_NAME
                                             };
     private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private Set<String> ignoredKeys;
@@ -67,6 +69,10 @@ public class DataSourcePublisher {
     public DataSourcePublisher(BundleContext context, final Dictionary config) {
         this.context = context;
         this.config = config;
+        Object dsName = this.config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
+        if (dsName != null && this.config.get(JNDI_SERVICE_NAME) == null) {
+            this.config.put(JNDI_SERVICE_NAME, dsName);
+        }
         this.ignoredKeys = new HashSet<String>(Arrays.asList(IGNORED_KEYS));
         this.closeables = new ArrayList<Closeable>();
         this.serviceRegs = new ArrayList<ServiceRegistration>();

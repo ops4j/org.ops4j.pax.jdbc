@@ -17,9 +17,11 @@
 package org.ops4j.pax.jdbc.config.impl;
 
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.util.Dictionary;
@@ -30,6 +32,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Test;
@@ -44,42 +47,58 @@ import org.osgi.service.jdbc.DataSourceFactory;
 })
 public class DataSourcePublisherTest {
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
-
+    
     @Test
     public void testPublishedAndUnpublished() throws ConfigurationException, InvalidSyntaxException, SQLException {
+        Capture<Properties> capturedDsProps = new Capture<Properties>();
+        Capture<Dictionary> capturedServiceProps = new Capture<Dictionary>();
+        
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         
         // Expect that a DataSource is created using the DataSourceFactory
         DataSource ds = c.createMock(DataSource.class);
-        expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
+        
+        expect(dsf.createDataSource(capture(capturedDsProps))).andReturn(ds);
         
         ConnectionPoolDataSource cpds = c.createMock(ConnectionPoolDataSource.class);
-        expect(dsf.createConnectionPoolDataSource(EasyMock.anyObject(Properties.class))).andReturn(cpds);
+        expect(dsf.createConnectionPoolDataSource(anyObject(Properties.class))).andReturn(cpds);
 
         XADataSource xads = c.createMock(XADataSource.class);
-        expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(xads);
+        expect(dsf.createXADataSource(anyObject(Properties.class))).andReturn(xads);
 
         // Expect DataSource is registered as a service
         ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
         ServiceRegistration cpdsSreg = c.createMock(ServiceRegistration.class);
         ServiceRegistration xadsSreg = c.createMock(ServiceRegistration.class);
-        expect(context.registerService(eq(DataSource.class.getName()), eq(ds), anyObject(Dictionary.class))).andReturn(dsSreg);
+        
+        expect(context.registerService(eq(DataSource.class.getName()), eq(ds), capture(capturedServiceProps ))).andReturn(dsSreg);
         expect(context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds), anyObject(Dictionary.class))).andReturn(cpdsSreg);
         expect(context.registerService(eq(XADataSource.class.getName()), eq(xads), anyObject(Dictionary.class))).andReturn(xadsSreg);
 
+        // create and publish the datasource
         c.replay();
-        
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
+        properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, "myDsName");
         DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
         publisher.publish(dsf);
         c.verify();
         
+        // Check that correct properties were sent to DataSourceFactory
+        Properties dsProps = capturedDsProps.getValue();
+        assertEquals("mydbname", dsProps.get(DataSourceFactory.JDBC_DATABASE_NAME));
+        
+        // Check that correct properties were set on the DataSource service
+        Dictionary serviceProps = capturedServiceProps.getValue();
+        assertEquals("myDsName", serviceProps.get(DataSourceFactory.JDBC_DATASOURCE_NAME));
+        assertEquals("myDsName", serviceProps.get("osgi.jndi.service.name"));
+        
         c.reset();
         
+        // Check unpublish unregisters the services
         dsSreg.unregister();
         expectLastCall();
         cpdsSreg.unregister();

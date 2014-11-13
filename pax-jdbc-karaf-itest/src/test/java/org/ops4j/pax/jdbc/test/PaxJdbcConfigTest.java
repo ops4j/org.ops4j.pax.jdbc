@@ -32,7 +32,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class PaxJdbcConfigTest extends AbstractJdbcTest {
-    private static final String DS_CONFIG = "etc/org.ops4j.datasource-h2.cfg";
+    private static final String DS_CONFIG = "etc/org.ops4j.datasource-test2.cfg";
 
     @Inject
     @Filter("(osgi.jndi.service.name=test2)")
