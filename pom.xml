@@ -26,7 +26,7 @@
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.1.0</pax.exam.version>
         <pax.swissbox.version>1.8.0</pax.swissbox.version>
-        <pax.url.version>1.6.0</pax.url.version>
+        <pax.url.version>2.2.0</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.7.15-M1</sqlite.version>
     </properties>
