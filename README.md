@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current release is **Pax JDBC 0.3.0**.
+The current release is **Pax JDBC 0.4.0**.
 
 ## Issue Tracking
 
