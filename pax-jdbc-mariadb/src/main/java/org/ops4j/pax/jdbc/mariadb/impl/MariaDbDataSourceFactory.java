@@ -28,82 +28,66 @@ import javax.sql.XADataSource;
 import org.mariadb.jdbc.MySQLDataSource;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-public class MariaDbDataSourceFactory implements DataSourceFactory
-{
+public class MariaDbDataSourceFactory implements DataSourceFactory {
+
     @Override
-    public DataSource createDataSource( Properties props ) throws SQLException
-    {
+    public DataSource createDataSource(Properties props) throws SQLException {
         MySQLDataSource ds = new MySQLDataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
-    private void setProperties( MySQLDataSource ds, Properties properties )
-        throws SQLException
-    {
+    private void setProperties(MySQLDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
-        String url = (String) props.remove( DataSourceFactory.JDBC_URL );
-        if ( url != null )
-        {
-            ds.setUrl( url );
+        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
+        if (url != null) {
+            ds.setUrl(url);
         }
-        String databaseName = (String) props
-            .remove( DataSourceFactory.JDBC_DATABASE_NAME );
-        if( databaseName == null && url == null )
-        {
-            throw new SQLException( "missing required property "
-                    + DataSourceFactory.JDBC_DATABASE_NAME );
+        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
+        if (databaseName == null && url == null) {
+            throw new SQLException("missing required property "
+                + DataSourceFactory.JDBC_DATABASE_NAME);
         }
-        ds.setDatabaseName( databaseName );
+        ds.setDatabaseName(databaseName);
 
-        String password = (String) props
-            .remove( DataSourceFactory.JDBC_PASSWORD );
-        ds.setPassword( password );
+        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        ds.setPassword(password);
 
-        String portNumber = (String) props
-            .remove( DataSourceFactory.JDBC_PORT_NUMBER );
-        if( portNumber != null )
-        {
-            ds.setPortNumber( Integer.parseInt( portNumber ) );
+        String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
+        if (portNumber != null) {
+            ds.setPortNumber(Integer.parseInt(portNumber));
         }
 
-        String serverName = (String) props
-            .remove( DataSourceFactory.JDBC_SERVER_NAME );
-        if ( serverName != null )
-        {
-            ds.setServerName( serverName );
+        String serverName = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
+        if (serverName != null) {
+            ds.setServerName(serverName);
         }
 
-        String user = (String) props.remove( DataSourceFactory.JDBC_USER );
-        ds.setUser( user );
+        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
+        ds.setUser(user);
 
-        if( !props.isEmpty() )
-        {
-            throw new SQLException( "cannot set properties " + props.keySet() );
+        if (!props.isEmpty()) {
+            throw new SQLException("cannot set properties " + props.keySet());
         }
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(
-            Properties props ) throws SQLException
-    {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
         MySQLDataSource ds = new MySQLDataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
     @Override
-    public XADataSource createXADataSource( Properties props )
-        throws SQLException
-    {
+    public XADataSource createXADataSource(Properties props) throws SQLException {
         MySQLDataSource ds = new MySQLDataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
     @Override
-    public Driver createDriver( Properties props ) throws SQLException
-    {
+    public Driver createDriver(Properties props) throws SQLException {
         org.mariadb.jdbc.Driver driver = new org.mariadb.jdbc.Driver();
         return driver;
     }

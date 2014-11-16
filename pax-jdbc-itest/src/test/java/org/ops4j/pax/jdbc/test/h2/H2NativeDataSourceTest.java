@@ -36,35 +36,31 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
-@RunWith( PaxExam.class )
-public class H2NativeDataSourceTest
-{
+@RunWith(PaxExam.class)
+public class H2NativeDataSourceTest {
+
     @Inject
-    @Filter( "(osgi.jdbc.driver.name=h2)" )
+    @Filter("(osgi.jdbc.driver.name=h2)")
     private DataSourceFactory dsf;
 
     @Configuration
-    public Option[] config()
-    {
-        return options(
-            regressionDefaults(),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-h2" ).versionAsInProject(),
-            mavenBundle( "com.h2database", "h2" ).versionAsInProject(),
-            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
+    public Option[] config() {
+        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-h2")
+            .versionAsInProject(), mavenBundle("com.h2database", "h2").versionAsInProject(),
+            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
     }
 
     @Test
-    public void createDataSourceAndConnection() throws SQLException
-    {
-        assertNotNull( dsf );
+    public void createDataSourceAndConnection() throws SQLException {
+        assertNotNull(dsf);
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_DATABASE_NAME, "mem:pax" );
-        props.setProperty( DataSourceFactory.JDBC_USER, "pax" );
-        props.setProperty( DataSourceFactory.JDBC_PASSWORD, "pax" );
-        DataSource dataSource = dsf.createDataSource( props );
-        assertNotNull( dataSource );
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "mem:pax");
+        props.setProperty(DataSourceFactory.JDBC_USER, "pax");
+        props.setProperty(DataSourceFactory.JDBC_PASSWORD, "pax");
+        DataSource dataSource = dsf.createDataSource(props);
+        assertNotNull(dataSource);
         Connection connection = dataSource.getConnection();
-        assertNotNull( connection );
+        assertNotNull(connection);
         connection.close();
     }
 }

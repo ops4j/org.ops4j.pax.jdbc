@@ -27,36 +27,33 @@ import javax.sql.XADataSource;
 
 import org.osgi.service.jdbc.DataSourceFactory;
 
-public class DriverDataSourceFactory implements DataSourceFactory
-{
+public class DriverDataSourceFactory implements DataSourceFactory {
+
     private Driver driver;
-    
-    public DriverDataSourceFactory(Driver driver)
-    {
+
+    public DriverDataSourceFactory(Driver driver) {
         this.driver = driver;
     }
-    
-    public DataSource createDataSource( Properties props ) throws SQLException
-    {
-        String url = props.getProperty( JDBC_URL );
-        String user = props.getProperty( JDBC_USER );
-        String password = props.getProperty( JDBC_PASSWORD );
-        return new DriverDataSource( driver, url, user, password );
+
+    public DataSource createDataSource(Properties props) throws SQLException {
+        String url = props.getProperty(JDBC_URL);
+        String user = props.getProperty(JDBC_USER);
+        String password = props.getProperty(JDBC_PASSWORD);
+        return new DriverDataSource(driver, url, user, password);
     }
 
-    public ConnectionPoolDataSource createConnectionPoolDataSource( Properties props )
-        throws SQLException
-    {
-        throw new SQLException( "not supported - use a driver adapter org.ops4j.pax.jdbc.<subprotocol>" );
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
+        throw new SQLException(
+            "not supported - use a driver adapter org.ops4j.pax.jdbc.<subprotocol>");
     }
 
-    public XADataSource createXADataSource( Properties props ) throws SQLException
-    {
-        throw new SQLException( "not supported - use a driver adapter org.ops4j.pax.jdbc.<subprotocol>" );
+    public XADataSource createXADataSource(Properties props) throws SQLException {
+        throw new SQLException(
+            "not supported - use a driver adapter org.ops4j.pax.jdbc.<subprotocol>");
     }
 
-    public Driver createDriver( Properties props ) throws SQLException
-    {
+    public Driver createDriver(Properties props) throws SQLException {
         return driver;
     }
 }

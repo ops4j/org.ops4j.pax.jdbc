@@ -26,12 +26,13 @@ import org.osgi.service.jdbc.DataSourceFactory;
 /**
  * Tests the automatic creation of pooled and non pooled DataSource from config admin configs
  * 
- * We assume that h2 publishes a DataSourceFactory with "osgi.jdbc.driver.name=h2".
- * We let pax-jdbc-config create a DataSource for these DataSourceFactories by supplying a config. 
+ * We assume that h2 publishes a DataSourceFactory with "osgi.jdbc.driver.name=h2". We let
+ * pax-jdbc-config create a DataSource for these DataSourceFactories by supplying a config.
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class PaxJdbcConfigTest extends AbstractJdbcTest {
+
     private static final String DS_CONFIG = "etc/org.ops4j.datasource-test2.cfg";
 
     @Inject
@@ -40,26 +41,19 @@ public class PaxJdbcConfigTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        MavenUrlReference paxJdbcRepo = maven()
-            .groupId("org.ops4j.pax.jdbc")
-            .artifactId("pax-jdbc-features")
-            .classifier("features")
-            .type("xml")
+        MavenUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc")
+            .artifactId("pax-jdbc-features").classifier("features").type("xml")
             .versionAsInProject();
-        return new Option[]{
-                // KarafDistributionOption.debugConfiguration("5005", true),
-                karafDistributionConfiguration()
-                        .frameworkUrl(karafUrl)
-                        .unpackDirectory(new File("target/exam"))
-                        .useDeployFolder(false),
-                keepRuntimeFolder(),
-                features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-config"),
-                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "h2"),
-                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_DATABASE_NAME, "test2"),
-                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_USER, "sa"),
-                editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_PASSWORD, ""),
-                editConfigurationFilePut(DS_CONFIG, "osgi.jndi.service.name", "test2"),
-        };
+        return new Option[] {
+            // KarafDistributionOption.debugConfiguration("5005", true),
+            karafDistributionConfiguration().frameworkUrl(karafUrl)
+                .unpackDirectory(new File("target/exam")).useDeployFolder(false),
+            keepRuntimeFolder(), features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-config"),
+            editConfigurationFilePut(DS_CONFIG, DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "h2"),
+            editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_DATABASE_NAME, "test2"),
+            editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_USER, "sa"),
+            editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_PASSWORD, ""),
+            editConfigurationFilePut(DS_CONFIG, "osgi.jndi.service.name", "test2"), };
     }
 
     @Test

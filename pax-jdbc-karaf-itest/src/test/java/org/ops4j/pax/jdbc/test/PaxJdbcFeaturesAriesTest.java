@@ -44,22 +44,17 @@ public class PaxJdbcFeaturesAriesTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        MavenUrlReference paxJdbcRepo = maven()
-            .groupId("org.ops4j.pax.jdbc")
-            .artifactId("pax-jdbc-features")
-            .classifier("features")
-            .type("xml")
+        MavenUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc")
+            .artifactId("pax-jdbc-features").classifier("features").type("xml")
             .versionAsInProject();
-        return new Option[]{
-                // KarafDistributionOption.debugConfiguration("5005", true),
-                karafDistributionConfiguration()
-                        .frameworkUrl(karafUrl)
-                        .unpackDirectory(new File("target/exam"))
-                        .useDeployFolder(false),
-                keepRuntimeFolder(),
-                KarafDistributionOption.features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-derby", "pax-jdbc-sqlite",
-                        "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool-aries"),
-        };
+        return new Option[] {
+            // KarafDistributionOption.debugConfiguration("5005", true),
+            karafDistributionConfiguration().frameworkUrl(karafUrl)
+                .unpackDirectory(new File("target/exam")).useDeployFolder(false),
+            keepRuntimeFolder(),
+            KarafDistributionOption.features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-derby",
+                "pax-jdbc-sqlite", "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql",
+                "pax-jdbc-pool-aries"), };
     }
 
     @Test
@@ -102,7 +97,8 @@ public class PaxJdbcFeaturesAriesTest extends AbstractJdbcTest {
         DataSource dataSource = createDataSource();
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
-        statement.execute("CREATE TABLE PUBLIC.T1 (col1 INTEGER NOT NULL, col2 CHAR(25), PRIMARY KEY (COL1)) ");
+        statement
+            .execute("CREATE TABLE PUBLIC.T1 (col1 INTEGER NOT NULL, col2 CHAR(25), PRIMARY KEY (COL1)) ");
         statement.executeUpdate("insert into t1 (col1, col2) values(101, 'pax-jdbc-h2')");
         ResultSet result = statement.executeQuery("select col1 from t1 where col2 = 'pax-jdbc-h2'");
 
@@ -122,7 +118,7 @@ public class PaxJdbcFeaturesAriesTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "");
         return h2DataSourceFactory.createDataSource(props);
     }
-    
+
     private void assertFeatureInstalled(String featureName) throws Exception {
         assertTrue(featuresService.isInstalled(featuresService.getFeature(featureName)));
     }

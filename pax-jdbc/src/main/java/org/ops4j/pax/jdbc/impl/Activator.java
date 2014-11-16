@@ -26,26 +26,26 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activator implements BundleActivator
-{
-    private static Logger log = LoggerFactory.getLogger( Activator.class );
+public class Activator implements BundleActivator {
+
+    private static Logger log = LoggerFactory.getLogger(Activator.class);
     public static final String BUNDLE_NAME = "org.ops4j.pax.jdbc";
-    
+
     private BundleWatcher<URL> watcher;
 
-    @SuppressWarnings( "unchecked" )
-    public void start( BundleContext bc ) throws Exception
-    {
+    @Override
+    @SuppressWarnings("unchecked")
+    public void start(BundleContext bc) throws Exception {
         log.debug("starting bundle {}", BUNDLE_NAME);
-        BundleURLScanner scanner =
-            new BundleURLScanner( "META-INF/services", "java.sql.Driver", false );
+        BundleURLScanner scanner = new BundleURLScanner("META-INF/services", "java.sql.Driver",
+            false);
         JdbcDriverObserver observer = new JdbcDriverObserver();
-        watcher = new BundleWatcher<URL>( bc, scanner, observer );
+        watcher = new BundleWatcher<URL>(bc, scanner, observer);
         watcher.start();
     }
 
-    public void stop( BundleContext context ) throws Exception
-    {
+    @Override
+    public void stop(BundleContext context) throws Exception {
         log.debug("stopping bundle {}", BUNDLE_NAME);
         watcher.stop();
     }

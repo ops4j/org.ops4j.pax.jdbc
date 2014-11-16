@@ -30,37 +30,31 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.sqlite.JDBC;
 import org.sqlite.SQLiteDataSource;
 
-public class SqliteDataSourceFactory implements DataSourceFactory
-{
+public class SqliteDataSourceFactory implements DataSourceFactory {
 
     @Override
-    public DataSource createDataSource( Properties props ) throws SQLException
-    {
+    public DataSource createDataSource(Properties props) throws SQLException {
         SQLiteDataSource dataSource = new SQLiteDataSource();
-        String url = props.getProperty( JDBC_URL );
-        if( url == null )
-            dataSource.setUrl( "jdbc:sqlite:" + props.getProperty( JDBC_DATABASE_NAME ) );
-        else
-            dataSource.setUrl( url );
+        String url = props.getProperty(JDBC_URL);
+        if (url == null)
+            dataSource.setUrl("jdbc:sqlite:" + props.getProperty(JDBC_DATABASE_NAME));
+        else dataSource.setUrl(url);
         return dataSource;
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource( Properties props )
-        throws SQLException
-    {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XADataSource createXADataSource( Properties props ) throws SQLException
-    {
+    public XADataSource createXADataSource(Properties props) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Driver createDriver( Properties props ) throws SQLException
-    {
+    public Driver createDriver(Properties props) throws SQLException {
         JDBC driver = new JDBC();
         return driver;
     }

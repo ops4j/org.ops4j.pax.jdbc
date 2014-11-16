@@ -32,60 +32,53 @@ import org.apache.derby.jdbc.EmbeddedXADataSource;
 import org.apache.derby.jdbc.ReferenceableDataSource;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-public class DerbyDataSourceFactory implements DataSourceFactory
-{
+public class DerbyDataSourceFactory implements DataSourceFactory {
 
     @Override
-    public DataSource createDataSource( Properties props ) throws SQLException
-    {
+    public DataSource createDataSource(Properties props) throws SQLException {
         EmbeddedDataSource40 ds = new EmbeddedDataSource40();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
-    private void setProperties( ReferenceableDataSource ds, Properties properties ) throws SQLException
-    {
+    private void setProperties(ReferenceableDataSource ds, Properties properties)
+        throws SQLException {
         Properties props = (Properties) properties.clone();
-        String databaseName = (String) props.remove( DataSourceFactory.JDBC_DATABASE_NAME );
-        if( databaseName == null )
-        {
-            throw new SQLException( "missing required property "
-                    + DataSourceFactory.JDBC_DATABASE_NAME );
+        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
+        if (databaseName == null) {
+            throw new SQLException("missing required property "
+                + DataSourceFactory.JDBC_DATABASE_NAME);
         }
-        ds.setDatabaseName( databaseName );
+        ds.setDatabaseName(databaseName);
 
-        String password = (String) props.remove( DataSourceFactory.JDBC_PASSWORD );
-        ds.setPassword( password );
+        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        ds.setPassword(password);
 
-        String user = (String) props.remove( DataSourceFactory.JDBC_USER );
-        ds.setUser( user );
+        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
+        ds.setUser(user);
 
-        if( !props.isEmpty() )
-        {
-            throw new SQLException( "cannot set properties " + props.keySet() );
+        if (!props.isEmpty()) {
+            throw new SQLException("cannot set properties " + props.keySet());
         }
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource( Properties props )
-        throws SQLException
-    {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
         EmbeddedConnectionPoolDataSource40 ds = new EmbeddedConnectionPoolDataSource40();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
     @Override
-    public XADataSource createXADataSource( Properties props ) throws SQLException
-    {
+    public XADataSource createXADataSource(Properties props) throws SQLException {
         EmbeddedXADataSource ds = new EmbeddedXADataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
     @Override
-    public Driver createDriver( Properties props ) throws SQLException
-    {
+    public Driver createDriver(Properties props) throws SQLException {
         EmbeddedDriver driver = new EmbeddedDriver();
         return driver;
     }

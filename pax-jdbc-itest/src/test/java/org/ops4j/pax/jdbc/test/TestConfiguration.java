@@ -36,115 +36,107 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default configuration for native container regression tests, overriding the default test
- * system configuration.
+ * Default configuration for native container regression tests, overriding the default test system
+ * configuration.
  * <p>
- * We do not need the Remote Bundle Context for Native Container, and we prefer unified logging
- * with logback.
+ * We do not need the Remote Bundle Context for Native Container, and we prefer unified logging with
+ * logback.
  * <p>
- * To override the standard options, you need to set the configuration property {@code pax.exam.system = default}.
+ * To override the standard options, you need to set the configuration property
+ * {@code pax.exam.system = default}.
  * 
  * @author Harald Wellmann
  */
-public class TestConfiguration
-{
-    private static final Logger LOG = LoggerFactory.getLogger( TestConfiguration.class ); 
-    
+public class TestConfiguration {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestConfiguration.class);
+
     private static boolean equinoxConsole = true;
-    
-    public static Option regressionDefaults()
-    {        
+
+    public static Option regressionDefaults() {
         return composite(
-            
-            
+
             // add SLF4J and logback bundles
-            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel( START_LEVEL_SYSTEM_BUNDLES ),
-            
+            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
+            mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
+            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
+
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
-            systemProperty("logback.configurationFile").value( "file:" + PathUtils.getBaseDir() +
-            		"/src/test/resources/logback.xml" ),            		
-            when(equinoxConsole).useOptions(systemProperty("osgi.console").value( "6666" )),
-            junitBundles()
-            );
+            systemProperty("logback.configurationFile").value(
+                "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
+            when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
+            junitBundles());
     }
-    
+
     public static boolean isPostgresqlAvailable() {
-        ServerConfiguration config = new ServerConfiguration( "postgresql" );
+        ServerConfiguration config = new ServerConfiguration("postgresql");
         config.getUrl();
-        
+
         String serverName = config.getServerName();
         String portNumber = config.getPortNumber();
-        int port = (portNumber == null) ? 5432 : Integer.parseInt( portNumber ); 
-        
-        boolean success = checkSocketConnection( serverName, port );
-        if (!success)
-        {
+        int port = (portNumber == null) ? 5432 : Integer.parseInt(portNumber);
+
+        boolean success = checkSocketConnection(serverName, port);
+        if (!success) {
             LOG.warn("cannot connect to PostgreSQL at {}:{}, ignoring test", serverName, port);
         }
         return success;
     }
 
     public static boolean isMysqlAvailable() {
-        ServerConfiguration config = new ServerConfiguration( "mysql" );
+        ServerConfiguration config = new ServerConfiguration("mysql");
         config.getUrl();
-        
+
         String serverName = config.getServerName();
         String portNumber = config.getPortNumber();
-        int port = (portNumber == null) ? 3306 : Integer.parseInt( portNumber ); 
-        
-        boolean success = checkSocketConnection( serverName, port );
-        if (!success)
-        {
+        int port = (portNumber == null) ? 3306 : Integer.parseInt(portNumber);
+
+        boolean success = checkSocketConnection(serverName, port);
+        if (!success) {
             LOG.warn("cannot connect to MySQL at {}:{}, ignoring test", serverName, port);
         }
         return success;
     }
 
     public static boolean isMariaDbAvailable() {
-        ServerConfiguration config = new ServerConfiguration( "mariadb" );
+        ServerConfiguration config = new ServerConfiguration("mariadb");
         config.getUrl();
-        
+
         String serverName = config.getServerName();
         String portNumber = config.getPortNumber();
-        int port = (portNumber == null) ? 3306 : Integer.parseInt( portNumber ); 
-        
-        boolean success = checkSocketConnection( serverName, port );
-        if (!success)
-        {
+        int port = (portNumber == null) ? 3306 : Integer.parseInt(portNumber);
+
+        boolean success = checkSocketConnection(serverName, port);
+        if (!success) {
             LOG.warn("cannot connect to MariaDB at {}:{}, ignoring test", serverName, port);
         }
         return success;
     }
 
-    public static boolean checkSocketConnection( String serverName, int port )
-    {
+    public static boolean checkSocketConnection(String serverName, int port) {
         Socket socket = new Socket();
-        try
-        {
-            InetSocketAddress endpoint = new InetSocketAddress( serverName, port );
-            socket.connect( endpoint, (int) TimeUnit.SECONDS.toMillis( 5 ) );
+        try {
+            InetSocketAddress endpoint = new InetSocketAddress(serverName, port);
+            socket.connect(endpoint, (int) TimeUnit.SECONDS.toMillis(5));
             return true;
         }
-        catch ( UnknownHostException exc )
-        {
+        catch (UnknownHostException exc) {
             return false;
         }
-        catch ( IOException exc )
-        {
+        catch (IOException exc) {
             return false;
         }
         finally {
             if (socket != null) {
-                try
-                {
+                try {
                     socket.close();
                 }
-                catch ( IOException e )
-                {
-                    
+                catch (IOException e) {
+
                 }
             }
         }

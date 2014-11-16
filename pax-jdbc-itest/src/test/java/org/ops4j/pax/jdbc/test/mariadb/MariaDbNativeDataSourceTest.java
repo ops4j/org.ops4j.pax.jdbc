@@ -44,28 +44,26 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith(PaxExam.class)
 public class MariaDbNativeDataSourceTest {
-    
+
     @Rule
     public MariaDbRule mysql = new MariaDbRule();
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Inject
-    @Filter(value = "(osgi.jdbc.driver.name=mariadb)", timeout=1000000)
+    @Filter(value = "(osgi.jdbc.driver.name=mariadb)", timeout = 1000000)
     private DataSourceFactory dsf;
-    
-    private ServerConfiguration dbConfig = new ServerConfiguration( "mariadb" );
+
+    private ServerConfiguration dbConfig = new ServerConfiguration("mariadb");
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(),
-                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-mariadb")
-                        .versionAsInProject(),
-                mavenBundle ("org.jumpmind.symmetric.jdbc", "mariadb-java-client", "1.1.1" ),
-                        //.versionAsInProject(),
-                mavenBundle("org.osgi", "org.osgi.enterprise")
-                        .versionAsInProject());
+        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-mariadb")
+            .versionAsInProject(),
+            mavenBundle("org.jumpmind.symmetric.jdbc", "mariadb-java-client", "1.1.1"),
+            // .versionAsInProject(),
+            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
     }
 
     @Test
@@ -86,8 +84,8 @@ public class MariaDbNativeDataSourceTest {
 
     @Test
     public void connectWithDefaultPort() throws SQLException {
-        assumeThat( dbConfig.getPortNumber(), is( "3306") );
-        
+        assumeThat(dbConfig.getPortNumber(), is("3306"));
+
         assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
@@ -103,9 +101,9 @@ public class MariaDbNativeDataSourceTest {
 
     @Test
     public void connectWithDefaultHostAndPort() throws SQLException {
-        assumeThat( dbConfig.getPortNumber(), is( "3306") );
-        assumeThat( dbConfig.getServerName(), is( "localhost") );
-        
+        assumeThat(dbConfig.getPortNumber(), is("3306"));
+        assumeThat(dbConfig.getServerName(), is("localhost"));
+
         assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
@@ -128,10 +126,10 @@ public class MariaDbNativeDataSourceTest {
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         DataSource dataSource = dsf.createDataSource(props);
         assertNotNull(dataSource);
-        
-        thrown.expect( SQLException.class );
-        thrown.expectMessage( "Access denied" );
-        thrown.expectMessage( "using password: NO" );
+
+        thrown.expect(SQLException.class);
+        thrown.expectMessage("Access denied");
+        thrown.expectMessage("using password: NO");
         dataSource.getConnection();
     }
 
@@ -146,10 +144,10 @@ public class MariaDbNativeDataSourceTest {
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
         DataSource dataSource = dsf.createDataSource(props);
         assertNotNull(dataSource);
-        
-        thrown.expect( SQLException.class );
-        thrown.expectMessage( "Access denied" );
-        thrown.expectMessage( "using password: YES" );
+
+        thrown.expect(SQLException.class);
+        thrown.expectMessage("Access denied");
+        thrown.expectMessage("using password: YES");
         dataSource.getConnection();
     }
 }

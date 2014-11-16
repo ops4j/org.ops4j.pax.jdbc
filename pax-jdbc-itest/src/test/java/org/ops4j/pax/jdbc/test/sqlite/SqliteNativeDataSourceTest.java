@@ -39,34 +39,30 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-@RunWith( PaxExam.class )
-public class SqliteNativeDataSourceTest
-{
+@RunWith(PaxExam.class)
+public class SqliteNativeDataSourceTest {
+
     @Inject
-    @Filter( value = "(osgi.jdbc.driver.name=sqlite)", timeout = 20000000 )
+    @Filter(value = "(osgi.jdbc.driver.name=sqlite)", timeout = 20000000)
     private DataSourceFactory dsf;
 
     @Configuration
-    public Option[] config()
-    {
-        return options(
-            regressionDefaults(),
-            systemProperty( "osgi.console" ).value( "6666" ),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc-sqlite" ).versionAsInProject(),
-            wrappedBundle( mavenBundle( "org.xerial", "sqlite-jdbc" ).versionAsInProject() ),
-            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
+    public Option[] config() {
+        return options(regressionDefaults(), systemProperty("osgi.console").value("6666"),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite").versionAsInProject(),
+            wrappedBundle(mavenBundle("org.xerial", "sqlite-jdbc").versionAsInProject()),
+            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
     }
 
     @Test
-    public void createDataSourceAndConnection() throws SQLException
-    {
-        assertNotNull( dsf );
+    public void createDataSourceAndConnection() throws SQLException {
+        assertNotNull(dsf);
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_DATABASE_NAME, ":memory:" );
-        DataSource dataSource = dsf.createDataSource( props );
-        assertNotNull( dataSource );
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, ":memory:");
+        DataSource dataSource = dsf.createDataSource(props);
+        assertNotNull(dataSource);
         Connection connection = dataSource.getConnection();
-        assertNotNull( connection );
+        assertNotNull(connection);
         connection.close();
     }
 }

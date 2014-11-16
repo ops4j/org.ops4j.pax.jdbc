@@ -22,8 +22,8 @@ import java.util.Properties;
 
 import org.ops4j.lang.Ops4jException;
 
-public class ServerConfiguration
-{
+public class ServerConfiguration {
+
     private String subprotocol;
 
     private String serverName;
@@ -32,89 +32,77 @@ public class ServerConfiguration
     private String user;
     private String password;
 
-    public ServerConfiguration( String subprotocol )
-    {
+    public ServerConfiguration(String subprotocol) {
         this.subprotocol = subprotocol;
         load();
     }
 
-    private void load()
-    {
-        try
-        {
+    private void load() {
+        try {
             Properties props = new Properties();
-            props.load( getClass().getResourceAsStream( "/jdbc.properties" ) );
-            serverName = props.getProperty( key( "serverName" ), "localhost" );
-            portNumber = props.getProperty( key( "portNumber" ) );
-            databaseName = props.getProperty( key( "databaseName" ) );
-            user = props.getProperty( key( "user" ) );
-            password = props.getProperty( key( "password" ) );
+            props.load(getClass().getResourceAsStream("/jdbc.properties"));
+            serverName = props.getProperty(key("serverName"), "localhost");
+            portNumber = props.getProperty(key("portNumber"));
+            databaseName = props.getProperty(key("databaseName"));
+            user = props.getProperty(key("user"));
+            password = props.getProperty(key("password"));
 
         }
-        catch ( IOException exc )
-        {
-            throw new Ops4jException( exc );
+        catch (IOException exc) {
+            throw new Ops4jException(exc);
         }
     }
 
-    private String key( String suffix )
-    {
+    private String key(String suffix) {
         return String.format("pax.jdbc.%s.%s", subprotocol, suffix);
     }
 
     /**
      * @return the subprotocol
      */
-    public String getSubprotocol()
-    {
+    public String getSubprotocol() {
         return subprotocol;
     }
 
     /**
      * @return the serverName
      */
-    public String getServerName()
-    {
+    public String getServerName() {
         return serverName;
     }
 
     /**
      * @return the portNumber
      */
-    public String getPortNumber()
-    {
+    public String getPortNumber() {
         return portNumber;
     }
 
     /**
      * @return the databaseName
      */
-    public String getDatabaseName()
-    {
+    public String getDatabaseName() {
         return databaseName;
     }
 
     /**
      * @return the user
      */
-    public String getUser()
-    {
+    public String getUser() {
         return user;
     }
 
     /**
      * @return the password
      */
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
-    
+
     /**
      * @return JDBC URL for the configured database (not including user and password)
      */
-    public String getUrl()
-    {
+    public String getUrl() {
         String optPort = (portNumber == null) ? "" : (":" + portNumber);
         return String.format("jdbc:%s://%s%s/%s", subprotocol, serverName, optPort, databaseName);
     }

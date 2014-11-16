@@ -37,33 +37,29 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-@RunWith( PaxExam.class )
-public class DerbyDataSourceTest
-{
+@RunWith(PaxExam.class)
+public class DerbyDataSourceTest {
+
     @Inject
     @Filter("(osgi.jdbc.driver.class=org.apache.derby.jdbc.AutoloadedDriver)")
     private DataSourceFactory dsf;
-    
+
     @Configuration
-    public Option[] config()
-    {
-        return options(
-            regressionDefaults(),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
-            mavenBundle( "org.apache.derby", "derby" ).versionAsInProject(),
-            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
+    public Option[] config() {
+        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc")
+            .versionAsInProject(), mavenBundle("org.apache.derby", "derby").versionAsInProject(),
+            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
     }
 
     @Test
-    public void createDataSourceAndConnection() throws SQLException
-    {
-        assertNotNull( dsf );
+    public void createDataSourceAndConnection() throws SQLException {
+        assertNotNull(dsf);
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, "jdbc:derby:memory:pax;create=true" );
-        DataSource dataSource = dsf.createDataSource( props );
-        assertNotNull( dataSource );
+        props.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:pax;create=true");
+        DataSource dataSource = dsf.createDataSource(props);
+        assertNotNull(dataSource);
         Connection connection = dataSource.getConnection();
-        assertNotNull( connection );
+        assertNotNull(connection);
         connection.close();
     }
 }

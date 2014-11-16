@@ -23,14 +23,15 @@ import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
- * Tests the automatic creation of pooled DataSourceFactory service from an existing DataSourceFactory
+ * Tests the automatic creation of pooled DataSourceFactory service from an existing
+ * DataSourceFactory
  * 
  * We assume that h2 publishes a DataSourceFactory with "osgi.jdbc.driver.name=h2".
  * 
  * pax-jdbc-pool should then create a pooled DataSourceFactory with "osgi.jdbc.driver.name=h2-pool".
- * If a TransactionManager service is available it will also create a XA pooled DataSourceFactory 
- * with "osgi.jdbc.driver.name=h2-pool-xa". Keep in mind that you need to use createDataSource() to create 
- * a transactional DataSource not createXADataSource().
+ * If a TransactionManager service is available it will also create a XA pooled DataSourceFactory
+ * with "osgi.jdbc.driver.name=h2-pool-xa". Keep in mind that you need to use createDataSource() to
+ * create a transactional DataSource not createXADataSource().
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -46,21 +47,16 @@ public class PaxJdbcPoolTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        MavenUrlReference paxJdbcRepo = maven()
-            .groupId("org.ops4j.pax.jdbc")
-            .artifactId("pax-jdbc-features")
-            .classifier("features")
-            .type("xml")
+        MavenUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc")
+            .artifactId("pax-jdbc-features").classifier("features").type("xml")
             .versionAsInProject();
-        return new Option[]{
-                // KarafDistributionOption.debugConfiguration("5005", true),
-                karafDistributionConfiguration()
-                        .frameworkUrl(karafUrl)
-                        .unpackDirectory(new File("target/exam"))
-                        .useDeployFolder(false),
-                keepRuntimeFolder(),
-                KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2", "pax-jdbc-pool-dbcp2"),
-        };
+        return new Option[] {
+            // KarafDistributionOption.debugConfiguration("5005", true),
+            karafDistributionConfiguration().frameworkUrl(karafUrl)
+                .unpackDirectory(new File("target/exam")).useDeployFolder(false),
+            keepRuntimeFolder(),
+            KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2",
+                "pax-jdbc-pool-dbcp2"), };
     }
 
     @Test
@@ -68,7 +64,7 @@ public class PaxJdbcPoolTest extends AbstractJdbcTest {
         DataSource dataSource = createDataSource(pooledDataSourceFactory);
         checkDataSource(dataSource);
     }
-    
+
     @Test
     public void testPooledXADataSourceFactory() throws SQLException {
         DataSource dataSource = createDataSource(pooledXADataSourceFactory);

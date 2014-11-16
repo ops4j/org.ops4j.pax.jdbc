@@ -32,32 +32,30 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JdbcDriverObserver implements BundleObserver<URL>
-{
-    private static Logger log = LoggerFactory.getLogger( JdbcDriverObserver.class );
+public class JdbcDriverObserver implements BundleObserver<URL> {
+
+    private static Logger log = LoggerFactory.getLogger(JdbcDriverObserver.class);
 
     @Override
-    public void addingEntries( Bundle bundle, List<URL> entries )
-    {
-        log.info( "found JDBC driver service in bundle [{} {}]", bundle.getSymbolicName(),
-            bundle.getVersion() );
+    public void addingEntries(Bundle bundle, List<URL> entries) {
+        log.info("found JDBC driver service in bundle [{} {}]", bundle.getSymbolicName(),
+            bundle.getVersion());
         BundleContext bc = bundle.getBundleContext();
-        
-        SafeServiceLoader serviceLoader = new SafeServiceLoader( new BundleClassLoader( bundle ) );
-        List<Driver> drivers = serviceLoader.load( Driver.class.getName() );
+
+        SafeServiceLoader serviceLoader = new SafeServiceLoader(new BundleClassLoader(bundle));
+        List<Driver> drivers = serviceLoader.load(Driver.class.getName());
         for (Driver driver : drivers) {
-            DriverDataSourceFactory dsf = new DriverDataSourceFactory( driver );
+            DriverDataSourceFactory dsf = new DriverDataSourceFactory(driver);
             Dictionary<String, String> props = new Hashtable<String, String>();
-            props.put( DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driver.getClass().getName() );
-            bc.registerService( DataSourceFactory.class.getName(), dsf, props );            
+            props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driver.getClass().getName());
+            bc.registerService(DataSourceFactory.class.getName(), dsf, props);
         }
     }
 
     @Override
-    public void removingEntries( Bundle bundle, List<URL> entries )
-    {
-        log.info( "removing drivers registered on behalf of bundle {} {}",
-            bundle.getSymbolicName(), bundle.getVersion() );
+    public void removingEntries(Bundle bundle, List<URL> entries) {
+        log.info("removing drivers registered on behalf of bundle {} {}", bundle.getSymbolicName(),
+            bundle.getVersion());
         // services get unregistered automatically when the extended bundle stops
     }
 }

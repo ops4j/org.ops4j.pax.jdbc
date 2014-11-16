@@ -44,28 +44,25 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith(PaxExam.class)
 public class MysqlNativeDataSourceTest {
-    
+
     @Rule
     public MysqlRule mysql = new MysqlRule();
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Inject
     @Filter("(osgi.jdbc.driver.name=mysql)")
     private DataSourceFactory dsf;
-    
-    private ServerConfiguration dbConfig = new ServerConfiguration( "mysql" );
+
+    private ServerConfiguration dbConfig = new ServerConfiguration("mysql");
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(),
-                mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-mysql")
-                        .versionAsInProject(),
-                mavenBundle ("mysql", "mysql-connector-java" )
-                        .versionAsInProject(),
-                mavenBundle("org.osgi", "org.osgi.enterprise")
-                        .versionAsInProject());
+        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-mysql")
+            .versionAsInProject(), mavenBundle("mysql", "mysql-connector-java")
+            .versionAsInProject(), mavenBundle("org.osgi", "org.osgi.enterprise")
+            .versionAsInProject());
     }
 
     @Test
@@ -86,8 +83,8 @@ public class MysqlNativeDataSourceTest {
 
     @Test
     public void connectWithDefaultPort() throws SQLException {
-        assumeThat( dbConfig.getPortNumber(), is( "3306") );
-        
+        assumeThat(dbConfig.getPortNumber(), is("3306"));
+
         assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
@@ -103,9 +100,9 @@ public class MysqlNativeDataSourceTest {
 
     @Test
     public void connectWithDefaultHostAndPort() throws SQLException {
-        assumeThat( dbConfig.getPortNumber(), is( "3306") );
-        assumeThat( dbConfig.getServerName(), is( "localhost") );
-        
+        assumeThat(dbConfig.getPortNumber(), is("3306"));
+        assumeThat(dbConfig.getServerName(), is("localhost"));
+
         assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
@@ -128,10 +125,10 @@ public class MysqlNativeDataSourceTest {
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         DataSource dataSource = dsf.createDataSource(props);
         assertNotNull(dataSource);
-        
-        thrown.expect( SQLException.class );
-        thrown.expectMessage( "Access denied" );
-        thrown.expectMessage( "using password: NO" );
+
+        thrown.expect(SQLException.class);
+        thrown.expectMessage("Access denied");
+        thrown.expectMessage("using password: NO");
         dataSource.getConnection();
     }
 
@@ -146,10 +143,10 @@ public class MysqlNativeDataSourceTest {
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
         DataSource dataSource = dsf.createDataSource(props);
         assertNotNull(dataSource);
-        
-        thrown.expect( SQLException.class );
-        thrown.expectMessage( "Access denied" );
-        thrown.expectMessage( "using password: YES" );
+
+        thrown.expect(SQLException.class);
+        thrown.expectMessage("Access denied");
+        thrown.expectMessage("using password: YES");
         dataSource.getConnection();
     }
 }

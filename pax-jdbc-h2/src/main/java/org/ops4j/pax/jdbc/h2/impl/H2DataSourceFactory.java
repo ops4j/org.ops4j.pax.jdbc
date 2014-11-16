@@ -27,60 +27,52 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class H2DataSourceFactory implements DataSourceFactory
-{
+public class H2DataSourceFactory implements DataSourceFactory {
 
     @Override
-    public DataSource createDataSource( Properties props ) throws SQLException
-    {
+    public DataSource createDataSource(Properties props) throws SQLException {
         JdbcDataSource ds = new JdbcDataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
-    private void setProperties( JdbcDataSource ds, Properties properties ) throws SQLException
-    {
+    private void setProperties(JdbcDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
-        String databaseName = (String) props.remove( DataSourceFactory.JDBC_DATABASE_NAME );
-        if( databaseName == null )
-        {
-            throw new SQLException( "missing required property "
-                    + DataSourceFactory.JDBC_DATABASE_NAME );
+        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
+        if (databaseName == null) {
+            throw new SQLException("missing required property "
+                + DataSourceFactory.JDBC_DATABASE_NAME);
         }
-        ds.setURL( "jdbc:h2:" + databaseName );
+        ds.setURL("jdbc:h2:" + databaseName);
 
-        String password = (String) props.remove( DataSourceFactory.JDBC_PASSWORD );
-        ds.setPassword( password );
+        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        ds.setPassword(password);
 
-        String user = (String) props.remove( DataSourceFactory.JDBC_USER );
-        ds.setUser( user );
+        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
+        ds.setUser(user);
 
-        if( !props.isEmpty() )
-        {
-            throw new SQLException( "cannot set properties " + props.keySet() );
+        if (!props.isEmpty()) {
+            throw new SQLException("cannot set properties " + props.keySet());
         }
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource( Properties props )
-        throws SQLException
-    {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
         JdbcDataSource ds = new JdbcDataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
     @Override
-    public XADataSource createXADataSource( Properties props ) throws SQLException
-    {
+    public XADataSource createXADataSource(Properties props) throws SQLException {
         JdbcDataSource ds = new JdbcDataSource();
-        setProperties( ds, props );
+        setProperties(ds, props);
         return ds;
     }
 
     @Override
-    public Driver createDriver( Properties props ) throws SQLException
-    {
+    public Driver createDriver(Properties props) throws SQLException {
         return new org.h2.Driver();
     }
 }

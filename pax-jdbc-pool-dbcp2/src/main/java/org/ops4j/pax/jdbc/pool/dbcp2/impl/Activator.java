@@ -33,11 +33,12 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         DataSourceFactoryTracker dsManager = new DataSourceFactoryTracker(context);
-        dsfTracker = new ServiceTracker<DataSourceFactory, Object>(context, DataSourceFactory.class.getName(), dsManager);
+        dsfTracker = new ServiceTracker<DataSourceFactory, Object>(context,
+            DataSourceFactory.class.getName(), dsManager);
         dsfTracker.open();
 
-        tmTracker = new ServiceTracker<TransactionManager, Object>(context, TransactionManager.class.getName(),
-            new TransactionManagerTracker(context));
+        tmTracker = new ServiceTracker<TransactionManager, Object>(context,
+            TransactionManager.class.getName(), new TransactionManagerTracker(context));
         tmTracker.open();
     }
 

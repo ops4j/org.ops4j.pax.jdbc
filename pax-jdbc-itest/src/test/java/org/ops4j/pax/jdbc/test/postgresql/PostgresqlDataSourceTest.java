@@ -39,40 +39,37 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-@RunWith( PaxExam.class )
-public class PostgresqlDataSourceTest
-{
+@RunWith(PaxExam.class)
+public class PostgresqlDataSourceTest {
+
     @Rule
     public PostgresqlRule postgresql = new PostgresqlRule();
-    
+
     @Inject
-    @Filter( "(osgi.jdbc.driver.class=org.postgresql.Driver)" )
+    @Filter("(osgi.jdbc.driver.class=org.postgresql.Driver)")
     private DataSourceFactory dsf;
 
     @Configuration
-    public Option[] config()
-    {
-        return options(
-            regressionDefaults(),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc" ).versionAsInProject(),
-            mavenBundle( "org.ancoron.postgresql", "org.postgresql" ).versionAsInProject(),
-            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject() );
+    public Option[] config() {
+        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc")
+            .versionAsInProject(), mavenBundle("org.ancoron.postgresql", "org.postgresql")
+            .versionAsInProject(), mavenBundle("org.osgi", "org.osgi.enterprise")
+            .versionAsInProject());
     }
-    
+
     @Test
-    public void createDataSourceAndConnection() throws SQLException
-    {
-        assertNotNull( dsf );
-        ServerConfiguration config = new ServerConfiguration( "postgresql" );
-        
+    public void createDataSourceAndConnection() throws SQLException {
+        assertNotNull(dsf);
+        ServerConfiguration config = new ServerConfiguration("postgresql");
+
         Properties props = new Properties();
-        props.setProperty( DataSourceFactory.JDBC_URL, config.getUrl() );
-        props.setProperty( DataSourceFactory.JDBC_USER, config.getUser() );
-        props.setProperty( DataSourceFactory.JDBC_PASSWORD, config.getPassword() );
-        DataSource dataSource = dsf.createDataSource( props );
-        assertNotNull( dataSource );
+        props.setProperty(DataSourceFactory.JDBC_URL, config.getUrl());
+        props.setProperty(DataSourceFactory.JDBC_USER, config.getUser());
+        props.setProperty(DataSourceFactory.JDBC_PASSWORD, config.getPassword());
+        DataSource dataSource = dsf.createDataSource(props);
+        assertNotNull(dataSource);
         Connection connection = dataSource.getConnection();
-        assertNotNull( connection );
+        assertNotNull(connection);
         connection.close();
     }
 }

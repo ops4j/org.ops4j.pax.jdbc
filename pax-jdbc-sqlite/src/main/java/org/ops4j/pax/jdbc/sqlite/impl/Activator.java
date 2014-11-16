@@ -25,22 +25,19 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.sqlite.JDBC;
 
-public class Activator implements BundleActivator
-{
+public class Activator implements BundleActivator {
 
     @Override
-    public void start( BundleContext context ) throws Exception
-    {
+    public void start(BundleContext context) throws Exception {
         SqliteDataSourceFactory dsf = new SqliteDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
-        props.put( DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, JDBC.class.getName() );
-        props.put( DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "sqlite" );
-        context.registerService( DataSourceFactory.class.getName(), dsf, props );
+        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, JDBC.class.getName());
+        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "sqlite");
+        context.registerService(DataSourceFactory.class.getName(), dsf, props);
     }
 
     @Override
-    public void stop( BundleContext context ) throws Exception
-    {
+    public void stop(BundleContext context) throws Exception {
         // nothing to do
     }
 
