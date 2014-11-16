@@ -44,43 +44,45 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Uses the pax-jdbc-config module to create an H2 DataSource from a configuration and validates the DataSource is present as a service
+ * Uses the pax-jdbc-config module to create an H2 DataSource from a configuration and validates the
+ * DataSource is present as a service
  */
 @RunWith(PaxExam.class)
 public class H2ConfigTest {
+
     private static final String JNDI_NAME = "osgi.jndi.service.name";
 
     @Inject
     ConfigurationAdmin configAdmin;
-    
+
     @Inject
     BundleContext context;
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
-            mavenBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject(),
-            mavenBundle("com.h2database", "h2").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-config").versionAsInProject()
-            );
+        return options(regressionDefaults(), mavenBundle("org.osgi", "org.osgi.enterprise")
+            .versionAsInProject(), mavenBundle("org.apache.felix", "org.apache.felix.configadmin")
+            .versionAsInProject(), mavenBundle("com.h2database", "h2").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-config").versionAsInProject());
     }
 
     @Test
-    public void testDataSourceFromConfig() throws SQLException, IOException, InvalidSyntaxException, InterruptedException {
+    public void testDataSourceFromConfig() throws SQLException, IOException,
+        InvalidSyntaxException, InterruptedException {
         org.osgi.service.cm.Configuration config = createConfigForDataSource();
-        ServiceTracker tracker = new ServiceTracker(context, DataSource.class.getName(), null);
+        ServiceTracker<DataSource, Object> tracker = new ServiceTracker<DataSource, Object>(
+            context, DataSource.class, null);
         tracker.open();
-        DataSource dataSource = (DataSource)tracker.waitForService(1000);
+        DataSource dataSource = (DataSource) tracker.waitForService(1000);
         assertDataSourceWorks(dataSource);
         assertServicePropertiesPresent(tracker);
         checkDataSourceIsDeletedWhenConfigIsDeleted(config, tracker);
     }
-    
+
     private org.osgi.service.cm.Configuration createConfigForDataSource() throws IOException {
-        org.osgi.service.cm.Configuration config = configAdmin.createFactoryConfiguration("org.ops4j.datasource");
-        Dictionary<String,String> props = new Hashtable<String, String>();
+        org.osgi.service.cm.Configuration config = configAdmin
+            .createFactoryConfiguration("org.ops4j.datasource");
+        Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver");
         props.put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax");
         props.put(JNDI_NAME, "h2test"); // jndi name for aries jndi
@@ -92,26 +94,28 @@ public class H2ConfigTest {
         return config;
     }
 
-    private void assertDataSourceWorks(DataSource dataSource) throws InterruptedException, SQLException {
+    private void assertDataSourceWorks(DataSource dataSource) throws InterruptedException,
+        SQLException {
         assertNotNull("No DataSource service found", dataSource);
         Connection connection = dataSource.getConnection();
         assertNotNull(connection);
         connection.close();
     }
-    
-    private void assertServicePropertiesPresent(ServiceTracker tracker) {
-        ServiceReference ref = tracker.getServiceReference();
-        Assert.assertEquals("org.h2.Driver", ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
+
+    private void assertServicePropertiesPresent(ServiceTracker<DataSource, Object> tracker) {
+        ServiceReference<DataSource> ref = tracker.getServiceReference();
+        Assert.assertEquals("org.h2.Driver",
+            ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
         Assert.assertEquals("jdbc:h2:mem:pax", ref.getProperty(DataSourceFactory.JDBC_URL));
         Assert.assertEquals("h2test", ref.getProperty(JNDI_NAME));
     }
 
-    private void checkDataSourceIsDeletedWhenConfigIsDeleted(org.osgi.service.cm.Configuration config, ServiceTracker tracker)
+    private void checkDataSourceIsDeletedWhenConfigIsDeleted(
+        org.osgi.service.cm.Configuration config, ServiceTracker<DataSource, Object> tracker)
         throws IOException, InterruptedException {
         config.delete();
         Thread.sleep(1000);
-        DataSource  dataSource = (DataSource)tracker.getService();
+        DataSource dataSource = (DataSource) tracker.getService();
         assertNull(dataSource);
     }
-
 }

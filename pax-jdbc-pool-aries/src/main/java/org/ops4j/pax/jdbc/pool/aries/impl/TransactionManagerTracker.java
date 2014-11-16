@@ -1,14 +1,12 @@
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
+import org.apache.aries.transaction.AriesTransactionManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-
-import org.apache.aries.transaction.AriesTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 final class TransactionManagerTracker extends
     ServiceTracker<AriesTransactionManager, DataSourceFactoryTracker> {
 

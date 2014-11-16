@@ -17,8 +17,8 @@ package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.transaction.TransactionManager;
 
@@ -35,13 +35,13 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
  * existing DataSourceFactory
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
+public class DataSourceFactoryTracker implements
+    ServiceTrackerCustomizer<DataSourceFactory, Object> {
 
     private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
     private BundleContext context;
 
-    private Map<ServiceReference, ServiceRegistration> serviceRegs;
+    private Map<ServiceReference<DataSourceFactory>, ServiceRegistration<DataSourceFactory>> serviceRegs;
     private TransactionManager tm;
 
     public DataSourceFactoryTracker(BundleContext context) {
@@ -51,32 +51,34 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     public DataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
         this.tm = tm;
         this.context = context;
-        this.serviceRegs = new HashMap<ServiceReference, ServiceRegistration>();
+        this.serviceRegs = new HashMap<ServiceReference<DataSourceFactory>, ServiceRegistration<DataSourceFactory>>();
     }
 
     @Override
-    public Object addingService(ServiceReference reference) {
+    public Object addingService(ServiceReference<DataSourceFactory> reference) {
         if (reference.getProperty("pooled") != null) {
             // Make sure we do not react on our own service for the pooled factory
             return null;
         }
-        ServiceRegistration reg = createAndregisterPooledFactory(reference);
+        ServiceRegistration<DataSourceFactory> reg = createAndRegisterPooledFactory(reference);
         serviceRegs.put(reference, reg);
         return null;
     }
 
-    private ServiceRegistration createAndregisterPooledFactory(ServiceReference reference) {
+    private ServiceRegistration<DataSourceFactory> createAndRegisterPooledFactory(
+        ServiceReference<DataSourceFactory> reference) {
         LOG.debug("Registering PooledDataSourceFactory");
-        DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
-        Dictionary props = createPropsForPoolingDataSourceFactory(reference);
-        ServiceRegistration reg = context.registerService(DataSourceFactory.class.getName(), pdsf,
-            props);
+        DataSourceFactory dsf = context.getService(reference);
+        DataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
+        Dictionary<String, Object> props = createPropsForPoolingDataSourceFactory(reference);
+        ServiceRegistration<DataSourceFactory> reg = context.registerService(
+            DataSourceFactory.class, pdsf, props);
         return reg;
     }
 
-    private Properties createPropsForPoolingDataSourceFactory(ServiceReference reference) {
-        Properties props = new Properties();
+    private Dictionary<String, Object> createPropsForPoolingDataSourceFactory(
+        ServiceReference<DataSourceFactory> reference) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
         for (String key : reference.getPropertyKeys()) {
             if (!"service.id".equals(key)) {
                 props.put(key, reference.getProperty(key));
@@ -90,7 +92,7 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
         return props;
     }
 
-    private String getPoolDriverName(ServiceReference reference) {
+    private String getPoolDriverName(ServiceReference<DataSourceFactory> reference) {
         String origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (origName == null) {
             origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
@@ -99,17 +101,16 @@ public class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
     }
 
     @Override
-    public void modifiedService(ServiceReference reference, Object service) {
+    public void modifiedService(ServiceReference<DataSourceFactory> reference, Object service) {
 
     }
 
     @Override
-    public void removedService(ServiceReference reference, Object service) {
-        ServiceRegistration reg = serviceRegs.get(reference);
+    public void removedService(ServiceReference<DataSourceFactory> reference, Object service) {
+        ServiceRegistration<DataSourceFactory> reg = serviceRegs.get(reference);
         if (reg != null) {
             LOG.warn("Unregistering PooledDataSourceFactory");
             reg.unregister();
         }
     }
-
 }

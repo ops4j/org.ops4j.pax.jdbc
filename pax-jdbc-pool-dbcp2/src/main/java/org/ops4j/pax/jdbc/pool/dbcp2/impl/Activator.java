@@ -27,16 +27,16 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator implements BundleActivator {
 
-    private ServiceTracker dsfTracker;
-    private ServiceTracker tmTracker;
+    private ServiceTracker<DataSourceFactory, Object> dsfTracker;
+    private ServiceTracker<TransactionManager, Object> tmTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
         DataSourceFactoryTracker dsManager = new DataSourceFactoryTracker(context);
-        dsfTracker = new ServiceTracker(context, DataSourceFactory.class.getName(), dsManager);
+        dsfTracker = new ServiceTracker<DataSourceFactory, Object>(context, DataSourceFactory.class.getName(), dsManager);
         dsfTracker.open();
 
-        tmTracker = new ServiceTracker(context, TransactionManager.class.getName(),
+        tmTracker = new ServiceTracker<TransactionManager, Object>(context, TransactionManager.class.getName(),
             new TransactionManagerTracker(context));
         tmTracker.open();
     }

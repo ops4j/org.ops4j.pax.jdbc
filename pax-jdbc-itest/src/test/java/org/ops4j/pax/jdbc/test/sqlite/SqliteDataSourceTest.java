@@ -29,7 +29,6 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;

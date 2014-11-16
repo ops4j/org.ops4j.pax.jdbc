@@ -16,16 +16,15 @@
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import java.util.Dictionary;
-import java.util.Properties;
+import java.util.Hashtable;
 
+import org.apache.aries.transaction.AriesTransactionManager;
+import org.ops4j.pax.jdbc.pool.aries.impl.ds.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
-
-import org.apache.aries.transaction.AriesTransactionManager;
-import org.ops4j.pax.jdbc.pool.aries.impl.ds.PooledDataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
  * existing DataSourceFactory
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DataSourceFactoryTracker extends
     ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> {
 
@@ -61,13 +59,13 @@ public class DataSourceFactoryTracker extends
         LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = context.getService(reference);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
-        Dictionary props = createPropsForPoolingDataSourceFactory(reference);
+        Dictionary<String, Object> props = createPropsForPoolingDataSourceFactory(reference);
         return context.registerService(DataSourceFactory.class, pdsf, props);
     }
 
-    private Properties createPropsForPoolingDataSourceFactory(
+    private Dictionary<String, Object> createPropsForPoolingDataSourceFactory(
         ServiceReference<DataSourceFactory> reference) {
-        Properties props = new Properties();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
         for (String key : reference.getPropertyKeys()) {
             if (!"service.id".equals(key)) {
                 props.put(key, reference.getProperty(key));
@@ -81,7 +79,7 @@ public class DataSourceFactoryTracker extends
         return props;
     }
 
-    private String getPoolDriverName(ServiceReference reference) {
+    private String getPoolDriverName(ServiceReference<DataSourceFactory> reference) {
         String origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (origName == null) {
             origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);

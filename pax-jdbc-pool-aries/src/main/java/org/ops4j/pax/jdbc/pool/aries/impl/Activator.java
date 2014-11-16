@@ -15,8 +15,11 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
+import org.apache.aries.transaction.AriesTransactionManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -24,8 +27,8 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator implements BundleActivator {
 
-    private ServiceTracker dsfTracker;
-    private ServiceTracker tmTracker;
+    private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
+    private ServiceTracker<AriesTransactionManager, DataSourceFactoryTracker> tmTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -41,5 +44,4 @@ public class Activator implements BundleActivator {
         dsfTracker.close();
         tmTracker.close();
     }
-
 }
