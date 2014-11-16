@@ -53,7 +53,7 @@ public class MariaDbDataSourceTest {
     public Option[] config() {
         return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc")
             .versionAsInProject(),
-            mavenBundle("org.jumpmind.symmetric.jdbc", "mariadb-java-client").versionAsInProject(),
+            mavenBundle("org.mariadb.jdbc", "mariadb-java-client").versionAsInProject(),
             mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
     }
 

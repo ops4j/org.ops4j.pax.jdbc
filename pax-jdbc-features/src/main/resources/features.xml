@@ -38,7 +38,7 @@
              resolver="(obr)">
         <feature>pax-jdbc</feature>
 
-        <bundle dependency="true">mvn:org.jumpmind.symmetric.jdbc/mariadb-java-client/${mariadb.version}</bundle>
+        <bundle dependency="true">mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mariadb/${project.version}</bundle>
     </feature>
 
