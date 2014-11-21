@@ -49,6 +49,7 @@ public class DataSourcePublisher {
         DataSourceFactory.JDBC_DATASOURCE_NAME,
         "service.factoryPid",
         "felix.fileinstall.filename",
+        "aries.managed",
         JNDI_SERVICE_NAME };
     private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private Set<String> ignoredKeys;
