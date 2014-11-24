@@ -40,9 +40,11 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourcePublisher {
-
+    static final String DATASOURCE_TYPE = "dataSourceType";
     private static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
-    private static String[] IGNORED_KEYS = {
+    
+    // These config keys will not be forwarded to the DataSourceFactory
+    private static final String[] NOT_FORWARDED_KEYS = {
         "service.pid",
         DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
         DataSourceFactory.OSGI_JDBC_DRIVER_NAME,
@@ -50,7 +52,9 @@ public class DataSourcePublisher {
         "service.factoryPid",
         "felix.fileinstall.filename",
         "aries.managed",
-        JNDI_SERVICE_NAME };
+        JNDI_SERVICE_NAME,
+        DATASOURCE_TYPE
+    };
     private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private Set<String> ignoredKeys;
 
@@ -73,15 +77,51 @@ public class DataSourcePublisher {
         if (dsName != null && this.config.get(JNDI_SERVICE_NAME) == null) {
             this.config.put(JNDI_SERVICE_NAME, dsName);
         }
-        this.ignoredKeys = new HashSet<String>(Arrays.asList(IGNORED_KEYS));
+        this.ignoredKeys = new HashSet<String>(Arrays.asList(NOT_FORWARDED_KEYS));
         this.closeables = new ArrayList<Closeable>();
         this.serviceRegs = new ArrayList<ServiceRegistration>();
     }
 
     public void publish(DataSourceFactory dsf) {
-        publishDataSource(dsf);
-        publishConnectionPoolDataSource(dsf);
-        publishXADataSource(dsf);
+        String typeName = (String) config.get(DATASOURCE_TYPE);
+        Class<?> type = getType(typeName);
+        try {
+            Object ds = createDs(dsf, type);
+            if (ds instanceof Closeable) {
+                closeables.add((Closeable) ds);
+            }
+            ServiceRegistration reg = context.registerService(type.getName(), ds, config);
+            serviceRegs.add(reg);
+        }
+        catch (SQLException e) {
+            LOG.warn(e.getMessage(), e);
+        }
+    }
+    
+    private Class<?> getType(String typeName) {
+        if (typeName == null || DataSource.class.getSimpleName().equals(typeName)) {
+            return DataSource.class;
+        }  else if (ConnectionPoolDataSource.class.getSimpleName().equals(typeName)) {
+            return ConnectionPoolDataSource.class;
+        } else if (XADataSource.class.getSimpleName().equals(typeName)) { 
+            return XADataSource.class;
+        } else {
+            throw new IllegalArgumentException("Problem in DataSource config : " + DATASOURCE_TYPE + " must be one of "
+                + DataSource.class.getSimpleName() + ","
+                + ConnectionPoolDataSource.class.getSimpleName() + ","
+                + XADataSource.class.getSimpleName());
+        }
+    }
+
+    private Object createDs(DataSourceFactory dsf, Class<?> type) throws SQLException {
+        Properties props = toProperties(config);
+        if (type == DataSource.class) {
+            return dsf.createDataSource(props);
+        } else if (type == ConnectionPoolDataSource.class) {
+            return dsf.createConnectionPoolDataSource(props);
+        } else {
+            return dsf.createXADataSource(props);
+        }
     }
 
     private Properties toProperties(Dictionary dict) {
@@ -94,45 +134,6 @@ public class DataSourcePublisher {
             }
         }
         return props;
-    }
-
-    private void publishDataSource(DataSourceFactory dsf) {
-        try {
-            DataSource ds = dsf.createDataSource(toProperties(config));
-            if (ds instanceof Closeable) {
-                closeables.add((Closeable) ds);
-            }
-            ServiceRegistration reg = context.registerService(DataSource.class.getName(), ds,
-                config);
-            serviceRegs.add(reg);
-        }
-        catch (SQLException e) {
-            LOG.warn("Error creating DataSource. " + e.getMessage(), e);
-        }
-    }
-
-    private void publishConnectionPoolDataSource(DataSourceFactory dsf) {
-        try {
-            ConnectionPoolDataSource ds = dsf.createConnectionPoolDataSource(toProperties(config));
-            ServiceRegistration reg = context.registerService(
-                ConnectionPoolDataSource.class.getName(), ds, config);
-            serviceRegs.add(reg);
-        }
-        catch (SQLException e) {
-            LOG.debug("Error creating ConnectionPoolDataSource. " + e.getMessage(), e);
-        }
-    }
-
-    private void publishXADataSource(DataSourceFactory dsf) {
-        try {
-            XADataSource ds = dsf.createXADataSource(toProperties(config));
-            ServiceRegistration reg = context.registerService(XADataSource.class.getName(), ds,
-                config);
-            serviceRegs.add(reg);
-        }
-        catch (SQLException e) {
-            LOG.debug("Error creating XADataSource. " + e.getMessage(), e);
-        }
     }
 
     public void unpublish() {

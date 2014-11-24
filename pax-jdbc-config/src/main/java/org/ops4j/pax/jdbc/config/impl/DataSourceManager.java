@@ -31,15 +31,25 @@ import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
  * for the DataSourceFactories
  */
 public class DataSourceManager implements ManagedServiceFactory {
-
+    private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private BundleContext context;
+    
+    /**
+     * Stores one ServiceTracker for DataSourceFactories for each config pid
+     */
     private Map<String, ServiceTracker> trackers;
+    
+    /**
+     * Stores one publisher for each config pid
+     */
     private Map<String, DataSourcePublisher> publishers;
 
     public DataSourceManager(BundleContext context) {
@@ -98,29 +108,9 @@ public class DataSourceManager implements ManagedServiceFactory {
         String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         String filter = getFilter(driverClass, driverName);
-        final DataSourcePublisher publisher = createPublisher(config);
-        ServiceTrackerCustomizer customizer = new ServiceTrackerCustomizer() {
-
-            @Override
-            public void removedService(ServiceReference reference, Object service) {
-                publisher.unpublish();
-            }
-
-            @Override
-            public void modifiedService(ServiceReference reference, Object service) {
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public Object addingService(ServiceReference reference) {
-                DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
-                publisher.publish(dsf);
-                context.ungetService(reference);
-                return null;
-            }
-
-        };
         try {
+            final DataSourcePublisher publisher = createPublisher(config);
+            ServiceTrackerCustomizer customizer = new DataSourceFactoryTracker(publisher);
             Filter filterO = context.createFilter(filter);
             ServiceTracker tracker = new ServiceTracker(context, filterO, customizer);
             tracker.open();
@@ -128,8 +118,8 @@ public class DataSourceManager implements ManagedServiceFactory {
             publishers.put(pid, publisher);
         }
         catch (InvalidSyntaxException e) {
+            LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
         }
-
     }
 
     @SuppressWarnings("rawtypes")
@@ -147,6 +137,34 @@ public class DataSourceManager implements ManagedServiceFactory {
         DataSourcePublisher publisher = publishers.get(pid);
         if (publisher != null) {
             publisher.unpublish();
+        }
+    }
+    
+    @SuppressWarnings("rawtypes")
+    private final class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
+
+        private final DataSourcePublisher publisher;
+
+        private DataSourceFactoryTracker(DataSourcePublisher publisher) {
+            this.publisher = publisher;
+        }
+
+        @Override
+        public void removedService(ServiceReference reference, Object service) {
+            publisher.unpublish();
+        }
+
+        @Override
+        public void modifiedService(ServiceReference reference, Object service) {
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object addingService(ServiceReference reference) {
+            DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
+            publisher.publish(dsf);
+            context.ungetService(reference);
+            return null;
         }
     }
 

@@ -59,29 +59,14 @@ public class DataSourcePublisherTest {
 
         // Expect that a DataSource is created using the DataSourceFactory
         DataSource ds = c.createMock(DataSource.class);
-
         expect(dsf.createDataSource(capture(capturedDsProps))).andReturn(ds);
-
-        ConnectionPoolDataSource cpds = c.createMock(ConnectionPoolDataSource.class);
-        expect(dsf.createConnectionPoolDataSource(anyObject(Properties.class))).andReturn(cpds);
-
-        XADataSource xads = c.createMock(XADataSource.class);
-        expect(dsf.createXADataSource(anyObject(Properties.class))).andReturn(xads);
 
         // Expect DataSource is registered as a service
         ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
-        ServiceRegistration cpdsSreg = c.createMock(ServiceRegistration.class);
-        ServiceRegistration xadsSreg = c.createMock(ServiceRegistration.class);
 
         expect(
             context.registerService(eq(DataSource.class.getName()), eq(ds),
                 capture(capturedServiceProps))).andReturn(dsSreg);
-        expect(
-            context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds),
-                anyObject(Dictionary.class))).andReturn(cpdsSreg);
-        expect(
-            context.registerService(eq(XADataSource.class.getName()), eq(xads),
-                anyObject(Dictionary.class))).andReturn(xadsSreg);
 
         // create and publish the datasource
         c.replay();
@@ -107,13 +92,80 @@ public class DataSourcePublisherTest {
         // Check unpublish unregisters the services
         dsSreg.unregister();
         expectLastCall();
-        cpdsSreg.unregister();
-        expectLastCall();
-        xadsSreg.unregister();
-        expectLastCall();
 
         c.replay();
         publisher.unpublish();
+        c.verify();
+    }
+    
+    @Test
+    public void testPublishedConnectionPoolDS() throws ConfigurationException,
+        InvalidSyntaxException, SQLException {
+
+        IMocksControl c = EasyMock.createControl();
+        BundleContext context = c.createMock(BundleContext.class);
+        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+
+        // Expect that a ConnectionPoolDataSource is created using the DataSourceFactory
+        ConnectionPoolDataSource cpds = c.createMock(ConnectionPoolDataSource.class);
+        expect(dsf.createConnectionPoolDataSource(anyObject(Properties.class))).andReturn(cpds);
+
+        // Expect DataSource is registered as a service
+        ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
+        expect(
+            context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds),
+                anyObject(Dictionary.class))).andReturn(dsSreg);
+
+        // create and publish the datasource
+        c.replay();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourcePublisher.DATASOURCE_TYPE, ConnectionPoolDataSource.class.getSimpleName());
+        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
+        publisher.publish(dsf);
+        c.verify();
+    }
+    
+    @Test
+    public void testPublishedXADS() throws ConfigurationException,
+        InvalidSyntaxException, SQLException {
+
+        IMocksControl c = EasyMock.createControl();
+        BundleContext context = c.createMock(BundleContext.class);
+        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+
+        // Expect that a ConnectionPoolDataSource is created using the DataSourceFactory
+        XADataSource xads = c.createMock(XADataSource.class);
+        expect(dsf.createXADataSource(anyObject(Properties.class))).andReturn(xads);
+
+        // Expect DataSource is registered as a service
+        ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
+        expect(
+            context.registerService(eq(XADataSource.class.getName()), eq(xads),
+                anyObject(Dictionary.class))).andReturn(dsSreg);
+
+        // create and publish the datasource
+        c.replay();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourcePublisher.DATASOURCE_TYPE, XADataSource.class.getSimpleName());
+        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
+        publisher.publish(dsf);
+        c.verify();
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testError() throws ConfigurationException,
+        InvalidSyntaxException, SQLException {
+
+        IMocksControl c = EasyMock.createControl();
+        BundleContext context = c.createMock(BundleContext.class);
+        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+
+        // create and publish the datasource
+        c.replay();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourcePublisher.DATASOURCE_TYPE, "something else");
+        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
+        publisher.publish(dsf);
         c.verify();
     }
 
