@@ -26,11 +26,12 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 
-import org.apache.commons.dbcp2.ConnectionFactory;
 import org.apache.commons.dbcp2.DataSourceConnectionFactory;
 import org.apache.commons.dbcp2.PoolableConnection;
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.dbcp2.managed.DataSourceXAConnectionFactory;
+import org.apache.commons.dbcp2.managed.PoolableManagedConnectionFactory;
+import org.apache.commons.dbcp2.managed.TransactionRegistry;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -78,15 +79,7 @@ public class PooledDataSourceFactory implements DataSourceFactory {
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
             Properties dsProps = getNonPoolProps(props);
-            ConnectionFactory cf = createConnectionFactory(dsProps);
-            PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, null);
-            GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(
-                pcf);
-            Map<String, String> poolProps = getPoolProps(props);
-            GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
-            BeanConfig.configure(conf, poolProps);
-            pool.setConfig(conf);
-            return new CloseablePoolingDataSource<PoolableConnection>(pool);
+            return (tm != null) ? createManagedDataSource(dsProps) : createPoolingDataSource(dsProps);
         }
         catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);
@@ -125,15 +118,30 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         return dsProps;
     }
 
-    private ConnectionFactory createConnectionFactory(Properties props) throws SQLException {
-        if (tm != null) {
-            XADataSource ds = dsFactory.createXADataSource(props);
-            return new DataSourceXAConnectionFactory(tm, ds);
-        }
-        else {
-            DataSource ds = dsFactory.createDataSource(props);
-            return new DataSourceConnectionFactory(ds);
-        }
+    private DataSource createPoolingDataSource(Properties props) throws SQLException {
+        DataSource ds = dsFactory.createDataSource(props);
+        DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(ds);
+        PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
+        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
+        Map<String, String> poolProps = getPoolProps(props);
+        GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
+        BeanConfig.configure(conf, poolProps);
+        pool.setConfig(conf);
+        return new CloseablePoolingDataSource<PoolableConnection>(pool);
+    }
+
+    private DataSource createManagedDataSource(Properties props)
+        throws SQLException {
+        XADataSource ds = dsFactory.createXADataSource(props);
+        DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
+        PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
+        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
+        Map<String, String> poolProps = getPoolProps(props);
+        GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
+        BeanConfig.configure(conf, poolProps);
+        pool.setConfig(conf);
+        TransactionRegistry transactionRegistry = connFactory.getTransactionRegistry();
+        return new CloseableManagedDataSource<PoolableConnection>(pool, transactionRegistry);
     }
 
     @Override

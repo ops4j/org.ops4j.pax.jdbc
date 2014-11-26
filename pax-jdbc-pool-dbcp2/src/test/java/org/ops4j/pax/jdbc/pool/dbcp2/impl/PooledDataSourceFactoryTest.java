@@ -11,6 +11,7 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseableManagedDataSource;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseablePoolingDataSource;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.PooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -32,7 +33,7 @@ public class PooledDataSourceFactoryTest {
         DataSource ds = pdsf.createDataSource(props);
 
         c.verify();
-        Assert.assertEquals(CloseablePoolingDataSource.class, ds.getClass());
+        Assert.assertEquals(CloseableManagedDataSource.class, ds.getClass());
     }
 
     @Test
