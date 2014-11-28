@@ -52,6 +52,7 @@
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>
+        <module>pax-jdbc-derbyclient</module>
     </modules>
 
     <dependencyManagement>
