@@ -79,7 +79,8 @@ public class PooledDataSourceFactory implements DataSourceFactory {
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
             Properties dsProps = getNonPoolProps(props);
-            return (tm != null) ? createManagedDataSource(dsProps) : createPoolingDataSource(dsProps);
+            return (tm != null) ? createManagedDataSource(dsProps)
+                : createPoolingDataSource(dsProps);
         }
         catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);
@@ -130,11 +131,11 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         return new CloseablePoolingDataSource<PoolableConnection>(pool);
     }
 
-    private DataSource createManagedDataSource(Properties props)
-        throws SQLException {
+    private DataSource createManagedDataSource(Properties props) throws SQLException {
         XADataSource ds = dsFactory.createXADataSource(props);
         DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
-        PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
+        PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory,
+            null);
         GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
         Map<String, String> poolProps = getPoolProps(props);
         GenericObjectPoolConfig conf = new GenericObjectPoolConfig();

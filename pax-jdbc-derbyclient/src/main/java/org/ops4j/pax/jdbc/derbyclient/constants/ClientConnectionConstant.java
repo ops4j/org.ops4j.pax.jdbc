@@ -21,7 +21,8 @@ package org.ops4j.pax.jdbc.derbyclient.constants;
  */
 
 public class ClientConnectionConstant {
-public static final String AUTO_START_SERVER = "serverAutoStart";
-public static final String CREATE_DATABASE = "createDatabase";
-public static final Object LOG_FILE = "derbyServerLog";
+
+    public static final String AUTO_START_SERVER = "serverAutoStart";
+    public static final String CREATE_DATABASE = "createDatabase";
+    public static final Object LOG_FILE = "derbyServerLog";
 }

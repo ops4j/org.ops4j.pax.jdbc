@@ -25,6 +25,13 @@
         <bundle dependency="true">mvn:org.apache.derby/derby/${derby.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
     </feature>
+     <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc</feature>
+		<bundle dependency="true">mvn:commons-logging/commons-logging/${common-logging_common-logging.version}</bundle>
+        <bundle dependency="true">mvn:net.osgiliath.wrappers/net.osgiliath.wrapper.derby/${net.osgiliath.wrappers_net.osgiliath.wrapper.derby.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derbyclient/${project.version}</bundle>
+    </feature>
 
     <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}"
              resolver="(obr)">

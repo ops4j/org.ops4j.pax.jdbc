@@ -31,13 +31,15 @@ import org.apache.derby.jdbc.ClientDriver;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.jdbc.DataSourceFactory;
+
 public class Activator implements BundleActivator {
 
-	private Map<String,Map<Integer,NetworkServerControl>> startedServers = new HashMap<String,Map<Integer,NetworkServerControl>>();
-	private static Activator _instance;
+    private Map<String, Map<Integer, NetworkServerControl>> startedServers = new HashMap<String, Map<Integer, NetworkServerControl>>();
+    private static Activator _instance;
+
     @Override
     public void start(BundleContext context) throws Exception {
-    	DerbyClientDatasourceFactory dsf = new DerbyClientDatasourceFactory();
+        DerbyClientDatasourceFactory dsf = new DerbyClientDatasourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, ClientDriver.class.getName());
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "derbyclient");
@@ -47,35 +49,35 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-       for (Map<Integer,NetworkServerControl> controls : getInstance().startedServers.values()) {
-    	   for (NetworkServerControl control : controls.values()) {
-    		   control.shutdown();
-    	   }
-       }
-       getInstance().startedServers.clear();
+        for (Map<Integer, NetworkServerControl> controls : getInstance().startedServers.values()) {
+            for (NetworkServerControl control : controls.values()) {
+                control.shutdown();
+            }
+        }
+        getInstance().startedServers.clear();
 
     }
 
-	protected static Activator getInstance() {
-		return _instance;
-	}
+    protected static Activator getInstance() {
+        return _instance;
+    }
 
-	protected Map<String, Collection<Integer>> getStartedServers() {
-		Map<String, Collection<Integer>> ret = new HashMap<String, Collection<Integer>>();
-		for (Entry<String,Map<Integer,NetworkServerControl>> keys :startedServers.entrySet()) {
-			ret.put(keys.getKey(), keys.getValue().keySet());
-			
-		}
-		return ret;
-	}
-	protected void addNetworkControl (String host, int port, NetworkServerControl control) {
-		Map<Integer, NetworkServerControl> candidate = startedServers.get(host);
-		if (candidate == null) {
-			candidate = new HashMap<Integer,NetworkServerControl>();
-			startedServers.put(host, candidate);
-		}
-		candidate.put(port, control);
-	}
-	
-    
+    protected Map<String, Collection<Integer>> getStartedServers() {
+        Map<String, Collection<Integer>> ret = new HashMap<String, Collection<Integer>>();
+        for (Entry<String, Map<Integer, NetworkServerControl>> keys : startedServers.entrySet()) {
+            ret.put(keys.getKey(), keys.getValue().keySet());
+
+        }
+        return ret;
+    }
+
+    protected void addNetworkControl(String host, int port, NetworkServerControl control) {
+        Map<Integer, NetworkServerControl> candidate = startedServers.get(host);
+        if (candidate == null) {
+            candidate = new HashMap<Integer, NetworkServerControl>();
+            startedServers.put(host, candidate);
+        }
+        candidate.put(port, control);
+    }
+
 }
