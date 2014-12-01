@@ -22,6 +22,10 @@ import java.util.Properties;
 
 import org.ops4j.lang.Ops4jException;
 
+/**
+ * @author charliemordant
+ *
+ */
 public class ServerConfiguration {
 
     private String subprotocol;
@@ -31,6 +35,8 @@ public class ServerConfiguration {
     private String databaseName;
     private String user;
     private String password;
+    private String serverAutoStart;
+    private String createDatabase;
 
     public ServerConfiguration(String subprotocol) {
         this.subprotocol = subprotocol;
@@ -46,6 +52,8 @@ public class ServerConfiguration {
             databaseName = props.getProperty(key("databaseName"));
             user = props.getProperty(key("user"));
             password = props.getProperty(key("password"));
+            serverAutoStart = props.getProperty(key("serverAutoStart"));
+            createDatabase = props.getProperty(key("createDatabase"));
 
         }
         catch (IOException exc) {
@@ -97,6 +105,22 @@ public class ServerConfiguration {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * 
+     * @return the auto start boolean
+     */
+    public String getServerAutoStart() {
+        return serverAutoStart;
+    }
+
+    /**
+     * 
+     * @return the create database boolean
+     */
+    public String getCreateDatabase() {
+        return createDatabase;
     }
 
     /**

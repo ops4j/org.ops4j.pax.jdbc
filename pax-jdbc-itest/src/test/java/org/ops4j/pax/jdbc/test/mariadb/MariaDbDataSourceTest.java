@@ -52,9 +52,9 @@ public class MariaDbDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc")
-            .versionAsInProject(),
-            mavenBundle("org.mariadb.jdbc", "mariadb-java-client").versionAsInProject(),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+            .versionAsInProject(), mavenBundle("org.mariadb.jdbc", "mariadb-java-client")
+            .versionAsInProject(), mavenBundle("org.osgi", "org.osgi.enterprise")
+            .versionAsInProject());
     }
 
     @Test

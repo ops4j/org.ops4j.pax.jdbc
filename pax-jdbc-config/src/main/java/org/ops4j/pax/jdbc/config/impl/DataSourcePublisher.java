@@ -40,21 +40,15 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourcePublisher {
+
     static final String DATASOURCE_TYPE = "dataSourceType";
     private static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
-    
+
     // These config keys will not be forwarded to the DataSourceFactory
-    private static final String[] NOT_FORWARDED_KEYS = {
-        "service.pid",
-        DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
-        DataSourceFactory.OSGI_JDBC_DRIVER_NAME,
-        DataSourceFactory.JDBC_DATASOURCE_NAME,
-        "service.factoryPid",
-        "felix.fileinstall.filename",
-        "aries.managed",
-        JNDI_SERVICE_NAME,
-        DATASOURCE_TYPE
-    };
+    private static final String[] NOT_FORWARDED_KEYS = { "service.pid",
+        DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, DataSourceFactory.OSGI_JDBC_DRIVER_NAME,
+        DataSourceFactory.JDBC_DATASOURCE_NAME, "service.factoryPid", "felix.fileinstall.filename",
+        "aries.managed", JNDI_SERVICE_NAME, DATASOURCE_TYPE };
     private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private Set<String> ignoredKeys;
 
@@ -97,17 +91,20 @@ public class DataSourcePublisher {
             LOG.warn(e.getMessage(), e);
         }
     }
-    
+
     private Class<?> getType(String typeName) {
         if (typeName == null || DataSource.class.getSimpleName().equals(typeName)) {
             return DataSource.class;
-        }  else if (ConnectionPoolDataSource.class.getSimpleName().equals(typeName)) {
+        }
+        else if (ConnectionPoolDataSource.class.getSimpleName().equals(typeName)) {
             return ConnectionPoolDataSource.class;
-        } else if (XADataSource.class.getSimpleName().equals(typeName)) { 
+        }
+        else if (XADataSource.class.getSimpleName().equals(typeName)) {
             return XADataSource.class;
-        } else {
-            throw new IllegalArgumentException("Problem in DataSource config : " + DATASOURCE_TYPE + " must be one of "
-                + DataSource.class.getSimpleName() + ","
+        }
+        else {
+            throw new IllegalArgumentException("Problem in DataSource config : " + DATASOURCE_TYPE
+                + " must be one of " + DataSource.class.getSimpleName() + ","
                 + ConnectionPoolDataSource.class.getSimpleName() + ","
                 + XADataSource.class.getSimpleName());
         }
@@ -117,9 +114,11 @@ public class DataSourcePublisher {
         Properties props = toProperties(config);
         if (type == DataSource.class) {
             return dsf.createDataSource(props);
-        } else if (type == ConnectionPoolDataSource.class) {
+        }
+        else if (type == ConnectionPoolDataSource.class) {
             return dsf.createConnectionPoolDataSource(props);
-        } else {
+        }
+        else {
             return dsf.createXADataSource(props);
         }
     }

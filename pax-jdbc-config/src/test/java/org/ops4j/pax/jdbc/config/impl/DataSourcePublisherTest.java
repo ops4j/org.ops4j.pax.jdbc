@@ -97,7 +97,7 @@ public class DataSourcePublisherTest {
         publisher.unpublish();
         c.verify();
     }
-    
+
     @Test
     public void testPublishedConnectionPoolDS() throws ConfigurationException,
         InvalidSyntaxException, SQLException {
@@ -119,15 +119,16 @@ public class DataSourcePublisherTest {
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(DataSourcePublisher.DATASOURCE_TYPE, ConnectionPoolDataSource.class.getSimpleName());
+        properties.put(DataSourcePublisher.DATASOURCE_TYPE,
+            ConnectionPoolDataSource.class.getSimpleName());
         DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
         publisher.publish(dsf);
         c.verify();
     }
-    
+
     @Test
-    public void testPublishedXADS() throws ConfigurationException,
-        InvalidSyntaxException, SQLException {
+    public void testPublishedXADS() throws ConfigurationException, InvalidSyntaxException,
+        SQLException {
 
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
@@ -151,10 +152,9 @@ public class DataSourcePublisherTest {
         publisher.publish(dsf);
         c.verify();
     }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void testError() throws ConfigurationException,
-        InvalidSyntaxException, SQLException {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testError() throws ConfigurationException, InvalidSyntaxException, SQLException {
 
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
