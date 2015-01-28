@@ -38,14 +38,21 @@ public class H2DataSourceFactory implements DataSourceFactory {
 
     private void setProperties(JdbcDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
+        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
         String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null) {
-            throw new SQLException("missing required property "
+        if (databaseName == null && url == null) {
+            throw new SQLException("Need to specify either " + DataSourceFactory.JDBC_URL + " or "
                 + DataSourceFactory.JDBC_DATABASE_NAME);
         }
-        ds.setURL("jdbc:h2:" + databaseName);
+        if (url == null) {
+            url = "jdbc:h2:" + databaseName;
+        }
+        ds.setURL(url);
 
         String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        if (password == null) {
+            password = "";
+        }
         ds.setPassword(password);
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
