@@ -81,15 +81,11 @@ public class H2ConfigTest {
 
     private org.osgi.service.cm.Configuration createConfigForDataSource() throws IOException {
         org.osgi.service.cm.Configuration config = configAdmin
-            .createFactoryConfiguration("org.ops4j.datasource");
+            .createFactoryConfiguration("org.ops4j.datasource", null);
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver");
         props.put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax");
         props.put(JNDI_NAME, "h2test"); // jndi name for aries jndi
-        if (config.getBundleLocation() != null) {
-            // Make sure the pax-jdbc-config module may access the config
-            config.setBundleLocation(null);
-        }
         config.update(props);
         return config;
     }

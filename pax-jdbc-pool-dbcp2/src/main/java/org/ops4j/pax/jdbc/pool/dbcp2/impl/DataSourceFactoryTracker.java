@@ -17,12 +17,12 @@ package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.transaction.TransactionManager;
 
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.XAPooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -62,42 +62,18 @@ public class DataSourceFactoryTracker implements
         }
         ServiceRegistration<DataSourceFactory> reg = createAndRegisterPooledFactory(reference);
         serviceRegs.put(reference, reg);
-        return null;
+        return context.getService(reference);
     }
 
     private ServiceRegistration<DataSourceFactory> createAndRegisterPooledFactory(
         ServiceReference<DataSourceFactory> reference) {
         LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = context.getService(reference);
-        DataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
-        Dictionary<String, Object> props = createPropsForPoolingDataSourceFactory(reference);
+        PooledDataSourceFactory pdsf = (tm != null) ? new XAPooledDataSourceFactory(dsf, tm) : new PooledDataSourceFactory(dsf);
+        Dictionary<String, Object> props = pdsf.createPropsForPoolingDataSourceFactory(reference);
         ServiceRegistration<DataSourceFactory> reg = context.registerService(
             DataSourceFactory.class, pdsf, props);
         return reg;
-    }
-
-    private Dictionary<String, Object> createPropsForPoolingDataSourceFactory(
-        ServiceReference<DataSourceFactory> reference) {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        for (String key : reference.getPropertyKeys()) {
-            if (!"service.id".equals(key)) {
-                props.put(key, reference.getProperty(key));
-            }
-        }
-        props.put("pooled", "true");
-        if (tm != null) {
-            props.put("xa", "true");
-        }
-        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, getPoolDriverName(reference));
-        return props;
-    }
-
-    private String getPoolDriverName(ServiceReference<DataSourceFactory> reference) {
-        String origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
-        if (origName == null) {
-            origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
-        }
-        return origName + "-pool" + ((tm != null) ? "-xa" : "");
     }
 
     @Override
@@ -109,7 +85,7 @@ public class DataSourceFactoryTracker implements
     public void removedService(ServiceReference<DataSourceFactory> reference, Object service) {
         ServiceRegistration<DataSourceFactory> reg = serviceRegs.get(reference);
         if (reg != null) {
-            LOG.warn("Unregistering PooledDataSourceFactory");
+            LOG.info("DataSourceFactory gone down unregistering PooledDataSourceFactory");
             reg.unregister();
         }
     }

@@ -80,11 +80,10 @@
              resolver="(obr)">
         <feature>pax-jdbc</feature>
 
-        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/2.0.1</bundle>
-        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/2.2</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/3.0_1</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
-
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${commons.dbcp2.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${commons.pool2.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
 
@@ -93,7 +92,7 @@
              resolver="(obr)">
         <feature>pax-jdbc</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.6_spec/1.0</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/3.1.1</bundle>

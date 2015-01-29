@@ -56,8 +56,8 @@ public class TestConfiguration {
     public static Option regressionDefaults() {
         return composite(
 
-            // add SLF4J and logback bundles
-            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(
+            // add SLF4J and logback bundles .. 1.7.0 is needed for aries transaction
+            mavenBundle("org.slf4j", "slf4j-api").version("1.7.0").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
             mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseableManagedDataSource;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseablePoolingDataSource;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.XAPooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class PooledDataSourceFactoryTest {
@@ -26,7 +27,7 @@ public class PooledDataSourceFactoryTest {
         EasyMock.expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(
             xads);
         TransactionManager tm = c.createMock(TransactionManager.class);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
+        PooledDataSourceFactory pdsf = new XAPooledDataSourceFactory(dsf, tm);
         c.replay();
 
         Properties props = new Properties();

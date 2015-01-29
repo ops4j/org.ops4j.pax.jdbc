@@ -26,15 +26,16 @@ final class TransactionManagerTracker implements
     @Override
     public void removedService(ServiceReference<TransactionManager> reference, Object service) {
         LOG.info("TransactionManager service lost. Shutting down support for XA DataSourceFactories");
-        context.ungetService(reference);
         if (this.dsfTracker != null) {
             this.dsfTracker.close();
             this.dsfTracker = null;
         }
+        context.ungetService(reference);
     }
 
     @Override
     public void modifiedService(ServiceReference<TransactionManager> reference, Object service) {
+        LOG.info("TransactionManager service modified");
     }
 
     @Override
@@ -45,6 +46,6 @@ final class TransactionManagerTracker implements
         dsfTracker = new ServiceTracker<DataSourceFactory, Object>(context,
             DataSourceFactory.class, dsManager);
         dsfTracker.open();
-        return null;
+        return tm;
     }
 }
