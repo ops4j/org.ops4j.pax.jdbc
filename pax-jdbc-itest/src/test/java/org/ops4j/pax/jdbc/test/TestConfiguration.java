@@ -31,6 +31,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.MavenArtifactProvisionOption;
 import org.ops4j.pax.exam.util.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,10 @@ public class TestConfiguration {
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
             when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
             junitBundles());
+    }
+    
+    public static MavenArtifactProvisionOption mvnBundle(String groupId, String artifactId) {
+        return mavenBundle(groupId, artifactId).versionAsInProject();
     }
 
     public static boolean isPostgresqlAvailable() {

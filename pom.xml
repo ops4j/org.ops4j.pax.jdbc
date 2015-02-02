@@ -42,6 +42,7 @@
     </scm>
 
     <modules>
+        <module>pax-jdbc-spec</module>
         <module>pax-jdbc</module>
         <module>pax-jdbc-postgresql</module>
         <module>pax-jdbc-derby</module>

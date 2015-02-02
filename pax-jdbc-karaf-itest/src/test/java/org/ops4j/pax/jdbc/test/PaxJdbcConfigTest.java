@@ -48,8 +48,9 @@ public class PaxJdbcConfigTest extends AbstractJdbcTest {
             // KarafDistributionOption.debugConfiguration("5005", true),
             karafDistributionConfiguration().frameworkUrl(karafUrl)
                 .unpackDirectory(new File("target/exam")).useDeployFolder(false),
-            keepRuntimeFolder(), features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-config"),
-            editConfigurationFilePut(DS_CONFIG, DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "h2"),
+            keepRuntimeFolder(), // 
+            features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-config"),
+            editConfigurationFilePut(DS_CONFIG, DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "H2"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_DATABASE_NAME, "test2"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_USER, "sa"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_PASSWORD, ""),

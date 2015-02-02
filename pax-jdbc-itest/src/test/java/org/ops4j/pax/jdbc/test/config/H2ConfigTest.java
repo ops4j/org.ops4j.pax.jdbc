@@ -17,8 +17,7 @@ package org.ops4j.pax.jdbc.test.config;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.io.IOException;
@@ -60,10 +59,13 @@ public class H2ConfigTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), mavenBundle("org.osgi", "org.osgi.enterprise")
-            .versionAsInProject(), mavenBundle("org.apache.felix", "org.apache.felix.configadmin")
-            .versionAsInProject(), mavenBundle("com.h2database", "h2").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-config").versionAsInProject());
+        return new Option[] {
+            regressionDefaults(),
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"),
+            mvnBundle("org.apache.felix", "org.apache.felix.configadmin"),
+            mvnBundle("com.h2database", "h2"),
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config")
+        };
     }
 
     @Test

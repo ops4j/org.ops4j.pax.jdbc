@@ -18,8 +18,8 @@
 package org.ops4j.pax.jdbc.test.derby;
 
 import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.sql.Connection;
@@ -46,9 +46,11 @@ public class DerbyNativeDataSourceTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby")
-            .versionAsInProject(), mavenBundle("org.apache.derby", "derby").versionAsInProject(),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+        return options(regressionDefaults(), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"), //
+                       mvnBundle("org.apache.derby", "derby") //
+        );
     }
 
     @Test

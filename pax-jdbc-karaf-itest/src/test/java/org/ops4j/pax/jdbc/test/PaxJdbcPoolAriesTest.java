@@ -39,11 +39,11 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRunti
 public class PaxJdbcPoolAriesTest extends AbstractJdbcTest {
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2-pool)")
+    @Filter("(osgi.jdbc.driver.name=H2-pool)")
     DataSourceFactory pooledDataSourceFactory;
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2-pool-xa)")
+    @Filter("(osgi.jdbc.driver.name=H2-pool-xa)")
     DataSourceFactory pooledXADataSourceFactory;
 
     @Configuration

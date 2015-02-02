@@ -38,11 +38,11 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class PaxJdbcPoolTest extends AbstractJdbcTest {
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2-pool)")
+    @Filter("(osgi.jdbc.driver.name=H2-pool)")
     DataSourceFactory pooledDataSourceFactory;
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2-pool-xa)")
+    @Filter("(osgi.jdbc.driver.name=H2-pool-xa)")
     DataSourceFactory pooledXADataSourceFactory;
 
     @Configuration

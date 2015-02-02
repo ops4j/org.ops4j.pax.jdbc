@@ -38,7 +38,7 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
     FeaturesService featuresService;
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2)")
+    @Filter("(osgi.jdbc.driver.name=H2)")
     DataSourceFactory h2DataSourceFactory;
 
     @Configuration
