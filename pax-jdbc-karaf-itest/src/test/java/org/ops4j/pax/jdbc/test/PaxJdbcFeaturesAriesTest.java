@@ -1,6 +1,10 @@
 package org.ops4j.pax.jdbc.test;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,26 +14,16 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.osgi.service.jdbc.DataSourceFactory;
-
 import org.apache.karaf.features.FeaturesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
-import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -44,17 +38,12 @@ public class PaxJdbcFeaturesAriesTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        MavenUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc")
-            .artifactId("pax-jdbc-features").classifier("features").type("xml")
-            .versionAsInProject();
         return new Option[] {
-            // KarafDistributionOption.debugConfiguration("5005", true),
-            karafDistributionConfiguration().frameworkUrl(karafUrl)
-                .unpackDirectory(new File("target/exam")).useDeployFolder(false),
-            keepRuntimeFolder(),
-            KarafDistributionOption.features(paxJdbcRepo, "pax-jdbc-h2", "pax-jdbc-derby",
+            karafDefaults(),
+            features(paxJdbcRepo(), "pax-jdbc-h2", "pax-jdbc-derby",
                 "pax-jdbc-sqlite", "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql",
-                "pax-jdbc-pool-aries"), };
+                "pax-jdbc-pool-aries") 
+        };
     }
 
     @Test

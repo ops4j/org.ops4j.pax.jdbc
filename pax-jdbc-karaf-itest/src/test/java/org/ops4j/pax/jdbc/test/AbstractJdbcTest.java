@@ -2,8 +2,12 @@ package org.ops4j.pax.jdbc.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +16,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 
@@ -19,6 +24,12 @@ public class AbstractJdbcTest {
 
     MavenUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf")
         .version("3.0.1").type("tar.gz");
+    
+    MavenUrlReference paxJdbcRepo() {
+        return maven().groupId("org.ops4j.pax.jdbc")
+        .artifactId("pax-jdbc-features").classifier("features").type("xml")
+        .versionAsInProject();
+    }
 
     protected DataSource createDataSource(DataSourceFactory dsf) throws SQLException {
         assertNotNull(dsf);
@@ -46,5 +57,14 @@ public class AbstractJdbcTest {
 
         statement.close();
         connection.close();
+    }
+
+    protected Option karafDefaults() {
+        return composite(
+                         //KarafDistributionOption.debugConfiguration("5005", true),
+                         karafDistributionConfiguration().frameworkUrl(karafUrl)
+                             .unpackDirectory(new File("target/exam")).useDeployFolder(false), //
+                         keepRuntimeFolder()
+            );
     }
 }

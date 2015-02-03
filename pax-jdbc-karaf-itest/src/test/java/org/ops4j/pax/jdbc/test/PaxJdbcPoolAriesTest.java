@@ -1,27 +1,21 @@
 package org.ops4j.pax.jdbc.test;
 
-import java.io.File;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
+
 import java.sql.SQLException;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-
-import org.osgi.service.jdbc.DataSourceFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
-import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
-
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
  * Tests the automatic creation of pooled DataSourceFactory service from an existing
@@ -48,16 +42,9 @@ public class PaxJdbcPoolAriesTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        MavenUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc")
-            .artifactId("pax-jdbc-features").classifier("features").type("xml")
-            .versionAsInProject();
         return new Option[] {
-            // KarafDistributionOption.debugConfiguration("5005", true),
-            karafDistributionConfiguration().frameworkUrl(karafUrl)
-                .unpackDirectory(new File("target/exam")).useDeployFolder(false),
-            keepRuntimeFolder(),
-            KarafDistributionOption.features(paxJdbcRepo, "transaction", "pax-jdbc-h2",
-                "pax-jdbc-pool-aries"), };
+            karafDefaults(),
+            features(paxJdbcRepo(), "transaction", "pax-jdbc-h2", "pax-jdbc-pool-aries"), };
     }
 
     @Test
