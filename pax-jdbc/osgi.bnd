@@ -12,5 +12,3 @@ Import-Package:\
   org.osgi.service.jdbc; version="[1.0,1.1)",\
   *
 
-Export-Package:\
-  org.osgi.service.jdbc;uses:="javax.sql";version="1.0"
