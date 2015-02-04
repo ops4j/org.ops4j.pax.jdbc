@@ -33,7 +33,7 @@
     <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}"
              resolver="(obr)">
         <feature>pax-jdbc-spec</feature>
-        <bundle dependency="true">mvn:com.h2database/h2/${h2.version}</bundle>
+        <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-mariadb" description="Provides JDBC Mariadb DataSourceFactory" version="${project.version}"
