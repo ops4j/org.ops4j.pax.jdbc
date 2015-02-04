@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
 
@@ -17,6 +18,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 
@@ -64,6 +66,7 @@ public class AbstractJdbcTest {
                          //KarafDistributionOption.debugConfiguration("5005", true),
                          karafDistributionConfiguration().frameworkUrl(karafUrl)
                              .unpackDirectory(new File("target/exam")).useDeployFolder(false), //
+                         configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
                          keepRuntimeFolder()
             );
     }
