@@ -32,6 +32,24 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-derbyclient</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbynet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
@@ -193,12 +211,6 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
             <version>1.8.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

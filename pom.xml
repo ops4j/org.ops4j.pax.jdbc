@@ -17,7 +17,8 @@
     <properties>
         <aries.transaction.jdbc.version>2.1.0</aries.transaction.jdbc.version>
         <cglib.version>3.0_1</cglib.version>
-        <derby.version>10.10.1.1</derby.version>
+        <common-logging_common-logging.version>1.1.3</common-logging_common-logging.version>
+        <derby.version>10.11.1.1</derby.version>
         <commons.dbcp2.version>2.0.1</commons.dbcp2.version>
         <commons.pool2.version>2.2</commons.pool2.version>
         <h2.version>1.3.172</h2.version>
@@ -46,6 +47,7 @@
         <module>pax-jdbc</module>
         <module>pax-jdbc-postgresql</module>
         <module>pax-jdbc-derby</module>
+        <module>pax-jdbc-derbyclient</module>
         <module>pax-jdbc-mysql</module>
         <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-mariadb</module>
@@ -199,6 +201,17 @@
                 <groupId>org.apache.derby</groupId>
                 <artifactId>derby</artifactId>
                 <version>${derby.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbynet</artifactId>
+                <version>${derby.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbyclient</artifactId>
+                <version>${derby.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
