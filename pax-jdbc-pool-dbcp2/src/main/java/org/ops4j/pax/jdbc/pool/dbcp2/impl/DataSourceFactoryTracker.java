@@ -16,8 +16,6 @@
 package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.transaction.TransactionManager;
 
@@ -27,7 +25,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,34 +33,27 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
  * existing DataSourceFactory
  */
-public class DataSourceFactoryTracker implements
-    ServiceTrackerCustomizer<DataSourceFactory, Object> {
-
+@SuppressWarnings("rawtypes")
+public class DataSourceFactoryTracker extends ServiceTracker<DataSourceFactory, ServiceRegistration> {
     private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
-    private BundleContext context;
-
-    private Map<ServiceReference<DataSourceFactory>, ServiceRegistration<DataSourceFactory>> serviceRegs;
-    private TransactionManager tm;
+    private final TransactionManager tm;
 
     public DataSourceFactoryTracker(BundleContext context) {
         this(context, null);
     }
 
     public DataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
+    	super(context, DataSourceFactory.class, null);
         this.tm = tm;
-        this.context = context;
-        this.serviceRegs = new HashMap<ServiceReference<DataSourceFactory>, ServiceRegistration<DataSourceFactory>>();
     }
 
     @Override
-    public Object addingService(ServiceReference<DataSourceFactory> reference) {
+    public ServiceRegistration addingService(ServiceReference<DataSourceFactory> reference) {
         if (reference.getProperty("pooled") != null) {
             // Make sure we do not react on our own service for the pooled factory
             return null;
         }
-        ServiceRegistration<DataSourceFactory> reg = createAndRegisterPooledFactory(reference);
-        serviceRegs.put(reference, reg);
-        return context.getService(reference);
+        return createAndRegisterPooledFactory(reference);
     }
 
     private ServiceRegistration<DataSourceFactory> createAndRegisterPooledFactory(
@@ -71,22 +62,17 @@ public class DataSourceFactoryTracker implements
         DataSourceFactory dsf = context.getService(reference);
         PooledDataSourceFactory pdsf = (tm != null) ? new XAPooledDataSourceFactory(dsf, tm) : new PooledDataSourceFactory(dsf);
         Dictionary<String, Object> props = pdsf.createPropsForPoolingDataSourceFactory(reference);
-        ServiceRegistration<DataSourceFactory> reg = context.registerService(
-            DataSourceFactory.class, pdsf, props);
-        return reg;
+        return context.registerService(DataSourceFactory.class, pdsf, props);
     }
 
     @Override
-    public void modifiedService(ServiceReference<DataSourceFactory> reference, Object service) {
-
+    public void modifiedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration reg) {
     }
 
-    @Override
-    public void removedService(ServiceReference<DataSourceFactory> reference, Object service) {
-        ServiceRegistration<DataSourceFactory> reg = serviceRegs.get(reference);
-        if (reg != null) {
-            LOG.info("DataSourceFactory gone down unregistering PooledDataSourceFactory");
-            reg.unregister();
-        }
+	@Override
+    public void removedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration reg) {
+    	context.ungetService(reference);
+    	reg.unregister();
     }
+    
 }
