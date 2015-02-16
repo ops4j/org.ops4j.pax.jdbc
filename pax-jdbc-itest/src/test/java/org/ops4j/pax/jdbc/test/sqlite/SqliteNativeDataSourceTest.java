@@ -18,10 +18,10 @@
 package org.ops4j.pax.jdbc.test.sqlite;
 
 import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.sql.Connection;
@@ -48,10 +48,12 @@ public class SqliteNativeDataSourceTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), systemProperty("osgi.console").value("6666"),
-            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite").versionAsInProject(),
-            wrappedBundle(mavenBundle("org.xerial", "sqlite-jdbc").versionAsInProject()),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+        return options(regressionDefaults(), //
+                       systemProperty("osgi.console").value("6666"), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite"), //
+                       wrappedBundle(mvnBundle("org.xerial", "sqlite-jdbc")) //
+        );
     }
 
     @Test

@@ -67,11 +67,10 @@ public class DerbyClientNativeDataSourceTest {
     @Configuration
     public Option[] config() throws Exception {
         startDerbyServer();
-        return options(
-            regressionDefaults(),
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"),
-            mvnBundle("org.apache.derby", "derbyclient"),
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derbyclient")
+        return options(regressionDefaults(), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+                       mvnBundle("org.apache.derby", "derbyclient"), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derbyclient") //
         );
     }
 

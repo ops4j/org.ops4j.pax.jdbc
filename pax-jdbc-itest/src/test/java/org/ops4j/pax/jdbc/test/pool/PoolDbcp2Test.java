@@ -50,17 +50,17 @@ public class PoolDbcp2Test {
     @Configuration
     public Option[] config() {
         return new Option[] {
-            regressionDefaults(),
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"),
-            mvnBundle("com.h2database", "h2"),
-            mvnBundle("org.apache.commons", "commons-pool2"),
-            mvnBundle("commons-logging", "commons-logging"),
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"),
-            mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"),
-            mvnBundle("org.apache.commons", "commons-dbcp2"),
-            mvnBundle("org.apache.aries", "org.apache.aries.util"),
-            mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").noStart(),
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"),
+            regressionDefaults(), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("com.h2database", "h2"), //
+            mvnBundle("org.apache.commons", "commons-pool2"), //
+            mvnBundle("commons-logging", "commons-logging"), //
+            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
+            mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"), //
+            mvnBundle("org.apache.commons", "commons-dbcp2"), //
+            mvnBundle("org.apache.aries", "org.apache.aries.util"), //
+            mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").noStart(), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
         };
     }
 

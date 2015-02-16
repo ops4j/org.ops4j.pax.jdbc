@@ -17,6 +17,18 @@
  */
 package org.ops4j.pax.jdbc.test.h2;
 
+import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -24,17 +36,6 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.jdbc.DataSourceFactory;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 @RunWith(PaxExam.class)
 public class H2DataSourceTest {
@@ -45,9 +46,11 @@ public class H2DataSourceTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc")
-            .versionAsInProject(), mavenBundle("com.h2database", "h2").versionAsInProject(),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject());
+        return options(regressionDefaults(), 
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+                       mvnBundle("com.h2database", "h2") //
+            );
     }
 
     @Test

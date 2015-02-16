@@ -18,8 +18,8 @@
 package org.ops4j.pax.jdbc.test.mysql;
 
 import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
 import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.sql.Connection;
@@ -51,10 +51,11 @@ public class MysqlDataSourceTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc")
-            .versionAsInProject(), mavenBundle("mysql", "mysql-connector-java")
-            .versionAsInProject(), mavenBundle("org.osgi", "org.osgi.enterprise")
-            .versionAsInProject());
+        return options(regressionDefaults(),
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+                       mvnBundle("mysql", "mysql-connector-java") //
+        );
     }
 
     @Test
