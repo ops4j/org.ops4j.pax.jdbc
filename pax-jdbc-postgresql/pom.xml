@@ -31,8 +31,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.ancoron.postgresql</groupId>
-            <artifactId>org.postgresql</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>provided</scope>
         </dependency>
 

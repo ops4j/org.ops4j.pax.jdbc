@@ -45,15 +45,14 @@ public class PostgresqlNativeDataSourceTest {
     public PostgresqlRule postgresql = new PostgresqlRule();
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=postgresql)")
+    @Filter("(osgi.jdbc.driver.name=PostgreSQL JDBC Driver)")
     private DataSourceFactory dsf;
 
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(),
                        mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-postgresql"), //
-                       mvnBundle("org.ancoron.postgresql", "org.postgresql") //
+                       mvnBundle("org.postgresql", "postgresql") //
         );
     }
 

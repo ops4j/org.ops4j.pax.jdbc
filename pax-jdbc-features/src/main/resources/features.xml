@@ -65,8 +65,7 @@
         <feature>transaction</feature>
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.ancoron.postgresql/org.postgresql/${postgresql.version}</bundle>
-        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-postgresql/${project.version}</bundle>
+        <bundle dependency="true">mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory"
