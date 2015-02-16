@@ -55,11 +55,10 @@ public class DataSourceFactoryTracker extends
             // Make sure we do not react on our own service for the pooled factory
             return null;
         }
-
-        LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = context.getService(reference);
         PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
         Dictionary<String, Object> props = createPropsForPoolingDataSourceFactory(reference);
+        LOG.debug("Registering PooledDataSourceFactory: " + props);
         return context.registerService(DataSourceFactory.class, pdsf, props);
     }
 
@@ -96,7 +95,7 @@ public class DataSourceFactoryTracker extends
     @Override
     public void removedService(ServiceReference<DataSourceFactory> reference,
         ServiceRegistration<DataSourceFactory> service) {
-        LOG.warn("Unregistering PooledDataSourceFactory");
+        LOG.debug("Unregistering PooledDataSourceFactory: " + createPropsForPoolingDataSourceFactory(reference));
         service.unregister();
         context.ungetService(reference);
     }
