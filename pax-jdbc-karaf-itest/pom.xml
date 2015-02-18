@@ -12,7 +12,7 @@
     <name>OPS4J Pax JDBC Karaf Integration Tests</name>
 
     <properties>
-        <karaf.version>3.0.1</karaf.version>
+        <karaf.version>3.0.2</karaf.version>
     </properties>
 
     <dependencies>
@@ -64,13 +64,11 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
-            <version>${pax.exam.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
-            <version>${pax.exam.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
