@@ -45,7 +45,6 @@
     <modules>
         <module>pax-jdbc-spec</module>
         <module>pax-jdbc</module>
-        <module>pax-jdbc-postgresql</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
         <module>pax-jdbc-mysql</module>
