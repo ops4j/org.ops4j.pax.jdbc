@@ -56,14 +56,14 @@ public class DerbyClientNativeDataSourceTest {
     @Filter(value = "(osgi.jdbc.driver.name=derbyclient)")
     private DataSourceFactory dsf;
     private ServerConfiguration dbConfig = new ServerConfiguration("derbyclient");
-    
+
     public void startDerbyServer() throws Exception {
-        InetAddress addr = Inet4Address.getLocalHost();
+        InetAddress addr = Inet4Address.getByName(dbConfig.getServerName());
         Integer port = new Integer(dbConfig.getPortNumber());
         NetworkServerControl server = new NetworkServerControl(addr , port);
         server.start(null);
     }
-    
+
     @Configuration
     public Option[] config() throws Exception {
         startDerbyServer();
