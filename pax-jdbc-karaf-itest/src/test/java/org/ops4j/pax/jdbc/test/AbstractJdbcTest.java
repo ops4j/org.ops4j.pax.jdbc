@@ -18,14 +18,13 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class AbstractJdbcTest {
 
     MavenUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf")
-        .version("3.0.1").type("tar.gz");
+        .version("3.0.3").type("tar.gz");
     
     MavenUrlReference paxJdbcRepo() {
         return maven().groupId("org.ops4j.pax.jdbc")
