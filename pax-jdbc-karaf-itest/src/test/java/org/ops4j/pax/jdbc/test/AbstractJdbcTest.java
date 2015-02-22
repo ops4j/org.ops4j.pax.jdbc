@@ -17,19 +17,23 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class AbstractJdbcTest {
 
+    protected ConfigurationManager cm = new ConfigurationManager();
+
+    String karafVersion = cm.getProperty("karaf.version");
+
     MavenUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf")
-        .version("3.0.3").type("tar.gz");
-    
+        .version(karafVersion).type("tar.gz");
+
     MavenUrlReference paxJdbcRepo() {
-        return maven().groupId("org.ops4j.pax.jdbc")
-        .artifactId("pax-jdbc-features").classifier("features").type("xml")
-        .versionAsInProject();
+        return maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features")
+            .classifier("features").type("xml").versionAsInProject();
     }
 
     protected DataSource createDataSource(DataSourceFactory dsf) throws SQLException {
@@ -62,11 +66,10 @@ public class AbstractJdbcTest {
 
     protected Option karafDefaults() {
         return composite(
-                         //KarafDistributionOption.debugConfiguration("5005", true),
-                         karafDistributionConfiguration().frameworkUrl(karafUrl)
-                             .unpackDirectory(new File("target/exam")).useDeployFolder(false), //
-                         configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
-                         keepRuntimeFolder()
-            );
+        // KarafDistributionOption.debugConfiguration("5005", true),
+            karafDistributionConfiguration().frameworkUrl(karafUrl)
+                .unpackDirectory(new File("target/exam")).useDeployFolder(false), //
+            configureConsole().ignoreLocalConsole().ignoreRemoteShell(), //
+            keepRuntimeFolder());
     }
 }
