@@ -51,12 +51,14 @@
         <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-mariadb</module>
         <module>pax-jdbc-oracle</module>
+        <module>pax-jdbc-mssql</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool-dbcp2</module>
         <module>pax-jdbc-pool-aries</module>
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>
+       
     </modules>
 
     <dependencyManagement>
