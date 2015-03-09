@@ -77,6 +77,13 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
     </feature>
 
+   <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
+    </feature>
+
     <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory"
              version="${project.version}"
              resolver="(obr)">
