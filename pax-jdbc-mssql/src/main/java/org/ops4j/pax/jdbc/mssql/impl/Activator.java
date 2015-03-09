@@ -24,19 +24,20 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 public class Activator implements BundleActivator {
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
+    @Override
+    public void start(BundleContext context) throws Exception {
+        MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
-        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
+            "com.microsoft.sqlserver.jdbc.SQLServerDriver");
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "mssql");
         context.registerService(DataSourceFactory.class.getName(), dsf, props);
-	}
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		// can be implemented in future
-		
-	}
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        // can be implemented in future
+
+    }
 
 }
