@@ -54,10 +54,9 @@ public class XAPooledDataSourceFactory extends PooledDataSourceFactory {
         XADataSource ds = dsFactory.createXADataSource(props);
         DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
         PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
-        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
         GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
         BeanConfig.configure(conf, poolProps);
-        pool.setConfig(conf);
+        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
         TransactionRegistry transactionRegistry = connFactory.getTransactionRegistry();
         return new CloseableManagedDataSource<PoolableConnection>(pool, transactionRegistry);
     }

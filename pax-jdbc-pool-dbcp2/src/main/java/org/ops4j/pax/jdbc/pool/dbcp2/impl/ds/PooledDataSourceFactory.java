@@ -22,7 +22,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
@@ -85,6 +88,13 @@ public class PooledDataSourceFactory implements DataSourceFactory {
                 poolProps.put(strippedKey, (String)props.get(key));
             }
         }
+        if (poolProps.get("jmxNameBase") == null) {
+            poolProps.put("jmxNameBase", "org.ops4j.pax.jdbc.pool.dbcp2:type=GenericObjectPool,name=");
+        }
+        String dsName = (String)props.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
+        if (dsName != null) {
+            poolProps.put("jmxNamePrefix", dsName);
+        }
         return poolProps;
     }
 
@@ -96,6 +106,7 @@ public class PooledDataSourceFactory implements DataSourceFactory {
                 dsProps.put(key, props.get(key));
             }
         }
+        dsProps.remove(DataSourceFactory.JDBC_DATASOURCE_NAME);
         return dsProps;
     }
 
@@ -104,11 +115,21 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         DataSource ds = dsFactory.createDataSource(props);
         DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(ds);
         PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
-        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf);
         GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
         BeanConfig.configure(conf, poolProps);
-        pool.setConfig(conf);
+        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
         return new CloseablePoolingDataSource<PoolableConnection>(pool);
+    }
+
+    protected ObjectName getJmxName(String dsName) {
+        if (dsName == null) {
+            dsName = UUID.randomUUID().toString();
+        }
+        try {
+            return new ObjectName("org.ops4j.pax.jdbc.pool", "dsName", dsName);
+        } catch (MalformedObjectNameException e) {
+            throw new IllegalArgumentException("Invalid object name for data source" + dsName, e);
+        }
     }
 
     public Dictionary<String, Object> createPropsForPoolingDataSourceFactory(ServiceReference<DataSourceFactory> reference) {

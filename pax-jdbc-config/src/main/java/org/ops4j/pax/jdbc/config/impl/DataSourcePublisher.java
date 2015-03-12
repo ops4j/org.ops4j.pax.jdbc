@@ -116,6 +116,11 @@ public class DataSourcePublisher {
     private Object createDs(DataSourceFactory dsf, Class<?> type) throws SQLException {
         Properties props = toProperties(config);
         if (type == DataSource.class) {
+            Class<? extends DataSourceFactory> dsfClass = dsf.getClass();
+            if (dsfClass != null && dsfClass.getName().startsWith("org.ops4j.pax.jdbc.pool.dbcp2")) {
+                // Add dataSourceName for dbcp2 pooled DS to configure JMX bean name
+                props.put(DataSourceFactory.JDBC_DATASOURCE_NAME, this.config.get(DataSourceFactory.JDBC_DATASOURCE_NAME));
+            }
             return dsf.createDataSource(props);
         } else if (type == ConnectionPoolDataSource.class) {
             return dsf.createConnectionPoolDataSource(props);
