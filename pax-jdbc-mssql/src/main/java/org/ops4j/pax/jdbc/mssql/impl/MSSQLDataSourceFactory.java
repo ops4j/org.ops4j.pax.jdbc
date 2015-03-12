@@ -50,9 +50,7 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
-            DataSource ds = DataSource.class.cast(mssqlDataSourceClass.newInstance());
-            setProperties(mssqlDataSourceClass, ds, props);
-            return ds;
+            return setProperties(mssqlDataSourceClass.newInstance(), props);
         }
         catch (Exception ex) {
             throw new SQLException(ex);
@@ -63,10 +61,7 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
         throws SQLException {
         try {
-            ConnectionPoolDataSource cpds = ConnectionPoolDataSource.class
-                .cast(mssqlConnectionPoolDataSourceClass.newInstance());
-            setProperties(mssqlConnectionPoolDataSourceClass, cpds, props);
-            return cpds;
+            return setProperties(mssqlConnectionPoolDataSourceClass.newInstance(), props);
         }
         catch (Exception ex) {
             throw new SQLException(ex);
@@ -76,9 +71,7 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
         try {
-            XADataSource xads = XADataSource.class.cast(mssqlXADataSourceClass.newInstance());
-            setProperties(mssqlXADataSourceClass, xads, props);
-            return xads;
+            return setProperties(mssqlXADataSourceClass.newInstance(), props);
         }
         catch (Exception ex) {
             throw new SQLException(ex);
@@ -98,29 +91,20 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    private void setProperties(Class<?> dataSourceClass, Object dataSourceInstance, Properties props)
-        throws Exception {
-
-        setProperty(props.getProperty(DataSourceFactory.JDBC_URL), dataSourceClass,
-            dataSourceInstance, "setURL");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_DATABASE_NAME), dataSourceClass,
-            dataSourceInstance, "setDatabaseName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceClass,
-            dataSourceInstance, "setServerName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceClass,
-            dataSourceInstance, "setPortNumber");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_USER), dataSourceClass,
-            dataSourceInstance, "setUser");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceClass,
-            dataSourceInstance, "setPassword");
-
+    @SuppressWarnings("unchecked")
+    private <T> T setProperties(Object dataSourceInstance, Properties props) throws Exception {
+        setProperty(props.getProperty(DataSourceFactory.JDBC_URL), dataSourceInstance, "setURL");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_DATABASE_NAME), dataSourceInstance, "setDatabaseName");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceInstance, "setServerName");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance, "setPortNumber");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_USER), dataSourceInstance, "setUser");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceInstance, "setPassword");
+        return (T)dataSourceInstance;
     }
 
-    private void setProperty(String propertyValue, Class<?> dataSourceClass,
-        Object dataSourceInstance, String dataSourceMethodName) throws Exception {
-        if (propertyValue != null) {
-            dataSourceClass.getMethod(dataSourceMethodName, String.class).invoke(
-                dataSourceInstance, propertyValue);
+    private void setProperty(String value, Object instance, String methodName) throws Exception {
+        if (value != null) {
+            instance.getClass().getMethod(methodName, String.class).invoke(instance, value);
         }
     }
 
