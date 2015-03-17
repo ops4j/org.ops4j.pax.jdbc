@@ -60,6 +60,7 @@ public class PoolDbcp2Test {
             mvnBundle("org.apache.commons", "commons-dbcp2"), //
             mvnBundle("org.apache.aries", "org.apache.aries.util"), //
             mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").noStart(), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
         };
     }

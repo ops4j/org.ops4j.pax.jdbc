@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.aries.impl.ds;
+package org.ops4j.pax.jdbc.pool.common.impl.ds;
 
+import javax.transaction.TransactionManager;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-
-import org.apache.aries.transaction.AriesTransactionManager;
-import org.apache.aries.transaction.jdbc.RecoverableDataSource;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,25 +36,14 @@ import org.slf4j.LoggerFactory;
  * XADataSource and handles the XA Resources. This kind of DataSource can then for example be used
  * in persistence.xml as jta-data-source
  */
-public class PooledDataSourceFactory implements DataSourceFactory {
+public abstract class PooledDataSourceFactory implements DataSourceFactory {
 
     private static final String POOL_PREFIX = "pool.";
-    private Logger LOG = LoggerFactory.getLogger(PooledDataSourceFactory.class);
-    private DataSourceFactory dsFactory;
-    private AriesTransactionManager tm;
+    protected static final Logger LOG = LoggerFactory.getLogger(PooledDataSourceFactory.class);
+    protected DataSourceFactory dsFactory;
+   
 
-    /**
-     * Initialize XA PoolingDataSourceFactory
-     * 
-     * @param dsFactory
-     *            non pooled DataSourceFactory we delegate to
-     * @param tm
-     *            transaction manager (Only needed for XA mode)
-     */
-    public PooledDataSourceFactory(DataSourceFactory dsFactory, AriesTransactionManager tm) {
-        this.dsFactory = dsFactory;
-        this.tm = tm;
-    }
+    
 
     /**
      * Initialize non XA PoolingDataSourceFactory
@@ -66,25 +52,18 @@ public class PooledDataSourceFactory implements DataSourceFactory {
      *            non pooled DataSourceFactory we delegate to
      */
     public PooledDataSourceFactory(DataSourceFactory dsFactory) {
-        this(dsFactory, null);
+      this.dsFactory = dsFactory;
     }
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
-            CommonDataSource ds;
-            if (tm != null) {
-                ds = dsFactory.createXADataSource(getNonPoolProps(props));
-            }
-            else {
-                ds = dsFactory.createDataSource(getNonPoolProps(props));
-            }
-            RecoverableDataSource mds = new RecoverableDataSource();
-            mds.setTransactionManager(tm);
-            mds.setDataSource(ds);
-            BeanConfig.configure(mds, getPoolProps(props));
-            mds.start();
-            return mds;
+            DataSource ds = dsFactory.createDataSource(getNonPoolProps(props));
+            Iterable<Object> dsConfiguration = internalCreateDatasource(ds);
+                
+            BeanConfig.configure(dsConfiguration.iterator().next(), getPoolProps(props));
+            DataSource wrappedDs = doStart(dsConfiguration);
+            return wrappedDs;
         }
         catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);
@@ -100,7 +79,11 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    private Map<String, String> getPoolProps(Properties props) {
+   protected abstract DataSource doStart(Iterable<Object> mds) throws Exception;
+
+    protected abstract Iterable<Object> internalCreateDatasource(Object ds);
+
+    protected Map<String, String> getPoolProps(Properties props) {
         Map<String, String> poolProps = new HashMap<String, String>();
         for (Object keyO : props.keySet()) {
             String key = (String) keyO;
@@ -112,7 +95,7 @@ public class PooledDataSourceFactory implements DataSourceFactory {
         return poolProps;
     }
 
-    private Properties getNonPoolProps(Properties props) {
+    protected Properties getNonPoolProps(Properties props) {
         Properties dsProps = new Properties();
         for (Object keyO : props.keySet()) {
             String key = (String) keyO;

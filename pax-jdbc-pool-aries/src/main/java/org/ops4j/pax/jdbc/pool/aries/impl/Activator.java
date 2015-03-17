@@ -15,6 +15,8 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
+import javax.transaction.TransactionManager;
+
 import org.apache.aries.transaction.AriesTransactionManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -28,14 +30,14 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
 
     private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
-    private ServiceTracker<AriesTransactionManager, DataSourceFactoryTracker> tmTracker;
+    private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
-        dsfTracker = new DataSourceFactoryTracker(context);
+        dsfTracker = new AriesDataSourceFactoryTracker(context);
         dsfTracker.open();
 
-        tmTracker = new TransactionManagerTracker(context);
+        tmTracker = new AriesTransactionManagerTracker(context);
         tmTracker.open();
     }
 

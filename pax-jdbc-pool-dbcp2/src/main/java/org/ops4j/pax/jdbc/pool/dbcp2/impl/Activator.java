@@ -15,6 +15,11 @@
  */
 package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
+import javax.transaction.TransactionManager;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.util.tracker.ServiceTracker;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -23,22 +28,22 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
-    private DataSourceFactoryTracker dsfTracker;
-	private TransactionManagerTracker tmTracker;
+  private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
+  private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
 
-    @Override
-    public void start(BundleContext context) throws Exception {
-        dsfTracker = new DataSourceFactoryTracker(context);
-        dsfTracker.open();
+  @Override
+  public void start(BundleContext context) throws Exception {
+    dsfTracker = new DataSourceFactoryTracker(context);
+    dsfTracker.open();
 
-        tmTracker = new TransactionManagerTracker(context);
-        tmTracker.open();
-    }
+    tmTracker = new TransactionManagerTracker(context);
+    tmTracker.open();
+  }
 
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        dsfTracker.close();
-        tmTracker.close();
-    }
+  @Override
+  public void stop(BundleContext context) throws Exception {
+    dsfTracker.close();
+    tmTracker.close();
+  }
 
 }

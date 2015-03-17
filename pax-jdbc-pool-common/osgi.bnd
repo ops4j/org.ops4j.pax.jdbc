@@ -1,0 +1,10 @@
+Bundle-Version>:\
+  ${pom.version}
+
+Bundle-SymbolicName:\
+  ${bundle.symbolicName}
+
+Import-Package:\
+  *
+Export-Package: org.ops4j.pax.jdbc.pool.common.impl.ds,\
+ org.ops4j.pax.jdbc.pool.common.impl
