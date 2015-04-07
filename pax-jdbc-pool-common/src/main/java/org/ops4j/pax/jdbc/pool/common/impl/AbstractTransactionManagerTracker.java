@@ -9,12 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
-public abstract class AbstractTransactionManagerTracker extends ServiceTracker<TransactionManager, ServiceTracker> {
+public abstract class AbstractTransactionManagerTracker extends
+    ServiceTracker<TransactionManager, ServiceTracker> {
+
     private Logger LOG = LoggerFactory.getLogger(TransactionManager.class);
 
     public AbstractTransactionManagerTracker(BundleContext context) {
-    	super(context, TransactionManager.class, null);
+        super(context, TransactionManager.class, null);
     }
+
     @Override
     public ServiceTracker addingService(ServiceReference<TransactionManager> reference) {
         LOG.info("TransactionManager service detected. Providing support for XA DataSourceFactories");
@@ -23,18 +26,21 @@ public abstract class AbstractTransactionManagerTracker extends ServiceTracker<T
         dsfTracker.open();
         return dsfTracker;
     }
+
     @Override
-    public void modifiedService(ServiceReference<TransactionManager> reference, ServiceTracker dsfTracker) {
+    public void modifiedService(ServiceReference<TransactionManager> reference,
+        ServiceTracker dsfTracker) {
         LOG.info("TransactionManager service modified");
     }
 
-	@Override
-    public void removedService(ServiceReference<TransactionManager> reference, ServiceTracker dsfTracker) {
+    @Override
+    public void removedService(ServiceReference<TransactionManager> reference,
+        ServiceTracker dsfTracker) {
         LOG.info("TransactionManager service lost. Shutting down support for XA DataSourceFactories");
         dsfTracker.close();
         context.ungetService(reference);
     }
 
-    
-    public abstract AbstractDataSourceFactoryTracker createTracker(BundleContext context, TransactionManager tm);
+    public abstract AbstractDataSourceFactoryTracker createTracker(BundleContext context,
+        TransactionManager tm);
 }

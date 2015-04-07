@@ -25,199 +25,194 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
 /**
- * A factory for JDBC connection factories. There are 3 preferred connection
- * factories for getting JDBC connections: <code>javax.sql.DataSource</code>,
- * <code>javax.sql.ConnectionPoolDataSource</code>, and
- * <code>javax.sql.XADataSource</code>.
+ * A factory for JDBC connection factories. There are 3 preferred connection factories for getting
+ * JDBC connections: <code>javax.sql.DataSource</code>,
+ * <code>javax.sql.ConnectionPoolDataSource</code>, and <code>javax.sql.XADataSource</code>.
  * 
- * DataSource providers should implement this interface and register it as an
- * OSGi service with the JDBC driver class name in the
- * {@link #OSGI_JDBC_DRIVER_CLASS} property.
+ * DataSource providers should implement this interface and register it as an OSGi service with the
+ * JDBC driver class name in the {@link #OSGI_JDBC_DRIVER_CLASS} property.
  * 
  * @version $Revision: 8634 $
  * @ThreadSafe
  */
 public interface DataSourceFactory {
-        /**
-         * Service property used by a JDBC driver to declare the driver class when
-         * registering a JDBC DataSourceFactory service. Clients may filter or test
-         * this property to determine if the driver is suitable, or the desired one.
-         */
-        public static final String      OSGI_JDBC_DRIVER_CLASS          = "osgi.jdbc.driver.class";
 
-        /**
-         * Service property used by a JDBC driver to declare the driver name when
-         * registering a JDBC DataSourceFactory service. Clients may filter or test
-         * this property to determine if the driver is suitable, or the desired one.
-         */
-        public static final String      OSGI_JDBC_DRIVER_NAME           = "osgi.jdbc.driver.name";
+    /**
+     * Service property used by a JDBC driver to declare the driver class when registering a JDBC
+     * DataSourceFactory service. Clients may filter or test this property to determine if the
+     * driver is suitable, or the desired one.
+     */
+    public static final String OSGI_JDBC_DRIVER_CLASS = "osgi.jdbc.driver.class";
 
-        /**
-         * Service property used by a JDBC driver to declare the driver version when
-         * registering a JDBC DataSourceFactory service. Clients may filter or test
-         * this property to determine if the driver is suitable, or the desired one.
-         */
-        public static final String      OSGI_JDBC_DRIVER_VERSION        = "osgi.jdbc.driver.version";
+    /**
+     * Service property used by a JDBC driver to declare the driver name when registering a JDBC
+     * DataSourceFactory service. Clients may filter or test this property to determine if the
+     * driver is suitable, or the desired one.
+     */
+    public static final String OSGI_JDBC_DRIVER_NAME = "osgi.jdbc.driver.name";
 
-        /**
-         * The "databaseName" property that DataSource clients should supply a value
-         * for when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_DATABASE_NAME                      = "databaseName";
+    /**
+     * Service property used by a JDBC driver to declare the driver version when registering a JDBC
+     * DataSourceFactory service. Clients may filter or test this property to determine if the
+     * driver is suitable, or the desired one.
+     */
+    public static final String OSGI_JDBC_DRIVER_VERSION = "osgi.jdbc.driver.version";
 
-        /**
-         * The "dataSourceName" property that DataSource clients should supply a
-         * value for when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_DATASOURCE_NAME            = "dataSourceName";
+    /**
+     * The "databaseName" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_DATABASE_NAME = "databaseName";
 
-        /**
-         * The "description" property that DataSource clients should supply a value
-         * for when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_DESCRIPTION                        = "description";
+    /**
+     * The "dataSourceName" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_DATASOURCE_NAME = "dataSourceName";
 
-        /**
-         * The "networkProtocol" property that DataSource clients should supply a
-         * value for when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_NETWORK_PROTOCOL           = "networkProtocol";
+    /**
+     * The "description" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_DESCRIPTION = "description";
 
-        /**
-         * The "password" property that DataSource clients should supply a value for
-         * when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_PASSWORD                           = "password";
+    /**
+     * The "networkProtocol" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_NETWORK_PROTOCOL = "networkProtocol";
 
-        /**
-         * The "portNumber" property that DataSource clients should supply a value
-         * for when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_PORT_NUMBER                        = "portNumber";
+    /**
+     * The "password" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_PASSWORD = "password";
 
-        /**
-         * The "roleName" property that DataSource clients should supply a value for
-         * when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_ROLE_NAME                          = "roleName";
+    /**
+     * The "portNumber" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_PORT_NUMBER = "portNumber";
 
-        /**
-         * The "serverName" property that DataSource clients should supply a value
-         * for when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_SERVER_NAME                        = "serverName";
+    /**
+     * The "roleName" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_ROLE_NAME = "roleName";
 
-        /**
-         * The "user" property that DataSource clients should supply a value for
-         * when calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_USER                                       = "user";
+    /**
+     * The "serverName" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_SERVER_NAME = "serverName";
 
-        /**
-         * The "url" property that DataSource clients should supply a value for when
-         * calling {@link #createDataSource(Properties)}.
-         */
-        public static final String      JDBC_URL                                        = "url";
+    /**
+     * The "user" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_USER = "user";
 
-        /**
-         * The "initialPoolSize" property that ConnectionPoolDataSource and
-         * XADataSource clients should supply a value for when calling
-         * {@link #createConnectionPoolDataSource(Properties)} or
-         * {@link #createXADataSource(Properties)}.
-         */
-        public static final String      JDBC_INITIAL_POOL_SIZE          = "initialPoolSize";
+    /**
+     * The "url" property that DataSource clients should supply a value for when calling
+     * {@link #createDataSource(Properties)}.
+     */
+    public static final String JDBC_URL = "url";
 
-        /**
-         * The "maxIdleTime" property that ConnectionPoolDataSource and XADataSource
-         * clients should supply a value for when calling
-         * {@link #createConnectionPoolDataSource(Properties)} or
-         * {@link #createXADataSource(Properties)}.
-         */
-        public static final String      JDBC_MAX_IDLE_TIME                      = "maxIdleTime";
+    /**
+     * The "initialPoolSize" property that ConnectionPoolDataSource and XADataSource clients should
+     * supply a value for when calling {@link #createConnectionPoolDataSource(Properties)} or
+     * {@link #createXADataSource(Properties)}.
+     */
+    public static final String JDBC_INITIAL_POOL_SIZE = "initialPoolSize";
 
-        /**
-         * The "maxPoolSize" property that ConnectionPoolDataSource and XADataSource
-         * clients should supply a value for when calling
-         * {@link #createConnectionPoolDataSource(Properties)} or
-         * {@link #createXADataSource(Properties)}.
-         */
-        public static final String      JDBC_MAX_POOL_SIZE                      = "maxPoolSize";
+    /**
+     * The "maxIdleTime" property that ConnectionPoolDataSource and XADataSource clients should
+     * supply a value for when calling {@link #createConnectionPoolDataSource(Properties)} or
+     * {@link #createXADataSource(Properties)}.
+     */
+    public static final String JDBC_MAX_IDLE_TIME = "maxIdleTime";
 
-        /**
-         * The "maxStatements" property that ConnectionPoolDataSource and
-         * XADataSource clients should supply a value for when calling
-         * {@link #createConnectionPoolDataSource(Properties)} or
-         * {@link #createXADataSource(Properties)}.
-         */
-        public static final String      JDBC_MAX_STATEMENTS                     = "maxStatements";
+    /**
+     * The "maxPoolSize" property that ConnectionPoolDataSource and XADataSource clients should
+     * supply a value for when calling {@link #createConnectionPoolDataSource(Properties)} or
+     * {@link #createXADataSource(Properties)}.
+     */
+    public static final String JDBC_MAX_POOL_SIZE = "maxPoolSize";
 
-        /**
-         * The "minPoolSize" property that ConnectionPoolDataSource and XADataSource
-         * clients should supply a value for when calling
-         * {@link #createConnectionPoolDataSource(Properties)} or
-         * {@link #createXADataSource(Properties)}.
-         */
-        public static final String      JDBC_MIN_POOL_SIZE                      = "minPoolSize";
+    /**
+     * The "maxStatements" property that ConnectionPoolDataSource and XADataSource clients should
+     * supply a value for when calling {@link #createConnectionPoolDataSource(Properties)} or
+     * {@link #createXADataSource(Properties)}.
+     */
+    public static final String JDBC_MAX_STATEMENTS = "maxStatements";
 
-        /**
-         * The "propertyCycle" property that ConnectionPoolDataSource and
-         * XADataSource clients should supply a value for when calling
-         * {@link #createConnectionPoolDataSource(Properties)} or
-         * {@link #createXADataSource(Properties)}.
-         */
-        public static final String      JDBC_PROPERTY_CYCLE                     = "propertyCycle";
+    /**
+     * The "minPoolSize" property that ConnectionPoolDataSource and XADataSource clients should
+     * supply a value for when calling {@link #createConnectionPoolDataSource(Properties)} or
+     * {@link #createXADataSource(Properties)}.
+     */
+    public static final String JDBC_MIN_POOL_SIZE = "minPoolSize";
 
-        /**
-         * Create a new <code>DataSource</code> using the given properties.
-         * 
-         * @param props The properties used to configure the <code>DataSource</code>
-         *        . <code>null</code> indicates no properties. If the property
-         *        cannot be set on the <code>DataSource</code> being created then a
-         *        <code>SQLException</code> must be thrown.
-         * @return A configured <code>DataSource</code>.
-         * @throws SQLException If the <code>DataSource</code> cannot be created.
-         */
-        public DataSource createDataSource(Properties props) throws SQLException;
+    /**
+     * The "propertyCycle" property that ConnectionPoolDataSource and XADataSource clients should
+     * supply a value for when calling {@link #createConnectionPoolDataSource(Properties)} or
+     * {@link #createXADataSource(Properties)}.
+     */
+    public static final String JDBC_PROPERTY_CYCLE = "propertyCycle";
 
-        /**
-         * Create a new <code>ConnectionPoolDataSource</code> using the given
-         * properties.
-         * 
-         * @param props The properties used to configure the
-         *        <code>ConnectionPoolDataSource</code>. <code>null</code> indicates
-         *        no properties. If the property cannot be set on the
-         *        <code>ConnectionPoolDataSource</code> being created then a
-         *        <code>SQLException</code> must be thrown.
-         * @return A configured <code>ConnectionPoolDataSource</code>.
-         * @throws SQLException If the <code>ConnectionPoolDataSource</code> cannot
-         *         be created.
-         */
-        public ConnectionPoolDataSource createConnectionPoolDataSource(
-                        Properties props) throws SQLException;
+    /**
+     * Create a new <code>DataSource</code> using the given properties.
+     * 
+     * @param props
+     *            The properties used to configure the <code>DataSource</code> . <code>null</code>
+     *            indicates no properties. If the property cannot be set on the
+     *            <code>DataSource</code> being created then a <code>SQLException</code> must be
+     *            thrown.
+     * @return A configured <code>DataSource</code>.
+     * @throws SQLException
+     *             If the <code>DataSource</code> cannot be created.
+     */
+    public DataSource createDataSource(Properties props) throws SQLException;
 
-        /**
-         * Create a new <code>XADataSource</code> using the given properties.
-         * 
-         * @param props The properties used to configure the
-         *        <code>XADataSource</code>. <code>null</code> indicates no
-         *        properties. If the property cannot be set on the
-         *        <code>XADataSource</code> being created then a
-         *        <code>SQLException</code> must be thrown.
-         * @return A configured <code>XADataSource</code>.
-         * @throws SQLException If the <code>XADataSource</code> cannot be created.
-         */
-        public XADataSource createXADataSource(Properties props)
-                        throws SQLException;
+    /**
+     * Create a new <code>ConnectionPoolDataSource</code> using the given properties.
+     * 
+     * @param props
+     *            The properties used to configure the <code>ConnectionPoolDataSource</code>.
+     *            <code>null</code> indicates no properties. If the property cannot be set on the
+     *            <code>ConnectionPoolDataSource</code> being created then a
+     *            <code>SQLException</code> must be thrown.
+     * @return A configured <code>ConnectionPoolDataSource</code>.
+     * @throws SQLException
+     *             If the <code>ConnectionPoolDataSource</code> cannot be created.
+     */
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException;
 
-        /**
-         * Create a new <code>Driver</code> using the given properties.
-         * 
-         * @param props The properties used to configure the <code>Driver</code>.
-         *        <code>null</code> indicates no properties. If the property cannot
-         *        be set on the <code>Driver</code> being created then a
-         *        <code>SQLException</code> must be thrown.
-         * @return A configured <code>Driver</code>.
-         * @throws SQLException If the <code>Driver</code> cannot be created.
-         */
-        public Driver createDriver(Properties props) throws SQLException;
+    /**
+     * Create a new <code>XADataSource</code> using the given properties.
+     * 
+     * @param props
+     *            The properties used to configure the <code>XADataSource</code>. <code>null</code>
+     *            indicates no properties. If the property cannot be set on the
+     *            <code>XADataSource</code> being created then a <code>SQLException</code> must be
+     *            thrown.
+     * @return A configured <code>XADataSource</code>.
+     * @throws SQLException
+     *             If the <code>XADataSource</code> cannot be created.
+     */
+    public XADataSource createXADataSource(Properties props) throws SQLException;
+
+    /**
+     * Create a new <code>Driver</code> using the given properties.
+     * 
+     * @param props
+     *            The properties used to configure the <code>Driver</code>. <code>null</code>
+     *            indicates no properties. If the property cannot be set on the <code>Driver</code>
+     *            being created then a <code>SQLException</code> must be thrown.
+     * @return A configured <code>Driver</code>.
+     * @throws SQLException
+     *             If the <code>Driver</code> cannot be created.
+     */
+    public Driver createDriver(Properties props) throws SQLException;
 }

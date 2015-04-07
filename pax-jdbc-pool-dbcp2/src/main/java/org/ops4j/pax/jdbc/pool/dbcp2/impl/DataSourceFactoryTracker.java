@@ -30,29 +30,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Watches for DataSourceFactory services and creates/destroys a DbcpPooledDataSourceFactory for each
- * existing DataSourceFactory
+ * Watches for DataSourceFactory services and creates/destroys a DbcpPooledDataSourceFactory for
+ * each existing DataSourceFactory
  */
 @SuppressWarnings("rawtypes")
 public class DataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
-   
+
     public DataSourceFactoryTracker(BundleContext context) {
         this(context, null);
     }
 
     public DataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
-    	super(context, tm);
+        super(context, tm);
     }
 
-  @Override
-  protected DataSourceFactory createPooledDatasourceFactory(
-      DataSourceFactory dsf) {
-    if (null == getTransactionManager()) {
-      return new DbcpXAPooledDataSourceFactory(dsf, tm);
-    } else {
-      return new DbcpPooledDataSourceFactory(dsf);
+    @Override
+    protected DataSourceFactory createPooledDatasourceFactory(DataSourceFactory dsf) {
+        if (null == getTransactionManager()) {
+            return new DbcpXAPooledDataSourceFactory(dsf, tm);
+        }
+        else {
+            return new DbcpPooledDataSourceFactory(dsf);
+        }
+
     }
-   
-  }
-    
+
 }

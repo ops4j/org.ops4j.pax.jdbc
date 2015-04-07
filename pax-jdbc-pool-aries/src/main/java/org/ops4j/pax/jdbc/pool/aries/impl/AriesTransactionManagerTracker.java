@@ -18,9 +18,10 @@ final class AriesTransactionManagerTracker extends AbstractTransactionManagerTra
     public AriesTransactionManagerTracker(BundleContext context) {
         super(context);
     }
-    public AbstractDataSourceFactoryTracker createTracker(BundleContext context, TransactionManager tm) {
-      return new AriesDataSourceFactoryTracker(context, tm);
+
+    public AbstractDataSourceFactoryTracker createTracker(BundleContext context,
+        TransactionManager tm) {
+        return new AriesDataSourceFactoryTracker(context, tm);
     }
-   
 
 }

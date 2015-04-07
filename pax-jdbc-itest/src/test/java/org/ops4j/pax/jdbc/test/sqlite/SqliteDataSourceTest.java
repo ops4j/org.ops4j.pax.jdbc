@@ -47,9 +47,9 @@ public class SqliteDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
-                       mvnBundle("org.xerial", "sqlite-jdbc") //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+            mvnBundle("org.xerial", "sqlite-jdbc") //
         );
     }
 

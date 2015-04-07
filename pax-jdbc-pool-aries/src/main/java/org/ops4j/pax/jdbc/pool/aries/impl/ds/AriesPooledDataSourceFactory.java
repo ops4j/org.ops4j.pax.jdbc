@@ -47,7 +47,7 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
     protected static final String POOL_PREFIX = "pool.";
     private Logger LOG = LoggerFactory.getLogger(AriesPooledDataSourceFactory.class);
     private DataSourceFactory dsFactory;
-   
+
     /**
      * Initialize XA PoolingDataSourceFactory
      * 
@@ -57,10 +57,9 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
      *            non pooled DataSourceFactory we delegate to
      */
     public AriesPooledDataSourceFactory(DataSourceFactory dsFactory) {
-      super(dsFactory);
+        super(dsFactory);
     }
 
-  
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
@@ -87,20 +86,19 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
 
     @Override
     protected Iterable internalCreateDatasource(Object ds) {
-      RecoverableDataSource mds = new RecoverableDataSource();
-      mds.setDataSource((CommonDataSource) ds);
-      Collection ret = new HashSet();
-      ret.add(mds);
-      return ret;
+        RecoverableDataSource mds = new RecoverableDataSource();
+        mds.setDataSource((CommonDataSource) ds);
+        Collection ret = new HashSet();
+        ret.add(mds);
+        return ret;
     }
-
 
     @Override
     protected DataSource doStart(Iterable mds) throws Exception {
-      RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();
-      ds.start();
-      return ds;
-      
+        RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();
+        ds.start();
+        return ds;
+
     }
 
 }

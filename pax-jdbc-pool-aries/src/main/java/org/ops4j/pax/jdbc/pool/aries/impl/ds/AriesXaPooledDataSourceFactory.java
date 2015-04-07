@@ -33,7 +33,6 @@ import org.osgi.service.jdbc.DataSourceFactory;
  */
 public class AriesXaPooledDataSourceFactory extends XAPooledDataSourceFactory {
 
-   
     /**
      * Initialize XA PoolingDataSourceFactory
      * 
@@ -43,26 +42,25 @@ public class AriesXaPooledDataSourceFactory extends XAPooledDataSourceFactory {
      *            transaction manager (Only needed for XA mode)
      */
     public AriesXaPooledDataSourceFactory(DataSourceFactory dsFactory, AriesTransactionManager tm) {
-      super(dsFactory, tm);
-    }
-    @Override
-    protected Iterable<Object> internalCreateDatasource(Object ds) {
-      RecoverableDataSource mds = new RecoverableDataSource();
-      mds.setDataSource((CommonDataSource) ds);
-      mds.setTransactionManager((AriesTransactionManager) tm);
-      Collection<Object> ret = new HashSet<Object>();
-      ret.add(mds);
-      return ret;
+        super(dsFactory, tm);
     }
 
+    @Override
+    protected Iterable<Object> internalCreateDatasource(Object ds) {
+        RecoverableDataSource mds = new RecoverableDataSource();
+        mds.setDataSource((CommonDataSource) ds);
+        mds.setTransactionManager((AriesTransactionManager) tm);
+        Collection<Object> ret = new HashSet<Object>();
+        ret.add(mds);
+        return ret;
+    }
 
     @Override
     protected DataSource doStart(Iterable<Object> mds) throws Exception {
-      RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();
-      ds.start();
-      return ds;
-      
+        RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();
+        ds.start();
+        return ds;
+
     }
-   
 
 }

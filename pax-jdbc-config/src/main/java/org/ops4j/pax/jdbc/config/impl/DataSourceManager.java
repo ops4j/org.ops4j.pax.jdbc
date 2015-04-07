@@ -39,14 +39,15 @@ import org.slf4j.LoggerFactory;
  * for the DataSourceFactories
  */
 public class DataSourceManager implements ManagedServiceFactory {
+
     private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
     private BundleContext context;
-    
+
     /**
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
     private Map<String, ServiceTracker> trackers;
-    
+
     /**
      * Stores one publisher for each config pid
      */
@@ -139,7 +140,7 @@ public class DataSourceManager implements ManagedServiceFactory {
             publisher.unpublish();
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
     private final class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
 

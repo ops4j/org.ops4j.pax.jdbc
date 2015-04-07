@@ -39,7 +39,8 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Checks that the pax-jdbc-pool-dbcp2 module creates an XA pooled and a normal pooled DataSourceFactory
+ * Checks that the pax-jdbc-pool-dbcp2 module creates an XA pooled and a normal pooled
+ * DataSourceFactory
  */
 @RunWith(PaxExam.class)
 public class PoolDbcp2Test {
@@ -59,7 +60,8 @@ public class PoolDbcp2Test {
             mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"), //
             mvnBundle("org.apache.commons", "commons-dbcp2"), //
             mvnBundle("org.apache.aries", "org.apache.aries.util"), //
-            mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").noStart(), //
+            mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager")
+                .noStart(), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
         };
@@ -69,13 +71,11 @@ public class PoolDbcp2Test {
     public void testDataSourceFactoryCreated() {
         assertAllBundlesResolved();
         ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
-                                                                                                          context,
-                                                                                                          DataSourceFactory.class,
-                                                                                                          null);
+            context, DataSourceFactory.class, null);
         tracker.open();
         Assert.assertEquals("No TransactionManager service installed."
-                                + "So we expect only the original DataSourceFactory and our pooling one", 2,
-                            tracker.getServiceReferences().length);
+            + "So we expect only the original DataSourceFactory and our pooling one", 2,
+            tracker.getServiceReferences().length);
         Set<String> names = getDataFactoryNames(tracker);
         Set<String> expectedNames = asSet("H2", "H2-pool");
         Assert.assertEquals(expectedNames, names);
@@ -88,9 +88,7 @@ public class PoolDbcp2Test {
         Bundle tmBundle = getBundle("org.apache.aries.transaction.manager");
         tmBundle.start();
         ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
-                                                                                                          context,
-                                                                                                          DataSourceFactory.class,
-                                                                                                          null);
+            context, DataSourceFactory.class, null);
         tracker.open();
         Set<String> names = getDataFactoryNames(tracker);
         Assert.assertEquals(asSet("H2", "H2-pool", "H2-pool-xa"), names);
@@ -118,7 +116,7 @@ public class PoolDbcp2Test {
     private Set<String> getDataFactoryNames(ServiceTracker<DataSourceFactory, Object> tracker) {
         Set<String> results = new HashSet<String>();
         for (ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
-            results.add((String)ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME));
+            results.add((String) ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME));
         }
         return results;
     }
@@ -141,7 +139,8 @@ public class PoolDbcp2Test {
                 // Provoke exception
                 try {
                     bundle.start();
-                } catch (BundleException e) {
+                }
+                catch (BundleException e) {
                     Assert.fail(e.getMessage());
                 }
             }

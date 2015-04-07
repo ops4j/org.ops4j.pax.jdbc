@@ -32,27 +32,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Watches for DataSourceFactory services and creates/destroys a AriesPooledDataSourceFactory for each
- * existing DataSourceFactory
+ * Watches for DataSourceFactory services and creates/destroys a AriesPooledDataSourceFactory for
+ * each existing DataSourceFactory
  */
 public class AriesDataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
 
     public AriesDataSourceFactoryTracker(BundleContext context) {
-    super(context);
-    
-  }
-    public AriesDataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
-      super(context, tm);
+        super(context);
 
-  }
-  
+    }
+
+    public AriesDataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
+        super(context, tm);
+
+    }
+
     @Override
     protected DataSourceFactory createPooledDatasourceFactory(DataSourceFactory dsf) {
-      if (null != getTransactionManager()) {
-        return new AriesXaPooledDataSourceFactory(dsf, (AriesTransactionManager) getTransactionManager());
-      } else {
-        return new AriesPooledDataSourceFactory(dsf);
-      }
+        if (null != getTransactionManager()) {
+            return new AriesXaPooledDataSourceFactory(dsf,
+                (AriesTransactionManager) getTransactionManager());
+        }
+        else {
+            return new AriesPooledDataSourceFactory(dsf);
+        }
     }
 
 }

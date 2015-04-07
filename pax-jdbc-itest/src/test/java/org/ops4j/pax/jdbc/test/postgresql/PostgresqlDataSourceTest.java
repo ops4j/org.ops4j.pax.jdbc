@@ -52,9 +52,9 @@ public class PostgresqlDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
-                       mvnBundle("org.postgresql", "postgresql") //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+            mvnBundle("org.postgresql", "postgresql") //
         );
     }
 
@@ -64,7 +64,7 @@ public class PostgresqlDataSourceTest {
         ServerConfiguration config = new ServerConfiguration("postgresql");
 
         Properties props = new Properties();
-        //props.setProperty(DataSourceFactory.JDBC_URL, config.getUrl());
+        // props.setProperty(DataSourceFactory.JDBC_URL, config.getUrl());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, config.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, config.getServerName());
         props.setProperty(DataSourceFactory.JDBC_USER, config.getUser());

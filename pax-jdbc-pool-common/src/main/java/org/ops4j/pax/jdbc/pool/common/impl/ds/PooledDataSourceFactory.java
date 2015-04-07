@@ -41,9 +41,6 @@ public abstract class PooledDataSourceFactory implements DataSourceFactory {
     private static final String POOL_PREFIX = "pool.";
     protected static final Logger LOG = LoggerFactory.getLogger(PooledDataSourceFactory.class);
     protected DataSourceFactory dsFactory;
-   
-
-    
 
     /**
      * Initialize non XA PoolingDataSourceFactory
@@ -52,7 +49,7 @@ public abstract class PooledDataSourceFactory implements DataSourceFactory {
      *            non pooled DataSourceFactory we delegate to
      */
     public PooledDataSourceFactory(DataSourceFactory dsFactory) {
-      this.dsFactory = dsFactory;
+        this.dsFactory = dsFactory;
     }
 
     @Override
@@ -60,7 +57,7 @@ public abstract class PooledDataSourceFactory implements DataSourceFactory {
         try {
             DataSource ds = dsFactory.createDataSource(getNonPoolProps(props));
             Iterable<Object> dsConfiguration = internalCreateDatasource(ds);
-                
+
             BeanConfig.configure(dsConfiguration.iterator().next(), getPoolProps(props));
             DataSource wrappedDs = doStart(dsConfiguration);
             return wrappedDs;
@@ -79,7 +76,7 @@ public abstract class PooledDataSourceFactory implements DataSourceFactory {
         }
     }
 
-   protected abstract DataSource doStart(Iterable<Object> mds) throws Exception;
+    protected abstract DataSource doStart(Iterable<Object> mds) throws Exception;
 
     protected abstract Iterable<Object> internalCreateDatasource(Object ds);
 
