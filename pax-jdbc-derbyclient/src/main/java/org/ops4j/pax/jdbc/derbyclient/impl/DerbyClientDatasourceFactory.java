@@ -36,7 +36,7 @@ import org.ops4j.pax.jdbc.derbyclient.constants.ClientConnectionConstant;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DerbyClientDatasourceFactory implements DataSourceFactory {
-
+    private static final String DERBY_PREFIX = "jdbc:derby:";
     // private Logger LOG = LoggerFactory.getLogger(DerbyClientDatasourceFactory.class);
 
     @Override
@@ -49,11 +49,9 @@ public class DerbyClientDatasourceFactory implements DataSourceFactory {
     private void setProperties(ClientDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
         String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null) {
-            throw new SQLException("missing required property "
-                + DataSourceFactory.JDBC_DATABASE_NAME);
+        if (databaseName != null) {
+            ds.setDatabaseName(databaseName);
         }
-        ds.setDatabaseName(databaseName);
 
         String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
         ds.setPassword(password);
@@ -75,6 +73,28 @@ public class DerbyClientDatasourceFactory implements DataSourceFactory {
         }
         else {
             ds.setPortNumber(1527);
+        }
+        
+        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
+        applyUrl(ds, url);
+    }
+    
+    private void applyUrl(ClientDataSource ds, String url) {
+        if (url == null) {
+            return;
+        }
+        if (!url.startsWith(DERBY_PREFIX)) {
+            throw new IllegalArgumentException("The supplied URL is no derby url: " + url);
+        }
+        String suburl = url.substring(DERBY_PREFIX.length());
+        String[] parts = suburl.split(";");
+        String database = parts[0];
+        if (database != null) {
+            ds.setDatabaseName(database);
+        }
+        String options = parts[1];
+        if (options.length() > 0) {
+            ds.setConnectionAttributes(options);
         }
     }
 

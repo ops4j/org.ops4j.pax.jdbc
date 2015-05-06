@@ -25,18 +25,21 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
-import org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource40;
-import org.apache.derby.jdbc.EmbeddedDataSource40;
+import org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource;
+import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.derby.jdbc.EmbeddedDriver;
 import org.apache.derby.jdbc.EmbeddedXADataSource;
 import org.apache.derby.jdbc.ReferenceableDataSource;
+import org.ops4j.pax.jdbc.derby.constants.ConnectionConstant;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DerbyDataSourceFactory implements DataSourceFactory {
 
+    private static final String DERBY_PREFIX = "jdbc:derby:";
+
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
-        EmbeddedDataSource40 ds = new EmbeddedDataSource40();
+        EmbeddedDataSource ds = new EmbeddedDataSource();
         setProperties(ds, props);
         return ds;
     }
@@ -45,27 +48,52 @@ public class DerbyDataSourceFactory implements DataSourceFactory {
         throws SQLException {
         Properties props = (Properties) properties.clone();
         String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null) {
-            throw new SQLException("missing required property "
-                + DataSourceFactory.JDBC_DATABASE_NAME);
+        if (databaseName != null) {
+            ds.setDatabaseName(databaseName);
         }
-        ds.setDatabaseName(databaseName);
+        
+        String createDatabase = (String) props.remove(ConnectionConstant.CREATE_DATABASE);
+        ds.setCreateDatabase(createDatabase);
 
         String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
         ds.setPassword(password);
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
         ds.setUser(user);
+        
+        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
+        applyUrl(ds, url);
 
         if (!props.isEmpty()) {
             throw new SQLException("cannot set properties " + props.keySet());
         }
     }
 
+    private void applyUrl(ReferenceableDataSource ds, String url) {
+        if (url == null) {
+            return;
+        }
+        if (!url.startsWith(DERBY_PREFIX)) {
+            throw new IllegalArgumentException("The supplied URL is no derby url: " + url);
+        }
+        String suburl = url.substring(DERBY_PREFIX.length());
+        String[] parts = suburl.split(";");
+        String database = parts[0];
+        if (database != null) {
+            ds.setDatabaseName(database);
+        }
+        if (parts.length > 1) {
+            String options = parts[1];
+            if (options.length() > 0) {
+                ds.setConnectionAttributes(options);
+            }
+        }
+    }
+
     @Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
         throws SQLException {
-        EmbeddedConnectionPoolDataSource40 ds = new EmbeddedConnectionPoolDataSource40();
+        EmbeddedConnectionPoolDataSource ds = new EmbeddedConnectionPoolDataSource();
         setProperties(ds, props);
         return ds;
     }
