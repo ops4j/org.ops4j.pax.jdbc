@@ -1,7 +1,10 @@
 package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
-import javax.transaction.TransactionManager;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractTransactionManagerTracker;
 
+import org.osgi.service.jdbc.DataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
+import javax.transaction.TransactionManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -9,31 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
-final class TransactionManagerTracker extends ServiceTracker<TransactionManager, ServiceTracker> {
+final class TransactionManagerTracker extends AbstractTransactionManagerTracker {
+
     private Logger LOG = LoggerFactory.getLogger(TransactionManager.class);
 
     public TransactionManagerTracker(BundleContext context) {
-    	super(context, TransactionManager.class, null);
-    }
-
-	@Override
-    public void removedService(ServiceReference<TransactionManager> reference, ServiceTracker dsfTracker) {
-        LOG.info("TransactionManager service lost. Shutting down support for XA DataSourceFactories");
-        dsfTracker.close();
-        context.ungetService(reference);
+        super(context);
     }
 
     @Override
-    public void modifiedService(ServiceReference<TransactionManager> reference, ServiceTracker dsfTracker) {
-        LOG.info("TransactionManager service modified");
+    public AbstractDataSourceFactoryTracker createTracker(BundleContext context,
+        TransactionManager tm) {
+
+        return new DataSourceFactoryTracker(context, tm);
     }
 
-    @Override
-    public ServiceTracker addingService(ServiceReference<TransactionManager> reference) {
-        LOG.info("TransactionManager service detected. Providing support for XA DataSourceFactories");
-        TransactionManager tm = context.getService(reference);
-        DataSourceFactoryTracker dsfTracker = new DataSourceFactoryTracker(context, tm);
-        dsfTracker.open();
-        return dsfTracker;
-    }
 }

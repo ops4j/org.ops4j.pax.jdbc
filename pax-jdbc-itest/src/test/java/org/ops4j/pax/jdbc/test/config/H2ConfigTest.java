@@ -59,8 +59,7 @@ public class H2ConfigTest {
 
     @Configuration
     public Option[] config() {
-        return new Option[] {
-            regressionDefaults(), //
+        return new Option[] { regressionDefaults(), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
             mvnBundle("org.apache.felix", "org.apache.felix.configadmin"), //
             mvnBundle("com.h2database", "h2"), //
@@ -82,8 +81,8 @@ public class H2ConfigTest {
     }
 
     private org.osgi.service.cm.Configuration createConfigForDataSource() throws IOException {
-        org.osgi.service.cm.Configuration config = configAdmin
-            .createFactoryConfiguration("org.ops4j.datasource", null);
+        org.osgi.service.cm.Configuration config = configAdmin.createFactoryConfiguration(
+            "org.ops4j.datasource", null);
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver");
         props.put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax");

@@ -94,12 +94,16 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
     @SuppressWarnings("unchecked")
     private <T> T setProperties(Object dataSourceInstance, Properties props) throws Exception {
         setProperty(props.getProperty(DataSourceFactory.JDBC_URL), dataSourceInstance, "setURL");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_DATABASE_NAME), dataSourceInstance, "setDatabaseName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceInstance, "setServerName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance, "setPortNumber");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_DATABASE_NAME), dataSourceInstance,
+            "setDatabaseName");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceInstance,
+            "setServerName");
+        setProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance,
+            "setPortNumber");
         setProperty(props.getProperty(DataSourceFactory.JDBC_USER), dataSourceInstance, "setUser");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceInstance, "setPassword");
-        return (T)dataSourceInstance;
+        setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceInstance,
+            "setPassword");
+        return (T) dataSourceInstance;
     }
 
     private void setProperty(String value, Object instance, String methodName) throws Exception {

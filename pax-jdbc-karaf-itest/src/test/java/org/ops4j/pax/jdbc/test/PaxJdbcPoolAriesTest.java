@@ -42,8 +42,7 @@ public class PaxJdbcPoolAriesTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return new Option[] {
-            karafDefaults(),
+        return new Option[] { karafDefaults(),
             features(paxJdbcRepo(), "transaction", "pax-jdbc-h2", "pax-jdbc-pool-aries"), };
     }
 

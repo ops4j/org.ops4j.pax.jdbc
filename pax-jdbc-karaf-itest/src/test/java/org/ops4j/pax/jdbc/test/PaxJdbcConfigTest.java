@@ -36,15 +36,13 @@ public class PaxJdbcConfigTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return new Option[] {
-            karafDefaults(),
+        return new Option[] { karafDefaults(),
             features(paxJdbcRepo(), "pax-jdbc-h2", "pax-jdbc-config"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "H2"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_DATABASE_NAME, "test2"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_USER, "sa"),
             editConfigurationFilePut(DS_CONFIG, DataSourceFactory.JDBC_PASSWORD, ""),
-            editConfigurationFilePut(DS_CONFIG, "osgi.jndi.service.name", "test2")
-        };
+            editConfigurationFilePut(DS_CONFIG, "osgi.jndi.service.name", "test2") };
     }
 
     @Test

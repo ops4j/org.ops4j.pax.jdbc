@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.dbcp2.impl;
+package org.ops4j.pax.jdbc.pool.aries.impl;
 
-import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
+import org.ops4j.pax.jdbc.pool.aries.impl.ds.AriesXaPooledDataSourceFactory;
 
-import java.util.Dictionary;
 import javax.transaction.TransactionManager;
-import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpPooledDataSourceFactory;
-import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpXAPooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import org.apache.aries.transaction.AriesTransactionManager;
+import org.ops4j.pax.jdbc.pool.aries.impl.ds.AriesPooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -30,29 +32,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Watches for DataSourceFactory services and creates/destroys a DbcpPooledDataSourceFactory for
+ * Watches for DataSourceFactory services and creates/destroys a AriesPooledDataSourceFactory for
  * each existing DataSourceFactory
  */
-@SuppressWarnings("rawtypes")
-public class DataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
+public class AriesDataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
 
-    public DataSourceFactoryTracker(BundleContext context) {
-        this(context, null);
+    public AriesDataSourceFactoryTracker(BundleContext context) {
+        super(context);
+
     }
 
-    public DataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
+    public AriesDataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
         super(context, tm);
+
     }
 
     @Override
     protected DataSourceFactory createPooledDatasourceFactory(DataSourceFactory dsf) {
-        if (null == getTransactionManager()) {
-            return new DbcpXAPooledDataSourceFactory(dsf, tm);
+        if (null != getTransactionManager()) {
+            return new AriesXaPooledDataSourceFactory(dsf,
+                (AriesTransactionManager) getTransactionManager());
         }
         else {
-            return new DbcpPooledDataSourceFactory(dsf);
+            return new AriesPooledDataSourceFactory(dsf);
         }
-
     }
 
 }

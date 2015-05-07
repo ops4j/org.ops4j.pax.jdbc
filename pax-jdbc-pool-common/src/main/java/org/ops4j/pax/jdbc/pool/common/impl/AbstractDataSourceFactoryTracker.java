@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.aries.impl;
+package org.ops4j.pax.jdbc.pool.common.impl;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-
-import org.apache.aries.transaction.AriesTransactionManager;
-import org.ops4j.pax.jdbc.pool.aries.impl.ds.PooledDataSourceFactory;
+import javax.transaction.TransactionManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -32,31 +30,40 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
  * existing DataSourceFactory
  */
-public class DataSourceFactoryTracker extends
+@SuppressWarnings("rawtypes")
+public abstract class AbstractDataSourceFactoryTracker extends
     ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> {
 
-    private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
+    private Logger LOG = LoggerFactory.getLogger(AbstractDataSourceFactoryTracker.class);
+    protected final TransactionManager tm;
 
-    private AriesTransactionManager tm;
-
-    public DataSourceFactoryTracker(BundleContext context) {
+    public AbstractDataSourceFactoryTracker(BundleContext context) {
         this(context, null);
     }
 
-    public DataSourceFactoryTracker(BundleContext context, AriesTransactionManager tm) {
+    public AbstractDataSourceFactoryTracker(BundleContext context, TransactionManager tm) {
         super(context, DataSourceFactory.class, null);
         this.tm = tm;
     }
 
     @Override
-    public ServiceRegistration<DataSourceFactory> addingService(
-        ServiceReference<DataSourceFactory> reference) {
+    public ServiceRegistration addingService(ServiceReference<DataSourceFactory> reference) {
         if (reference.getProperty("pooled") != null) {
             // Make sure we do not react on our own service for the pooled factory
             return null;
         }
+        return createAndRegisterPooledFactory(reference);
+    }
+
+    protected TransactionManager getTransactionManager() {
+        return tm;
+    }
+
+    private ServiceRegistration<DataSourceFactory> createAndRegisterPooledFactory(
+        ServiceReference<DataSourceFactory> reference) {
+        LOG.debug("Registering PooledDataSourceFactory");
         DataSourceFactory dsf = context.getService(reference);
-        PooledDataSourceFactory pdsf = new PooledDataSourceFactory(dsf, tm);
+        DataSourceFactory pdsf = createPooledDatasourceFactory(dsf);
         Dictionary<String, Object> props = createPropsForPoolingDataSourceFactory(reference);
         LOG.debug("Registering PooledDataSourceFactory: " + props);
         return context.registerService(DataSourceFactory.class, pdsf, props);
@@ -71,7 +78,7 @@ public class DataSourceFactoryTracker extends
             }
         }
         props.put("pooled", "true");
-        if (tm != null) {
+        if (getTransactionManager() != null) {
             props.put("xa", "true");
         }
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, getPoolDriverName(reference));
@@ -83,21 +90,23 @@ public class DataSourceFactoryTracker extends
         if (origName == null) {
             origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         }
-        return origName + "-pool" + ((tm != null) ? "-xa" : "");
+        return origName + "-pool" + ((getTransactionManager() != null) ? "-xa" : "");
     }
+
+    protected abstract DataSourceFactory createPooledDatasourceFactory(DataSourceFactory dsf);
 
     @Override
     public void modifiedService(ServiceReference<DataSourceFactory> reference,
-        ServiceRegistration<DataSourceFactory> service) {
-
+        ServiceRegistration<DataSourceFactory> reg) {
     }
 
     @Override
     public void removedService(ServiceReference<DataSourceFactory> reference,
-        ServiceRegistration<DataSourceFactory> service) {
-        LOG.debug("Unregistering PooledDataSourceFactory: " + createPropsForPoolingDataSourceFactory(reference));
-        service.unregister();
+        ServiceRegistration<DataSourceFactory> reg) {
+        LOG.debug("Unregistering PooledDataSourceFactory");
+        reg.unregister();
         context.ungetService(reference);
+
     }
 
 }

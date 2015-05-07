@@ -72,7 +72,7 @@ public class TestConfiguration {
             when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
             junitBundles());
     }
-    
+
     public static MavenArtifactProvisionOption mvnBundle(String groupId, String artifactId) {
         return mavenBundle(groupId, artifactId).versionAsInProject();
     }

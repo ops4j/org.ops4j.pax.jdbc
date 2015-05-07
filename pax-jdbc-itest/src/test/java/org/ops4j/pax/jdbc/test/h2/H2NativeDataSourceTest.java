@@ -47,8 +47,8 @@ public class H2NativeDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("com.h2database", "h2") //                       
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("com.h2database", "h2") //
         );
     }
 

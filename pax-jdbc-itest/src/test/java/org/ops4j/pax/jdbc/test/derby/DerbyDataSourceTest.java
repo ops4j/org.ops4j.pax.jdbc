@@ -47,9 +47,9 @@ public class DerbyDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
-                       mvnBundle("org.apache.derby", "derby") //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+            mvnBundle("org.apache.derby", "derby") //
         );
     }
 

@@ -40,9 +40,8 @@ public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
     public Option[] config() {
         return new Option[] {
             karafDefaults(),
-            features(paxJdbcRepo(), "pax-jdbc-h2", "pax-jdbc-derby",
-                "pax-jdbc-sqlite", "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql",
-                "pax-jdbc-pool-dbcp2"), };
+            features(paxJdbcRepo(), "pax-jdbc-h2", "pax-jdbc-derby", "pax-jdbc-sqlite",
+                "pax-jdbc-mariadb", "pax-jdbc-mysql", "pax-jdbc-postgresql", "pax-jdbc-pool-dbcp2"), };
     }
 
     @Test

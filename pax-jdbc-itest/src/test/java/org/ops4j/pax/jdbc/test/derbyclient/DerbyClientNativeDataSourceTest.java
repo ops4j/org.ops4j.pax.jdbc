@@ -60,7 +60,7 @@ public class DerbyClientNativeDataSourceTest {
     public void startDerbyServer() throws Exception {
         InetAddress addr = Inet4Address.getByName(dbConfig.getServerName());
         Integer port = new Integer(dbConfig.getPortNumber());
-        NetworkServerControl server = new NetworkServerControl(addr , port);
+        NetworkServerControl server = new NetworkServerControl(addr, port);
         server.start(null);
     }
 
@@ -68,9 +68,9 @@ public class DerbyClientNativeDataSourceTest {
     public Option[] config() throws Exception {
         startDerbyServer();
         return options(regressionDefaults(), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("org.apache.derby", "derbyclient"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derbyclient") //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("org.apache.derby", "derbyclient"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derbyclient") //
         );
     }
 

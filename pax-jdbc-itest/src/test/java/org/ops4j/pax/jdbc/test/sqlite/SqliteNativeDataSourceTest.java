@@ -49,10 +49,10 @@ public class SqliteNativeDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-                       systemProperty("osgi.console").value("6666"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
-                       mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite"), //
-                       wrappedBundle(mvnBundle("org.xerial", "sqlite-jdbc")) //
+            systemProperty("osgi.console").value("6666"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite"), //
+            wrappedBundle(mvnBundle("org.xerial", "sqlite-jdbc")) //
         );
     }
 
