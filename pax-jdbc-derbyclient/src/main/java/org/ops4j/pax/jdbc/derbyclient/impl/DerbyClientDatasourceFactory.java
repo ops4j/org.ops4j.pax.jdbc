@@ -20,6 +20,7 @@ package org.ops4j.pax.jdbc.derbyclient.impl;
  * #L%
  */
 
+import java.net.URI;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -86,7 +87,13 @@ public class DerbyClientDatasourceFactory implements DataSourceFactory {
         if (!url.startsWith(DERBY_PREFIX)) {
             throw new IllegalArgumentException("The supplied URL is no derby url: " + url);
         }
-        String suburl = url.substring(DERBY_PREFIX.length());
+        URI uri = URI.create(url.substring(5));
+        ds.setServerName(uri.getHost());
+        ds.setPortNumber(uri.getPort());
+        String suburl = uri.getPath();
+        if (suburl.startsWith("/")) {
+            suburl = suburl.substring(1);
+        }
         String[] parts = suburl.split(";");
         String database = parts[0];
         if (database != null) {
