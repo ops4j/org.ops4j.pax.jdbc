@@ -15,22 +15,17 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl.ds;
 
+import java.sql.SQLException;
 import java.util.Collection;
-
 import java.util.HashSet;
+import java.util.Properties;
+
+import javax.sql.CommonDataSource;
+import javax.sql.DataSource;
+
+import org.apache.aries.transaction.jdbc.RecoverableDataSource;
 import org.ops4j.pax.jdbc.pool.common.impl.ds.BeanConfig;
 import org.ops4j.pax.jdbc.pool.common.impl.ds.PooledDataSourceFactory;
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import javax.sql.CommonDataSource;
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
-import javax.sql.XADataSource;
-import org.apache.aries.transaction.AriesTransactionManager;
-import org.apache.aries.transaction.jdbc.RecoverableDataSource;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +41,6 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
 
     protected static final String POOL_PREFIX = "pool.";
     private Logger LOG = LoggerFactory.getLogger(AriesPooledDataSourceFactory.class);
-    private DataSourceFactory dsFactory;
 
     /**
      * Initialize XA PoolingDataSourceFactory
@@ -84,6 +78,9 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
         }
     }
 
+    @SuppressWarnings({
+        "rawtypes", "unchecked"
+    })
     @Override
     protected Iterable internalCreateDatasource(Object ds) {
         RecoverableDataSource mds = new RecoverableDataSource();
@@ -93,6 +90,7 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
         return ret;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected DataSource doStart(Iterable mds) throws Exception {
         RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();

@@ -15,25 +15,18 @@
  */
 package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
-import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
-
-import java.util.Dictionary;
 import javax.transaction.TransactionManager;
+
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpPooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpXAPooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Watches for DataSourceFactory services and creates/destroys a DbcpPooledDataSourceFactory for
  * each existing DataSourceFactory
  */
-@SuppressWarnings("rawtypes")
 public class DataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
 
     public DataSourceFactoryTracker(BundleContext context) {
@@ -46,7 +39,7 @@ public class DataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
 
     @Override
     protected DataSourceFactory createPooledDatasourceFactory(DataSourceFactory dsf) {
-        if (null == getTransactionManager()) {
+        if (getTransactionManager() != null) {
             return new DbcpXAPooledDataSourceFactory(dsf, tm);
         }
         else {

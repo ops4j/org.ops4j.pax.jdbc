@@ -15,21 +15,14 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
-import org.ops4j.pax.jdbc.pool.aries.impl.ds.AriesXaPooledDataSourceFactory;
-
 import javax.transaction.TransactionManager;
-import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
-import java.util.Dictionary;
-import java.util.Hashtable;
+
 import org.apache.aries.transaction.AriesTransactionManager;
 import org.ops4j.pax.jdbc.pool.aries.impl.ds.AriesPooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.aries.impl.ds.AriesXaPooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Watches for DataSourceFactory services and creates/destroys a AriesPooledDataSourceFactory for

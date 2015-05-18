@@ -17,7 +17,6 @@ package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import javax.transaction.TransactionManager;
 
-import org.apache.aries.transaction.AriesTransactionManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -30,6 +29,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
 
     private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
+    @SuppressWarnings("rawtypes")
     private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
 
     @Override

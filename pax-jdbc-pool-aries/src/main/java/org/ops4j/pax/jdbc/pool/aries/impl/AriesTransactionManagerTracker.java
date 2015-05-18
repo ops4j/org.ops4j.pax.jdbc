@@ -1,19 +1,12 @@
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import javax.transaction.TransactionManager;
-import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
 
-import org.apache.aries.transaction.AriesTransactionManager;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
 import org.ops4j.pax.jdbc.pool.common.impl.AbstractTransactionManagerTracker;
+import org.osgi.framework.BundleContext;
 
 final class AriesTransactionManagerTracker extends AbstractTransactionManagerTracker {
-
-    private Logger LOG = LoggerFactory.getLogger(AriesTransactionManagerTracker.class);
 
     public AriesTransactionManagerTracker(BundleContext context) {
         super(context);

@@ -1,15 +1,12 @@
 package org.ops4j.pax.jdbc.pool.common.impl.ds;
 
-import java.util.Map;
-import java.util.UUID;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-
-import javax.sql.XADataSource;
 import java.sql.SQLException;
 import java.util.Properties;
+
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
+
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public abstract class XAPooledDataSourceFactory extends PooledDataSourceFactory {
@@ -27,31 +24,6 @@ public abstract class XAPooledDataSourceFactory extends PooledDataSourceFactory 
     public XAPooledDataSourceFactory(DataSourceFactory dsFactory, TransactionManager tm) {
         super(dsFactory);
         this.tm = tm;
-    }
-
-    protected Map<String, String> getPoolProps(Properties props) {
-        Map<String, String> poolProps = super.getPoolProps(props);
-        if (poolProps.get("jmxNameBase") == null) {
-            poolProps.put("jmxNameBase",
-                "org.ops4j.pax.jdbc.pool.dbcp2:type=GenericObjectPool,name=");
-        }
-        String dsName = (String) props.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
-        if (dsName != null) {
-            poolProps.put("jmxNamePrefix", dsName);
-        }
-        return poolProps;
-    }
-
-    protected ObjectName getJmxName(String dsName) {
-        if (dsName == null) {
-            dsName = UUID.randomUUID().toString();
-        }
-        try {
-            return new ObjectName("org.ops4j.pax.jdbc.pool", "dsName", dsName);
-        }
-        catch (MalformedObjectNameException e) {
-            throw new IllegalArgumentException("Invalid object name for data source" + dsName, e);
-        }
     }
 
     @Override
