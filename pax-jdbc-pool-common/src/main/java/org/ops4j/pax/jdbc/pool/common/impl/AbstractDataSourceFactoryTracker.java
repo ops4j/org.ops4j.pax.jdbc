@@ -17,7 +17,9 @@ package org.ops4j.pax.jdbc.pool.common.impl;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+
 import javax.transaction.TransactionManager;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -81,8 +83,14 @@ public abstract class AbstractDataSourceFactoryTracker extends
         if (getTransactionManager() != null) {
             props.put("xa", "true");
         }
+        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, getPoolDriverClass(reference));
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, getPoolDriverName(reference));
         return props;
+    }
+    
+    private String getPoolDriverClass(ServiceReference<DataSourceFactory> reference) {
+        String origName = (String) reference.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
+        return origName + "-pool" + ((getTransactionManager() != null) ? "-xa" : "");
     }
 
     private String getPoolDriverName(ServiceReference<DataSourceFactory> reference) {
