@@ -31,12 +31,13 @@
             <artifactId>pax-swissbox-extender</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-spec</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
+            <artifactId>org.osgi.core</artifactId>
         </dependency>
     </dependencies>
     <build>

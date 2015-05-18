@@ -186,11 +186,6 @@
             <artifactId>org.osgi.compendium</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
-            <scope>provided</scope>
-        </dependency>
         
         <dependency>
             <groupId>org.eclipse.tycho</groupId>

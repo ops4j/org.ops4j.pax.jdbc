@@ -24,9 +24,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
-            <scope>provided</scope>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-spec</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
