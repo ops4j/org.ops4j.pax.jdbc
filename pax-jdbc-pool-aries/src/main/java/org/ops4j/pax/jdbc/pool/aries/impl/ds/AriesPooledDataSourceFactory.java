@@ -15,17 +15,19 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl.ds;
 
+import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.CommonDataSource;
+import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
 
 import org.apache.aries.transaction.jdbc.RecoverableDataSource;
-import org.ops4j.pax.jdbc.pool.common.impl.ds.BeanConfig;
-import org.ops4j.pax.jdbc.pool.common.impl.ds.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +39,10 @@ import org.slf4j.LoggerFactory;
  * XADataSource and handles the XA Resources. This kind of DataSource can then for example be used
  * in persistence.xml as jta-data-source
  */
-public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
-
+public class AriesPooledDataSourceFactory implements DataSourceFactory {
+    private  static final Logger LOG = LoggerFactory.getLogger(AriesPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
-    private Logger LOG = LoggerFactory.getLogger(AriesPooledDataSourceFactory.class);
+    protected DataSourceFactory dsFactory;
 
     /**
      * Initialize XA PoolingDataSourceFactory
@@ -51,10 +53,9 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
      *            non pooled DataSourceFactory we delegate to
      */
     public AriesPooledDataSourceFactory(DataSourceFactory dsFactory) {
-        super(dsFactory);
+        this.dsFactory = dsFactory;
     }
 
-    @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
             CommonDataSource ds = dsFactory.createDataSource(getNonPoolProps(props));
@@ -77,26 +78,43 @@ public class AriesPooledDataSourceFactory extends PooledDataSourceFactory {
             }
         }
     }
-
-    @SuppressWarnings({
-        "rawtypes", "unchecked"
-    })
-    @Override
-    protected Iterable internalCreateDatasource(Object ds) {
-        RecoverableDataSource mds = new RecoverableDataSource();
-        mds.setDataSource((CommonDataSource) ds);
-        Collection ret = new HashSet();
-        ret.add(mds);
-        return ret;
+    
+    protected Map<String, String> getPoolProps(Properties props) {
+        Map<String, String> poolProps = new HashMap<String, String>();
+        for (Object keyO : props.keySet()) {
+            String key = (String) keyO;
+            if (key.startsWith(POOL_PREFIX)) {
+                String strippedKey = key.substring(POOL_PREFIX.length());
+                poolProps.put(strippedKey, (String) props.get(key));
+            }
+        }
+        return poolProps;
     }
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    protected DataSource doStart(Iterable mds) throws Exception {
-        RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();
-        ds.start();
-        return ds;
-
+    protected Properties getNonPoolProps(Properties props) {
+        Properties dsProps = new Properties();
+        for (Object keyO : props.keySet()) {
+            String key = (String) keyO;
+            if (!key.startsWith(POOL_PREFIX)) {
+                dsProps.put(key, props.get(key));
+            }
+        }
+        return dsProps;
     }
 
+    @Override
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
+        throws SQLException {
+        throw new SQLException("Not supported");
+    }
+
+    @Override
+    public XADataSource createXADataSource(Properties props) throws SQLException {
+        throw new SQLException("Not supported");
+    }
+
+    @Override
+    public Driver createDriver(Properties props) throws SQLException {
+        throw new SQLException("Not supported");
+    }
 }

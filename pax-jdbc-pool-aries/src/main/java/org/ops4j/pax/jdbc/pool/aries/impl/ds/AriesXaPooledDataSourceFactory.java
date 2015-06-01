@@ -15,14 +15,19 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl.ds;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.sql.SQLException;
+import java.util.Properties;
+
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
+
 import org.apache.aries.transaction.AriesTransactionManager;
 import org.apache.aries.transaction.jdbc.RecoverableDataSource;
-import org.ops4j.pax.jdbc.pool.common.impl.ds.XAPooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates pooled and optionally XA ready DataSources out of a non pooled DataSourceFactory.
@@ -31,7 +36,9 @@ import org.osgi.service.jdbc.DataSourceFactory;
  * XADataSource and handles the XA Resources. This kind of DataSource can then for example be used
  * in persistence.xml as jta-data-source
  */
-public class AriesXaPooledDataSourceFactory extends XAPooledDataSourceFactory {
+public class AriesXaPooledDataSourceFactory extends AriesPooledDataSourceFactory {
+    private  static final Logger LOG = LoggerFactory.getLogger(AriesXaPooledDataSourceFactory.class);
+    private AriesTransactionManager tm;
 
     /**
      * Initialize XA PoolingDataSourceFactory
@@ -42,25 +49,33 @@ public class AriesXaPooledDataSourceFactory extends XAPooledDataSourceFactory {
      *            transaction manager (Only needed for XA mode)
      */
     public AriesXaPooledDataSourceFactory(DataSourceFactory dsFactory, AriesTransactionManager tm) {
-        super(dsFactory, tm);
+        super(dsFactory);
+        this.tm = tm;
     }
 
     @Override
-    protected Iterable<Object> internalCreateDatasource(Object ds) {
-        RecoverableDataSource mds = new RecoverableDataSource();
-        mds.setDataSource((CommonDataSource) ds);
-        mds.setTransactionManager((AriesTransactionManager) tm);
-        Collection<Object> ret = new HashSet<Object>();
-        ret.add(mds);
-        return ret;
-    }
-
-    @Override
-    protected DataSource doStart(Iterable<Object> mds) throws Exception {
-        RecoverableDataSource ds = (RecoverableDataSource) mds.iterator().next();
-        ds.start();
-        return ds;
-
+    public DataSource createDataSource(Properties props) throws SQLException {
+        try {
+            XADataSource ds = dsFactory.createXADataSource(getNonPoolProps(props));
+            RecoverableDataSource mds = new RecoverableDataSource();
+            mds.setDataSource((CommonDataSource) ds);
+            mds.setTransactionManager((AriesTransactionManager) tm);
+            BeanConfig.configure(mds, getPoolProps(props));
+            mds.start();
+            return mds;
+        }
+        catch (Throwable e) {
+            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            else if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            else {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
     }
 
 }

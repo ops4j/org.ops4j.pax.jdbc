@@ -13,9 +13,7 @@ final class TransactionManagerTracker extends AbstractTransactionManagerTracker 
     }
 
     @Override
-    public AbstractDataSourceFactoryTracker createTracker(BundleContext context,
-        TransactionManager tm) {
-
+    public AbstractDataSourceFactoryTracker createTracker(BundleContext context, TransactionManager tm) {
         return new DataSourceFactoryTracker(context, tm);
     }
 
