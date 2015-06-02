@@ -120,6 +120,7 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
             BeanConfig.configure(conf, getPoolProps(props));
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
+            pcf.setPool(pool);
             return new CloseablePoolingDataSource<PoolableConnection>(pool);
         }
         catch (Throwable e) {

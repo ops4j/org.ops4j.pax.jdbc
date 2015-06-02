@@ -76,6 +76,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             BeanConfig.configure(conf, getPoolProps(props));
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
+            pcf.setPool(pool);
             TransactionRegistry transactionRegistry = connFactory.getTransactionRegistry();
             return new CloseableManagedDataSource<PoolableConnection>(pool, transactionRegistry);
         }
