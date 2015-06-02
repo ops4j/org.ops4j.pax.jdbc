@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 public class DbcpPooledDataSourceFactory implements DataSourceFactory {
     private static final Logger LOG = LoggerFactory.getLogger(DbcpPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
+    protected static final String FACTORY_PREFIX = "factory.";
     protected DataSourceFactory dsFactory;
 
     /**
@@ -61,14 +62,7 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
 
     
     protected Map<String, String> getPoolProps(Properties props) {
-        Map<String, String> poolProps = new HashMap<String, String>();
-        for (Object keyO : props.keySet()) {
-            String key = (String) keyO;
-            if (key.startsWith(POOL_PREFIX)) {
-                String strippedKey = key.substring(POOL_PREFIX.length());
-                poolProps.put(strippedKey, (String) props.get(key));
-            }
-        }
+        Map<String, String> poolProps = getPrefixed(props, POOL_PREFIX);
         if (poolProps.get("jmxNameBase") == null) {
             poolProps.put("jmxNameBase",
                 "org.ops4j.pax.jdbc.pool.dbcp2:type=GenericObjectPool,name=");
@@ -84,7 +78,7 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
         Properties dsProps = new Properties();
         for (Object keyO : props.keySet()) {
             String key = (String) keyO;
-            if (!key.startsWith(POOL_PREFIX)) {
+            if (!key.startsWith(POOL_PREFIX) && !key.startsWith(FACTORY_PREFIX)) {
                 dsProps.put(key, props.get(key));
             }
         }
@@ -92,6 +86,18 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
         return dsProps;
     }
 
+    protected Map<String, String> getPrefixed(Properties props, String prefix) {
+        Map<String, String> prefixedProps = new HashMap<String, String>();
+        for (Object keyO : props.keySet()) {
+            String key = (String) keyO;
+            if (key.startsWith(prefix)) {
+                String strippedKey = key.substring(prefix.length());
+                prefixedProps.put(strippedKey, (String) props.get(key));
+            }
+        }
+        return prefixedProps;
+    }
+    
     protected ObjectName getJmxName(String dsName) {
         if (dsName == null) {
             dsName = UUID.randomUUID().toString();
@@ -112,6 +118,7 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, getPoolProps(props));
+            BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
             return new CloseablePoolingDataSource<PoolableConnection>(pool);
         }

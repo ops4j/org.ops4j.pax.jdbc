@@ -18,7 +18,10 @@ package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.dbcp2.PoolableConnection;
+import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
@@ -26,7 +29,7 @@ import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 public class BeanConfigTest {
 
     @Test
-    public void testCreate() throws Exception {
+    public void testPoolConfig() throws Exception {
         Map<String, String> props = new HashMap<String, String>();
         props.put("maxIdle", "2");
         props.put("testOnBorrow", "true");
@@ -39,4 +42,24 @@ public class BeanConfigTest {
         Assert.assertEquals(1000, config.getMaxWaitMillis());
         Assert.assertEquals("name", config.getJmxNameBase());
     }
+    
+    @Test
+    public void testPoolableConnectionFactory() throws Exception {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("validationQuery", "dummyQuery");
+        props.put("validationQueryTimeout", "1");
+        PoolableConnectionFactory pcf = new PoolableConnectionFactory(null, null);
+        BeanConfig.configure(pcf, props);
+
+        PoolableConnection connection = EasyMock.createMock(PoolableConnection.class);
+        connection.validate(EasyMock.eq("dummyQuery"), EasyMock.eq(1));
+        EasyMock.expectLastCall();
+        EasyMock.expect(connection.isClosed()).andReturn(false);
+        EasyMock.replay(connection);
+
+        pcf.validateConnection(connection);
+
+        EasyMock.verify(connection);
+    }
+
 }
