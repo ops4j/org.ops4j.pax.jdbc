@@ -7,12 +7,12 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 
+import org.apache.commons.dbcp2.PoolingDataSource;
+import org.apache.commons.dbcp2.managed.ManagedDataSource;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseableManagedDataSource;
-import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.CloseablePoolingDataSource;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpPooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpXAPooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -30,7 +30,7 @@ public class PooledDataSourceFactoryTest {
         c.replay();
         DataSource ds = pdsf.createDataSource(createValidProps());
         c.verify();
-        Assert.assertEquals(CloseableManagedDataSource.class, ds.getClass());
+        Assert.assertEquals(ManagedDataSource.class, ds.getClass());
         
         try {
             pdsf.createDataSource(createInvalidPoolConfig());
@@ -56,7 +56,7 @@ public class PooledDataSourceFactoryTest {
         c.replay();
         DataSource ds = pdsf.createDataSource(createValidProps());
         c.verify();
-        Assert.assertEquals(CloseablePoolingDataSource.class, ds.getClass());
+        Assert.assertEquals(PoolingDataSource.class, ds.getClass());
         
         try {
             pdsf.createDataSource(createInvalidPoolConfig());

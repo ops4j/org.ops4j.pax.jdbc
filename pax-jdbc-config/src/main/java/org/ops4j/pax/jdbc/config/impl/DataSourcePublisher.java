@@ -17,7 +17,6 @@
 package org.ops4j.pax.jdbc.config.impl;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +54,7 @@ public class DataSourcePublisher {
     /**
      * Map from pid + extension to Closeable which holds the object to close for e.g. a DataSource
      */
-    private Collection<Closeable> closeables;
+    private Collection<AutoCloseable> closeables;
 
     /**
      * Map from pid + extension to ServiceRegistration
@@ -72,7 +71,7 @@ public class DataSourcePublisher {
             this.config.put(JNDI_SERVICE_NAME, dsName);
         }
         this.ignoredKeys = new HashSet<String>(Arrays.asList(NOT_FORWARDED_KEYS));
-        this.closeables = new ArrayList<Closeable>();
+        this.closeables = new ArrayList<AutoCloseable>();
         this.serviceRegs = new ArrayList<ServiceRegistration>();
     }
 
@@ -145,17 +144,17 @@ public class DataSourcePublisher {
         for (ServiceRegistration reg : serviceRegs) {
             reg.unregister();
         }
-        for (Closeable closeable : closeables) {
+        for (AutoCloseable closeable : closeables) {
             safeClose(closeable);
         }
     }
 
-    private void safeClose(Closeable closeable) {
+    private void safeClose(AutoCloseable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 LOG.warn("Error closing " + closeable.getClass() + ": " + e.getMessage(), e);
             }
         }

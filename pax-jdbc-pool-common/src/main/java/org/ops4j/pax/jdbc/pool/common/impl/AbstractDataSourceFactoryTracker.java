@@ -109,12 +109,10 @@ public abstract class AbstractDataSourceFactoryTracker extends
     }
 
     @Override
-    public void removedService(ServiceReference<DataSourceFactory> reference,
-        ServiceRegistration<DataSourceFactory> reg) {
+    public void removedService(ServiceReference<DataSourceFactory> reference, ServiceRegistration<DataSourceFactory> reg) {
         LOG.debug("Unregistering PooledDataSourceFactory");
         reg.unregister();
-        context.ungetService(reference);
-
+        super.removedService(reference, reg);
     }
 
 }

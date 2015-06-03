@@ -27,6 +27,7 @@ import javax.transaction.TransactionManager;
 
 import org.apache.commons.dbcp2.PoolableConnection;
 import org.apache.commons.dbcp2.managed.DataSourceXAConnectionFactory;
+import org.apache.commons.dbcp2.managed.ManagedDataSource;
 import org.apache.commons.dbcp2.managed.PoolableManagedConnectionFactory;
 import org.apache.commons.dbcp2.managed.TransactionRegistry;
 import org.apache.commons.pool2.impl.GenericObjectPool;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     private Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
-    protected TransactionManager tm;    
+    protected TransactionManager tm;
 
     /**
      * Initialize XA PoolingDataSourceFactory
@@ -78,7 +79,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
             pcf.setPool(pool);
             TransactionRegistry transactionRegistry = connFactory.getTransactionRegistry();
-            return new CloseableManagedDataSource<PoolableConnection>(pool, transactionRegistry);
+            return new ManagedDataSource<PoolableConnection>(pool, transactionRegistry);
         }
         catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);

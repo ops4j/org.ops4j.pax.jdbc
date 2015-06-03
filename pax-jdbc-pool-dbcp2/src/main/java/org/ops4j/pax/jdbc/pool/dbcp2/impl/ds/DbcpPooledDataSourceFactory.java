@@ -31,6 +31,7 @@ import javax.sql.XADataSource;
 import org.apache.commons.dbcp2.DataSourceConnectionFactory;
 import org.apache.commons.dbcp2.PoolableConnection;
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
+import org.apache.commons.dbcp2.PoolingDataSource;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
@@ -121,7 +122,7 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
             pcf.setPool(pool);
-            return new CloseablePoolingDataSource<PoolableConnection>(pool);
+            return new PoolingDataSource<PoolableConnection>(pool);
         }
         catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);
