@@ -32,7 +32,7 @@
         <pax.swissbox.version>1.8.1</pax.swissbox.version>
         <pax.url.version>2.4.1</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
-        <sqlite.version>3.8.7</sqlite.version>
+        <sqlite.version>3.8.10.1</sqlite.version>
     </properties>
 
     <scm>
