@@ -5,10 +5,14 @@
 		<artifactId>jdbc</artifactId>
 		<version>0.6.0-SNAPSHOT</version>
 	</parent>
-	<groupId>org.ops4j.pax.jdbc</groupId>
+	
+    <groupId>org.ops4j.pax.jdbc</groupId>
 	<artifactId>pax-jdbc-pool-common</artifactId>
 	<packaging>bundle</packaging>
-	<properties>
+    
+    <name>OPS4J Pax JDBC Pooling Support Base</name>
+	
+    <properties>
 		<bundle.symbolicName>org.ops4j.pax.jdbc.pool.common</bundle.symbolicName>
 	</properties>
 	<build>
