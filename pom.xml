@@ -28,9 +28,9 @@
         <mysql.version>5.1.34</mysql.version>
         <postgresql.version>9.4-1200-jdbc41</postgresql.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
-        <pax.exam.version>4.4.0</pax.exam.version>
-        <pax.swissbox.version>1.8.0</pax.swissbox.version>
-        <pax.url.version>2.2.0</pax.url.version>
+        <pax.exam.version>4.5.0</pax.exam.version>
+        <pax.swissbox.version>1.8.1</pax.swissbox.version>
+        <pax.url.version>2.4.1</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.8.7</sqlite.version>
     </properties>
