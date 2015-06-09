@@ -12,7 +12,7 @@
     <name>OPS4J Pax JDBC Karaf Integration Tests</name>
 
     <properties>
-        <karaf.version>3.0.2</karaf.version>
+        <karaf.version>3.0.3</karaf.version>
     </properties>
 
     <dependencies>
