@@ -16,13 +16,18 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.assertEquals;
 
-import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Properties;
+
+import javax.sql.DataSource;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -30,33 +35,29 @@ import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DataSourceManagerTest {
+public class DataSourceConfigManagerTest {
 
     private static final String TESTPID = "testpid";
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
 
     @Test
-    public void testUpdatedAndDeleted() throws ConfigurationException, InvalidSyntaxException,
-        SQLException {
+    public void testUpdatedAndDeleted() throws Exception {
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
 
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
-
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
         Filter filter = FrameworkUtil.createFilter(expectedFilter);
         expect(context.createFilter(expectedFilter)).andReturn(filter);
-
         expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
-
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
             EasyMock.eq(expectedFilter));
         expectLastCall();
@@ -66,22 +67,16 @@ public class DataSourceManagerTest {
         expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
 
         expect(context.getService(ref)).andReturn(dsf);
+        
+        DataSource ds = c.createMock(DataSource.class);
+        expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
 
-        final DataSourcePublisher publisher = c.createMock(DataSourcePublisher.class);
-        publisher.publish(dsf);
-        expectLastCall();
+        ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
+        expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
+        
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
 
-        expect(context.ungetService(ref)).andReturn(true);
-
-        DataSourceManager dsManager = new DataSourceManager(context) {
-
-            @Override
-            protected DataSourcePublisher createPublisher(Dictionary config) {
-                return publisher;
-            }
-
-        };
-
+        // Test config created
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
@@ -89,22 +84,25 @@ public class DataSourceManagerTest {
         dsManager.updated(TESTPID, properties);
         c.verify();
 
-        c.reset();
 
+        c.reset();
         context.removeServiceListener(EasyMock.anyObject(ServiceListener.class));
-        publisher.unpublish();
         expectLastCall();
+        expect(context.ungetService(ref)).andReturn(true);
+        sreg.unregister();
+        expectLastCall();
+        
+        // Test config removed
         c.replay();
         dsManager.updated(TESTPID, null);
         c.verify();
     }
 
     @Test
-    public void testNotEnoughInfoToFindDriver() throws ConfigurationException,
-        InvalidSyntaxException, SQLException {
+    public void testNotEnoughInfoToFindDriver() {
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
-        DataSourceManager dsManager = new DataSourceManager(context);
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
 
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();

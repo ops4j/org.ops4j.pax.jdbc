@@ -31,7 +31,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
-        context.registerService(ManagedServiceFactory.class.getName(), new DataSourceManager(
+        context.registerService(ManagedServiceFactory.class.getName(), new DataSourceConfigManager(
             context), props);
     }
 

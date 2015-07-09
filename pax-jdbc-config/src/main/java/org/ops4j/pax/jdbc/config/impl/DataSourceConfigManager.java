@@ -25,12 +25,10 @@ import java.util.Map;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,28 +36,53 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
  * for the DataSourceFactories
  */
-public class DataSourceManager implements ManagedServiceFactory {
+public class DataSourceConfigManager implements ManagedServiceFactory {
 
-    private Logger LOG = LoggerFactory.getLogger(DataSourcePublisher.class);
-    private BundleContext context;
+    private Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
+    BundleContext context;
 
     /**
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
     private Map<String, ServiceTracker> trackers;
 
-    /**
-     * Stores one publisher for each config pid
-     */
-    private Map<String, DataSourcePublisher> publishers;
-
-    public DataSourceManager(BundleContext context) {
+    public DataSourceConfigManager(BundleContext context) {
         this.context = context;
         this.trackers = new HashMap<String, ServiceTracker>();
-        this.publishers = new HashMap<String, DataSourcePublisher>();
     }
 
-    private String getFilter(String driverClass, String driverName) throws ConfigurationException {
+
+
+    @Override
+    public String getName() {
+        return "datasource";
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void updated(final String pid, final Dictionary config) throws ConfigurationException {
+        deleted(pid);
+
+        if (config == null) {
+            return;
+        }
+
+        try {
+            String filter = getFilter(config);
+            Filter filterO = context.createFilter(filter);
+            DataSourceFactoryTracker tracker = new DataSourceFactoryTracker(context, filterO, config);
+            tracker.open();
+            trackers.put(pid, tracker);
+        }
+        catch (InvalidSyntaxException e) {
+            LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
+        }
+    }
+    
+    @SuppressWarnings("rawtypes")
+    private String getFilter(Dictionary config) throws ConfigurationException {
+        String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
+        String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (driverClass == null && driverName == null) {
             throw new ConfigurationException(null,
                 "Could not determine driver to use. Specify either "
@@ -93,79 +116,11 @@ public class DataSourceManager implements ManagedServiceFactory {
     }
 
     @Override
-    public String getName() {
-        return "datasource";
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void updated(final String pid, final Dictionary config) throws ConfigurationException {
-        deleted(pid);
-
-        if (config == null) {
-            return;
-        }
-
-        String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
-        String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
-        String filter = getFilter(driverClass, driverName);
-        try {
-            final DataSourcePublisher publisher = createPublisher(config);
-            ServiceTrackerCustomizer customizer = new DataSourceFactoryTracker(publisher);
-            Filter filterO = context.createFilter(filter);
-            ServiceTracker tracker = new ServiceTracker(context, filterO, customizer);
-            tracker.open();
-            trackers.put(pid, tracker);
-            publishers.put(pid, publisher);
-        }
-        catch (InvalidSyntaxException e) {
-            LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-    protected DataSourcePublisher createPublisher(final Dictionary config) {
-        return new DataSourcePublisher(context, config);
-    }
-
-    @Override
     public void deleted(String pid) {
         ServiceTracker tracker = trackers.get(pid);
         if (tracker != null) {
             tracker.close();
             trackers.remove(pid);
-        }
-        DataSourcePublisher publisher = publishers.get(pid);
-        if (publisher != null) {
-            publisher.unpublish();
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-    private final class DataSourceFactoryTracker implements ServiceTrackerCustomizer {
-
-        private final DataSourcePublisher publisher;
-
-        private DataSourceFactoryTracker(DataSourcePublisher publisher) {
-            this.publisher = publisher;
-        }
-
-        @Override
-        public void removedService(ServiceReference reference, Object service) {
-            publisher.unpublish();
-        }
-
-        @Override
-        public void modifiedService(ServiceReference reference, Object service) {
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public Object addingService(ServiceReference reference) {
-            DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
-            publisher.publish(dsf);
-            context.ungetService(reference);
-            return null;
         }
     }
 

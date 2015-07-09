@@ -43,7 +43,7 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DataSourcePublisherTest {
+public class DataSourceRegistrationTest {
 
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
 
@@ -63,7 +63,6 @@ public class DataSourcePublisherTest {
 
         // Expect DataSource is registered as a service
         ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
-
         expect(
             context.registerService(eq(DataSource.class.getName()), eq(ds),
                 capture(capturedServiceProps))).andReturn(dsSreg);
@@ -74,8 +73,7 @@ public class DataSourcePublisherTest {
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, "myDsName");
-        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
-        publisher.publish(dsf);
+        DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties);
         c.verify();
 
         // Check that correct properties were sent to DataSourceFactory
@@ -94,7 +92,7 @@ public class DataSourcePublisherTest {
         expectLastCall();
 
         c.replay();
-        publisher.unpublish();
+        publisher.close();
         c.verify();
     }
 
@@ -115,17 +113,20 @@ public class DataSourcePublisherTest {
         expect(
             context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds),
                 anyObject(Dictionary.class))).andReturn(dsSreg);
+        dsSreg.unregister();
+        expectLastCall();
 
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(DataSourcePublisher.DATASOURCE_TYPE,
+        properties.put(DataSourceRegistration.DATASOURCE_TYPE,
             ConnectionPoolDataSource.class.getSimpleName());
-        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
-        publisher.publish(dsf);
+        DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties);
+        publisher.close();
         c.verify();
     }
 
+    @SuppressWarnings("resource")
     @Test
     public void testPublishedXADS() throws ConfigurationException, InvalidSyntaxException,
         SQLException {
@@ -147,12 +148,12 @@ public class DataSourcePublisherTest {
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(DataSourcePublisher.DATASOURCE_TYPE, XADataSource.class.getSimpleName());
-        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
-        publisher.publish(dsf);
+        properties.put(DataSourceRegistration.DATASOURCE_TYPE, XADataSource.class.getSimpleName());
+        new DataSourceRegistration(context, dsf, properties);
         c.verify();
     }
 
+    @SuppressWarnings("resource")
     @Test(expected = IllegalArgumentException.class)
     public void testError() throws ConfigurationException, InvalidSyntaxException, SQLException {
 
@@ -163,9 +164,8 @@ public class DataSourcePublisherTest {
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(DataSourcePublisher.DATASOURCE_TYPE, "something else");
-        DataSourcePublisher publisher = new DataSourcePublisher(context, properties);
-        publisher.publish(dsf);
+        properties.put(DataSourceRegistration.DATASOURCE_TYPE, "something else");
+        new DataSourceRegistration(context, dsf, properties);
         c.verify();
     }
 
