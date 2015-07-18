@@ -42,6 +42,13 @@
         <feature>pax-jdbc-spec</feature>
         <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
     </feature>
+    
+    <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+        <bundle dependency="true">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-hsqldb/${project.version}</bundle>
+    </feature>
 
     <feature name="pax-jdbc-mariadb" description="Provides JDBC Mariadb DataSourceFactory" version="${project.version}"
              resolver="(obr)">
