@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * To override the standard options, you need to set the configuration property
  * {@code pax.exam.system = default}.
- * 
+ *
  * @author Harald Wellmann
  */
 public class TestConfiguration {
