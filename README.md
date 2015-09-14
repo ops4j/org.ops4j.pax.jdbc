@@ -27,11 +27,11 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current release is **Pax JDBC 0.4.0**.
+The current release is **Pax JDBC 0.6.0**.
 
 ## Issue Tracking
 
-* <http://team.ops4j.org/browse/PAXJDBC>
+* <https://ops4j1.jira.com/projects/PAXJDBC>
 
 ## Continuous Integration Builds
 
