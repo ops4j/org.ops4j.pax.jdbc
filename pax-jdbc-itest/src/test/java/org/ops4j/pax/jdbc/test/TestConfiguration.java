@@ -70,7 +70,9 @@ public class TestConfiguration {
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
             when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
-            junitBundles());
+            junitBundles(),
+            mvnBundle("org.osgi", "org.osgi.service.jdbc")
+            );
     }
 
     public static MavenArtifactProvisionOption mvnBundle(String groupId, String artifactId) {

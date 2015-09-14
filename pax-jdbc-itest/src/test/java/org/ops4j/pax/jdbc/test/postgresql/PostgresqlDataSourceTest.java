@@ -52,7 +52,6 @@ public class PostgresqlDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
             mvnBundle("org.postgresql", "postgresql") //
         );

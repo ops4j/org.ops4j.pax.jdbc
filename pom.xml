@@ -43,7 +43,6 @@
     </scm>
 
     <modules>
-        <module>pax-jdbc-spec</module>
         <module>pax-jdbc</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
@@ -64,6 +63,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.jdbc</artifactId>
+                <version>1.0.0</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.ops4j.pax.swissbox</groupId>

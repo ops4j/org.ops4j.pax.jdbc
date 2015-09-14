@@ -52,7 +52,6 @@ public class PoolDbcp2Test {
     public Option[] config() {
         return new Option[] {
             regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
             mvnBundle("com.h2database", "h2"), //
             mvnBundle("org.apache.commons", "commons-pool2"), //
             mvnBundle("commons-logging", "commons-logging"), //

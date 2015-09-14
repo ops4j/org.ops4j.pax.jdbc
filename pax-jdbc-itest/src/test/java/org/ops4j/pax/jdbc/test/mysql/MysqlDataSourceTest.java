@@ -51,7 +51,7 @@ public class MysqlDataSourceTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
+        return options(regressionDefaults(), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
             mvnBundle("mysql", "mysql-connector-java") //
         );

@@ -61,7 +61,6 @@ public class MariaDbNativeDataSourceTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-spec"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mariadb"), //
             mavenBundle("org.jumpmind.symmetric.jdbc", "mariadb-java-client", "1.1.1"));
     }
