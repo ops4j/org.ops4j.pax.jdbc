@@ -109,7 +109,7 @@
              version="${project.version}"
              resolver="(obr)">
         <feature>pax-jdbc-spec</feature>
-        <bundle dependency="true">mvn:com.mchange.c3p0/com.springsource.com.mchange.v2.c3p0/${c3p0.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${c3p0.version}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
