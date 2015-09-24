@@ -21,6 +21,7 @@
         <derby.version>10.11.1.1</derby.version>
         <commons.dbcp2.version>2.1</commons.dbcp2.version>
         <commons.pool2.version>2.4.1</commons.pool2.version>
+        <c3p0.version>0.9.1.2</c3p0.version>
         <h2.version>1.3.172</h2.version>
         <jta.bundle.version>1.1.1</jta.bundle.version>
         <logback.version>1.0.6</logback.version>
@@ -57,8 +58,8 @@
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>
-
         <module>pax-jdbc-pool-common</module>
+        <module>pax-jdbc-pool-c3p0</module>
     </modules>
 
     <dependencyManagement>
@@ -272,7 +273,11 @@
                 <artifactId>geronimo-jta_1.1_spec</artifactId>
                 <version>${jta.bundle.version}</version>
             </dependency>
-            
+            <dependency>
+                <groupId>com.mchange.c3p0</groupId>
+                <artifactId>com.springsource.com.mchange.v2.c3p0</artifactId>
+                <version>${c3p0.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -323,7 +328,7 @@
                 						</goals>
                 					</pluginExecutionFilter>
                 					<action>
-                						<ignore />
+                						<ignore/>
                 					</action>
                 				</pluginExecution>
                 			</pluginExecutions>
@@ -399,6 +404,11 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>springsource-releases</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
         </repository>
     </repositories>
 
