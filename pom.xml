@@ -22,6 +22,7 @@
         <commons.dbcp2.version>2.1</commons.dbcp2.version>
         <commons.pool2.version>2.4.1</commons.pool2.version>
         <h2.version>1.3.172</h2.version>
+        <hsqldb.version>2.3.2</hsqldb.version>
         <jta.bundle.version>1.1.1</jta.bundle.version>
         <logback.version>1.0.6</logback.version>
         <mariadb.version>1.1.7</mariadb.version>
@@ -46,6 +47,7 @@
         <module>pax-jdbc</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
+        <module>pax-jdbc-hsqldb</module>
         <module>pax-jdbc-mysql</module>
         <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-mariadb</module>
@@ -230,6 +232,12 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${hsqldb.version}</version>
             </dependency>
 
             <!--  The official PostgreSQL driver is not an OSGi bundle. -->
