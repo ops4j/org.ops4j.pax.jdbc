@@ -27,7 +27,9 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mchange.v2.c3p0.C3P0Registry;
 import com.mchange.v2.c3p0.DataSources;
+import com.mchange.v2.c3p0.PooledDataSource;
 
 /**
  * Creates pooled and optionally XA ready DataSources out of a non pooled DataSourceFactory. XA
@@ -58,13 +60,28 @@ public class C3p0PooledDataSourceFactory implements DataSourceFactory {
                 dsProps.put(key, props.get(key));
             }
         }
-        dsProps.remove(DataSourceFactory.JDBC_DATASOURCE_NAME);
         return dsProps;
+    }
+    
+  
+    
+    protected final void closeDataSource(Properties props) throws SQLException {
+        final String dataSourceName = props.getProperty("c3p0.dataSourceName");
+        if (dataSourceName!=null) {
+            final PooledDataSource pds = C3P0Registry.pooledDataSourceByName(dataSourceName);
+            if (pds!=null) {
+                LOG.info("Closing C3P0 pooled data source {}.", pds.getDataSourceName());
+                pds.close();
+            }
+        } else {
+            LOG.error("Please define c3p0.dataSourceName in your configuration to prevent memory leaks");
+        }
     }
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
+            closeDataSource(props);
             final DataSource unpooledDataSource = dsFactory.createDataSource(getNonPoolProps(props));
             return DataSources.pooledDataSource(unpooledDataSource, props);
         }

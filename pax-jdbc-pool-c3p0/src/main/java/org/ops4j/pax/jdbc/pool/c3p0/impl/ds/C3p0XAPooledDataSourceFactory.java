@@ -43,12 +43,12 @@ public class C3p0XAPooledDataSourceFactory extends C3p0PooledDataSourceFactory {
     public C3p0XAPooledDataSourceFactory(DataSourceFactory dsFactory, TransactionManager tm) {
         super(dsFactory);
         this.tm = tm;
-
     }
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
+            closeDataSource(props);
             final XADataSource unpooledDataSource = dsFactory.createXADataSource(getNonPoolProps(props));
             return DataSources.pooledDataSource((DataSource) unpooledDataSource, props);
         }

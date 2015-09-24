@@ -15,6 +15,9 @@
  */
 package org.ops4j.pax.jdbc.pool.c3p0.impl;
 
+import java.sql.SQLException;
+import java.util.Iterator;
+
 import javax.transaction.TransactionManager;
 
 import org.ops4j.pax.jdbc.pool.c3p0.impl.ds.C3p0PooledDataSourceFactory;
@@ -22,12 +25,18 @@ import org.ops4j.pax.jdbc.pool.c3p0.impl.ds.C3p0XAPooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.common.impl.AbstractDataSourceFactoryTracker;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mchange.v2.c3p0.C3P0Registry;
+import com.mchange.v2.c3p0.PooledDataSource;
 
 /**
  * Watches for DataSourceFactory services and creates/destroys a DbcpPooledDataSourceFactory for
  * each existing DataSourceFactory
  */
 public class DataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
+    private Logger LOG = LoggerFactory.getLogger(DataSourceFactoryTracker.class);
 
     public DataSourceFactoryTracker(BundleContext context) {
         this(context, null);
@@ -44,6 +53,22 @@ public class DataSourceFactoryTracker extends AbstractDataSourceFactoryTracker {
         }
         else {
             return new C3p0PooledDataSourceFactory(dsf);
+        }
+    }
+    
+    @Override
+    public void close() {
+        super.close();
+        @SuppressWarnings("unchecked")
+        final Iterator<PooledDataSource> pdsIterator = C3P0Registry.getPooledDataSources().iterator();
+        while (pdsIterator.hasNext()) {
+            final PooledDataSource pds = pdsIterator.next();
+            try {
+                LOG.info("Closing C3P0 pooled data source {}.", pds.getDataSourceName());
+                pds.close();
+            } catch (SQLException e) {
+                LOG.error(null, e);
+            }
         }
     }
 
