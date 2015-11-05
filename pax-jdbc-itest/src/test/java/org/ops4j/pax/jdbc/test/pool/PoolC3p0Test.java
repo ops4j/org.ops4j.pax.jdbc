@@ -58,7 +58,7 @@ public class PoolC3p0Test {
             mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"),
             mvnBundle("org.apache.aries", "org.apache.aries.util"),
             mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").noStart(),
-            mvnBundle("com.mchange.c3p0", "com.springsource.com.mchange.v2.c3p0"),
+            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.c3p0"),
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"),
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-c3p0"),
         };
@@ -67,14 +67,14 @@ public class PoolC3p0Test {
     @Test
     public void testDataSourceFactoryCreated() {
         assertAllBundlesResolved();
-        ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
+        final ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
             context, DataSourceFactory.class, null);
         tracker.open();
         Assert.assertEquals("No TransactionManager service installed."
             + "So we expect only the original DataSourceFactory and our pooling one", 2,
             tracker.getServiceReferences().length);
-        Set<String> names = getDataFactoryNames(tracker);
-        Set<String> expectedNames = asSet("H2", "H2-pool");
+        final Set<String> names = getDataFactoryNames(tracker);
+        final Set<String> expectedNames = asSet("H2", "H2-pool");
         Assert.assertEquals(expectedNames, names);
         // printDataSourceFactories(tracker);
     }
@@ -82,27 +82,27 @@ public class PoolC3p0Test {
     @Test
     public void testXADataSourceFactoryCreated() throws BundleException, InterruptedException {
         assertAllBundlesResolved();
-        Bundle tmBundle = getBundle("org.apache.aries.transaction.manager");
+        final Bundle tmBundle = getBundle("org.apache.aries.transaction.manager");
         tmBundle.start();
-        ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
+        final ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
             context, DataSourceFactory.class, null);
         tracker.open();
-        Set<String> names = getDataFactoryNames(tracker);
+        final Set<String> names = getDataFactoryNames(tracker);
         Assert.assertEquals(asSet("H2", "H2-pool", "H2-pool-xa"), names);
         tmBundle.stop();
         Assert.assertNull(context.getServiceReference(TransactionManager.class));
         Thread.sleep(1000);
-        Set<String> names2 = getDataFactoryNames(tracker);
+        final Set<String> names2 = getDataFactoryNames(tracker);
         Assert.assertEquals(asSet("H2", "H2-pool"), names2);
         // printDataSourceFactories(tracker);
     }
 
-    private Set<String> asSet(String... values) {
+    private Set<String> asSet(final String... values) {
         return new HashSet<String>(Arrays.asList(values));
     }
 
-    private Bundle getBundle(String symbolicName) {
-        for (Bundle bundle : context.getBundles()) {
+    private Bundle getBundle(final String symbolicName) {
+        for (final Bundle bundle : context.getBundles()) {
             if (bundle.getSymbolicName().equals(symbolicName)) {
                 return bundle;
             }
@@ -110,34 +110,34 @@ public class PoolC3p0Test {
         return null;
     }
 
-    private Set<String> getDataFactoryNames(ServiceTracker<DataSourceFactory, Object> tracker) {
-        Set<String> results = new HashSet<String>();
-        for (ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
+    private Set<String> getDataFactoryNames(final ServiceTracker<DataSourceFactory, Object> tracker) {
+        final Set<String> results = new HashSet<String>();
+        for (final ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
             results.add((String) ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME));
         }
         return results;
     }
 
     @SuppressWarnings("unused")
-    private void printDataSourceFactories(ServiceTracker<DataSourceFactory, Object> tracker) {
-        for (ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
+    private void printDataSourceFactories(final ServiceTracker<DataSourceFactory, Object> tracker) {
+        for (final ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
             System.out.println("DataSourceFactory Service");
-            String[] keys = ref.getPropertyKeys();
+            final String[] keys = ref.getPropertyKeys();
             Arrays.sort(keys);
-            for (String key : keys) {
+            for (final String key : keys) {
                 System.out.println("  " + key + ":" + ref.getProperty(key));
             }
         }
     }
 
     private void assertAllBundlesResolved() {
-        for (Bundle bundle : context.getBundles()) {
+        for (final Bundle bundle : context.getBundles()) {
             if (bundle.getState() == Bundle.INSTALLED) {
                 // Provoke exception
                 try {
                     bundle.start();
                 }
-                catch (BundleException e) {
+                catch (final BundleException e) {
                     Assert.fail(e.getMessage());
                 }
             }
