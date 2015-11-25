@@ -120,4 +120,17 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-aries/${project.version}</bundle>
     </feature>
 
+    <feature name="pax-jdbc-pool-narayana" description="Provides JDBC Pooling DataSourceFactory using Narayana Transaction Manager"
+             version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${commons.dbcp2.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${commons.pool2.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
+        <bundle dependency="true">mvn:org.jboss.narayana.osgi/narayana-osgi-jta/${narayana.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-narayana/${project.version}</bundle>
+    </feature>
+
 </features>
