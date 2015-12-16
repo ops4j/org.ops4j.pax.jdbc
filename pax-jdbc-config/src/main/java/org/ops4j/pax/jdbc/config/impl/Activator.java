@@ -18,10 +18,12 @@ package org.ops4j.pax.jdbc.config.impl;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.jasypt.encryption.StringEncryptor;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
@@ -31,8 +33,13 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
+
+        ServiceTracker encryptorServiceTracker = new ServiceTracker(context,
+                StringEncryptor.class.getName(), null);
+        encryptorServiceTracker.open();
+
         context.registerService(ManagedServiceFactory.class.getName(), new DataSourceConfigManager(
-            context), props);
+            context, encryptorServiceTracker), props);
     }
 
     @Override
