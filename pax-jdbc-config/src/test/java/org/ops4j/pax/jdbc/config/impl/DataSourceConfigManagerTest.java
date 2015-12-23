@@ -18,6 +18,7 @@ package org.ops4j.pax.jdbc.config.impl;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.matches;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -31,6 +32,8 @@ import javax.sql.DataSource;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.jasypt.encryption.StringEncryptor;
+import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -40,6 +43,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.util.tracker.ServiceTracker;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourceConfigManagerTest {
@@ -73,8 +77,10 @@ public class DataSourceConfigManagerTest {
 
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
-        
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
+
+        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
+        expect(encryptorServiceTracker.getServices()).andReturn(new Object[] {});
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, encryptorServiceTracker);
 
         // Test config created
         c.replay();
@@ -102,7 +108,10 @@ public class DataSourceConfigManagerTest {
     public void testNotEnoughInfoToFindDriver() {
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
+
+        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
+        expect(encryptorServiceTracker.getServices()).andReturn(new Object[] {});
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, encryptorServiceTracker);
 
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
@@ -117,4 +126,49 @@ public class DataSourceConfigManagerTest {
         c.verify();
     }
 
+    @Test
+    public void testEncryptor() throws Exception {
+        IMocksControl c = EasyMock.createControl();
+        BundleContext context = c.createMock(BundleContext.class);
+
+        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+        String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
+
+        Filter filter = FrameworkUtil.createFilter(expectedFilter);
+        expect(context.createFilter(expectedFilter)).andReturn(filter);
+        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
+        context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
+            EasyMock.eq(expectedFilter));
+        expectLastCall();
+
+        ServiceReference ref = c.createMock(ServiceReference.class);
+        ServiceReference[] refs = new ServiceReference[] { ref };
+        expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
+
+        expect(context.getService(ref)).andReturn(dsf);
+
+        DataSource ds = c.createMock(DataSource.class);
+        expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
+
+        ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
+        expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
+
+        StringEncryptor encryptor = c.createMock(StringEncryptor.class);
+        expect(encryptor.decrypt(matches("ciphertext"))).andReturn("plaintext");
+
+        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
+        expect(encryptorServiceTracker.getServices()).andReturn(new Object[] { encryptor });
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, encryptorServiceTracker);
+
+        // Test config created
+        c.replay();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
+        properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
+        properties.put(DataSourceFactory.JDBC_PASSWORD, "ENC(ciphertext)");
+        dsManager.updated(TESTPID, properties);
+        c.verify();
+
+        Assert.assertEquals("plaintext", (String)properties.get(DataSourceFactory.JDBC_PASSWORD));
+    }
 }
