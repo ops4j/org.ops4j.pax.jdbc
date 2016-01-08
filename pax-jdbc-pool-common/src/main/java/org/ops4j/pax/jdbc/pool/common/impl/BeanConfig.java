@@ -67,14 +67,14 @@ public class BeanConfig {
                     + " for property " + key);
             }
             Class<?> paramClass = method.getParameterTypes()[0];
-            if (paramClass == int.class) {
-                method.invoke(bean, new Integer(value).intValue());
+            if (paramClass == int.class || paramClass == Integer.class) {
+                method.invoke(bean, Integer.parseInt(value));
             }
-            else if (paramClass == long.class) {
-                method.invoke(bean, new Long(value).longValue());
+            else if (paramClass == long.class || paramClass == Long.class) {
+                method.invoke(bean, Long.parseLong(value));
             }
-            else if (paramClass == boolean.class) {
-                method.invoke(bean, new Boolean(value).booleanValue());
+            else if (paramClass == boolean.class || paramClass == Boolean.class) {
+                method.invoke(bean, Boolean.parseBoolean(value));
             }
             else if (paramClass == String.class) {
                 method.invoke(bean, value);
