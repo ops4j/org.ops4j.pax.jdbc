@@ -98,7 +98,7 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
             "setDatabaseName");
         setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceInstance,
             "setServerName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance,
+        setIntProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance,
             "setPortNumber");
         setProperty(props.getProperty(DataSourceFactory.JDBC_USER), dataSourceInstance, "setUser");
         setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceInstance,
@@ -110,6 +110,11 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
         if (value != null) {
             instance.getClass().getMethod(methodName, String.class).invoke(instance, value);
         }
+    }
+    
+    private void setIntProperty(String value, Object instance, String methodName) throws Exception {
+        int iValue = new Integer(value);
+        instance.getClass().getMethod(methodName, int.class).invoke(instance, iValue);
     }
 
 }
