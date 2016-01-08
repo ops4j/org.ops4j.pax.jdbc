@@ -59,8 +59,10 @@ public class H2ConfigTest {
 
     @Configuration
     public Option[] config() {
-        return new Option[] { regressionDefaults(), //
+        return new Option[] { //
+            regressionDefaults(), //
             mvnBundle("org.apache.felix", "org.apache.felix.configadmin"), //
+            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
             mvnBundle("com.h2database", "h2"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config") //
         };

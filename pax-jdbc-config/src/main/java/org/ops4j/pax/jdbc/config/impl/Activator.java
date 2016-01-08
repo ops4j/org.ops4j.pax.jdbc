@@ -28,22 +28,23 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
 
     private static final String FACTORY_PID = "org.ops4j.datasource";
+    private ServiceTracker encryptorServiceTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
 
-        ServiceTracker encryptorServiceTracker = new ServiceTracker(context,
-                StringEncryptor.class.getName(), null);
+        encryptorServiceTracker = new ServiceTracker(context, StringEncryptor.class.getName(), null);
         encryptorServiceTracker.open();
-
-        context.registerService(ManagedServiceFactory.class.getName(), new DataSourceConfigManager(
-            context, encryptorServiceTracker), props);
+        Decryptor decryptor = new Decryptor(encryptorServiceTracker);
+        DataSourceConfigManager configManager = new DataSourceConfigManager(context, decryptor);
+        context.registerService(ManagedServiceFactory.class.getName(), configManager, props);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        encryptorServiceTracker.close();
     }
 
 }

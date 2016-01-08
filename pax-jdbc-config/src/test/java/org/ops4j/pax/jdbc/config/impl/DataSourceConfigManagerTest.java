@@ -78,9 +78,10 @@ public class DataSourceConfigManagerTest {
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
 
-        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
-        expect(encryptorServiceTracker.getServices()).andReturn(new Object[] {});
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, encryptorServiceTracker);
+        Decryptor decryptor = c.createMock(Decryptor.class);
+        decryptor.decrypt(EasyMock.anyObject(Dictionary.class));
+        expectLastCall();
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
 
         // Test config created
         c.replay();
@@ -109,9 +110,10 @@ public class DataSourceConfigManagerTest {
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
 
-        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
-        expect(encryptorServiceTracker.getServices()).andReturn(new Object[] {});
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, encryptorServiceTracker);
+        Decryptor decryptor = c.createMock(Decryptor.class);
+        decryptor.decrypt(EasyMock.anyObject(Dictionary.class));
+        expectLastCall();
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
 
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
@@ -153,12 +155,8 @@ public class DataSourceConfigManagerTest {
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
 
-        StringEncryptor encryptor = c.createMock(StringEncryptor.class);
-        expect(encryptor.decrypt(matches("ciphertext"))).andReturn("plaintext");
-
-        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
-        expect(encryptorServiceTracker.getServices()).andReturn(new Object[] { encryptor });
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, encryptorServiceTracker);
+        Decryptor decryptor = createDecryptor(c);
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
 
         // Test config created
         c.replay();
@@ -170,5 +168,15 @@ public class DataSourceConfigManagerTest {
         c.verify();
 
         Assert.assertEquals("plaintext", (String)properties.get(DataSourceFactory.JDBC_PASSWORD));
+    }
+
+    private Decryptor createDecryptor(IMocksControl c) {
+        StringEncryptor encryptor = c.createMock(StringEncryptor.class);
+        expect(encryptor.decrypt(matches("ciphertext"))).andReturn("plaintext");
+
+        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
+        expect(encryptorServiceTracker.getService()).andReturn(encryptor);
+        Decryptor decryptor = new Decryptor(encryptorServiceTracker);
+        return decryptor;
     }
 }

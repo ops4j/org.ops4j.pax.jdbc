@@ -18,13 +18,10 @@ package org.ops4j.pax.jdbc.config.impl;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.jasypt.encryption.StringEncryptor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -41,8 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
-    private static final String ENCRYPTED_PROPERTY_PREFIX = "ENC(";
-    private static final String ENCRYPTED_PROPERTY_SUFFIX = ")";
+
     private Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
     BundleContext context;
 
@@ -50,12 +46,13 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
     private Map<String, ServiceTracker> trackers;
-    private ServiceTracker              encryptorServiceTracker;
+    private Decryptor decryptor;
 
-    public DataSourceConfigManager(BundleContext context, ServiceTracker encryptorServiceTracker) {
+
+    public DataSourceConfigManager(BundleContext context, Decryptor decryptor) {
         this.context = context;
         this.trackers = new HashMap<String, ServiceTracker>();
-        this.encryptorServiceTracker = encryptorServiceTracker;
+        this.decryptor = decryptor;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         return "datasource";
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes"})
     @Override
     public void updated(final String pid, final Dictionary config) throws ConfigurationException {
         deleted(pid);
@@ -72,24 +69,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             return;
         }
 
-        final Object[] encryptorServices = this.encryptorServiceTracker.getServices();
-        if ((null != encryptorServices) && (0 < encryptorServices.length)) {
-            StringEncryptor encryptor = (StringEncryptor) encryptorServices[0];
-            Map<String, String> decryptedConfig = new HashMap<String, String>();
-            for (Enumeration e = config.keys(); e.hasMoreElements();) {
-                final String key = (String) e.nextElement();
-                String value = (String) config.get(key);
-                if (isEncrypted(value)) {
-                    String cipherText = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
-                            value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
-                    String plainText = encryptor.decrypt(cipherText);
-                    decryptedConfig.put(key, plainText);
-                }
-            }
-            for (Entry<String, String> entry : decryptedConfig.entrySet()) {
-                config.put(entry.getKey(), entry.getValue());
-            }
-        }
+        decryptor.decrypt(config);
 
         try {
             String filter = getFilter(config);
@@ -102,6 +82,8 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
         }
     }
+
+
 
     @SuppressWarnings("rawtypes")
     private String getFilter(Dictionary config) throws ConfigurationException {
@@ -147,10 +129,6 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             trackers.remove(pid);
         }
     }
+    
 
-    public boolean isEncrypted(String value) {
-
-        return value.startsWith(ENCRYPTED_PROPERTY_PREFIX)
-                && value.endsWith(ENCRYPTED_PROPERTY_SUFFIX);
-    }
 }
