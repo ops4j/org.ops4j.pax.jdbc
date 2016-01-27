@@ -1,9 +1,6 @@
 package org.ops4j.pax.jdbc.config.impl;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.jasypt.encryption.StringEncryptor;
@@ -35,9 +32,9 @@ public class Decryptor {
     }
 
     @SuppressWarnings("rawtypes")
-    public void decrypt(final Dictionary config) {
+    public Dictionary<String, String> decrypt(final Dictionary config) {
         StringEncryptor encryptor = null;
-        Map<String, String> decryptedConfig = new HashMap<String, String>();
+        Dictionary<String, String> decryptedConfig = new Hashtable<String, String>();
         for (Enumeration e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
             String value = (String) config.get(key);
@@ -55,11 +52,11 @@ public class Decryptor {
                     String plainText = encryptor.decrypt(cipherText);
                     decryptedConfig.put(key, plainText);
                 }
+            } else {
+                decryptedConfig.put(key, value);
             }
         }
-        for (Entry<String, String> entry : decryptedConfig.entrySet()) {
-            config.put(entry.getKey(), entry.getValue());
-        }
+        return decryptedConfig;
     }
 
     public boolean isEncrypted(String value) {

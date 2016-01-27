@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -80,18 +81,18 @@ public class DataSourceConfigManagerTest {
         expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
 
         Decryptor decryptor = c.createMock(Decryptor.class);
-        decryptor.decrypt(EasyMock.anyObject(Dictionary.class));
-        expectLastCall();
+
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
+        properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
+        expect(decryptor.decrypt(anyObject(Dictionary.class))).andReturn(properties);
+
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
 
         // Test config created
         c.replay();
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
-        properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         dsManager.updated(TESTPID, properties);
         c.verify();
-
 
         c.reset();
         context.removeServiceListener(EasyMock.anyObject(ServiceListener.class));
@@ -112,13 +113,12 @@ public class DataSourceConfigManagerTest {
         BundleContext context = c.createMock(BundleContext.class);
 
         Decryptor decryptor = c.createMock(Decryptor.class);
-        decryptor.decrypt(EasyMock.anyObject(Dictionary.class));
-        expectLastCall();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("other", "value");
+        expect(decryptor.decrypt(EasyMock.anyObject(Dictionary.class))).andReturn(properties);
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
 
         c.replay();
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("other", "value");
         try {
             dsManager.updated(TESTPID, properties);
         }
@@ -168,7 +168,8 @@ public class DataSourceConfigManagerTest {
         dsManager.updated(TESTPID, properties);
         c.verify();
 
-        Assert.assertEquals("plaintext", (String)properties.get(DataSourceFactory.JDBC_PASSWORD));
+        // the encrypted value is still encrypted
+        Assert.assertEquals("ENC(ciphertext)", properties.get(DataSourceFactory.JDBC_PASSWORD));
     }
 
     private Decryptor createDecryptor(IMocksControl c) throws Exception {

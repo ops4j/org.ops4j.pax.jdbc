@@ -27,17 +27,19 @@ import org.osgi.util.tracker.ServiceTracker;
 @SuppressWarnings("rawtypes")
 final class DataSourceFactoryTracker extends ServiceTracker {
     private Dictionary config;
+    private Dictionary decryptedConfig;
 
-    DataSourceFactoryTracker(BundleContext context, Filter filter, Dictionary config) {
+    DataSourceFactoryTracker(BundleContext context, Filter filter, Dictionary config, Dictionary decryptedConfig) {
         super(context, filter, null);
         this.config = config;
+        this.decryptedConfig = decryptedConfig;
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public Object addingService(ServiceReference reference) {
         DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
-        return new DataSourceRegistration(context, dsf, config); 
+        return new DataSourceRegistration(context, dsf, config, decryptedConfig);
     }
 
     @Override
