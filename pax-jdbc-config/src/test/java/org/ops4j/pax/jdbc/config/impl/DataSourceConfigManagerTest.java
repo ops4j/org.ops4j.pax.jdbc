@@ -17,6 +17,7 @@
 package org.ops4j.pax.jdbc.config.impl;
 
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.matches;
 import static org.easymock.EasyMock.eq;
@@ -170,12 +171,12 @@ public class DataSourceConfigManagerTest {
         Assert.assertEquals("plaintext", (String)properties.get(DataSourceFactory.JDBC_PASSWORD));
     }
 
-    private Decryptor createDecryptor(IMocksControl c) {
+    private Decryptor createDecryptor(IMocksControl c) throws Exception {
         StringEncryptor encryptor = c.createMock(StringEncryptor.class);
         expect(encryptor.decrypt(matches("ciphertext"))).andReturn("plaintext");
 
         ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
-        expect(encryptorServiceTracker.getService()).andReturn(encryptor);
+        expect(encryptorServiceTracker.waitForService(anyInt())).andReturn(encryptor);
         Decryptor decryptor = new Decryptor(encryptorServiceTracker);
         return decryptor;
     }

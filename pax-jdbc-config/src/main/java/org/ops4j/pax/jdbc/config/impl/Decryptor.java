@@ -36,14 +36,7 @@ public class Decryptor {
 
     @SuppressWarnings("rawtypes")
     public void decrypt(final Dictionary config) {
-        StringEncryptor encryptor = (StringEncryptor) this.encryptorServiceTracker.getService();
-        if (encryptor != null) {
-            decrypt(config, encryptor);
-        }
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void decrypt(final Dictionary config, StringEncryptor encryptor) {
+        StringEncryptor encryptor = null;
         Map<String, String> decryptedConfig = new HashMap<String, String>();
         for (Enumeration e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
@@ -51,8 +44,17 @@ public class Decryptor {
             if (isEncrypted(value)) {
                 String cipherText = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
                         value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
-                String plainText = encryptor.decrypt(cipherText);
-                decryptedConfig.put(key, plainText);
+                if(encryptor == null) {
+                    try {
+                        encryptor = (StringEncryptor) this.encryptorServiceTracker.waitForService(30000);
+                    } catch (InterruptedException e1) {
+                        /* ignore */
+                    }
+                }
+                if (encryptor != null) {
+                    String plainText = encryptor.decrypt(cipherText);
+                    decryptedConfig.put(key, plainText);
+                }
             }
         }
         for (Entry<String, String> entry : decryptedConfig.entrySet()) {
