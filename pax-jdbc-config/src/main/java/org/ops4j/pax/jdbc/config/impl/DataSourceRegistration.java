@@ -60,7 +60,7 @@ public class DataSourceRegistration implements Closeable {
     private AutoCloseable dataSource;
     private ServiceRegistration serviceReg;
 
-    public DataSourceRegistration(BundleContext context, DataSourceFactory dsf, final Dictionary config) {
+    public DataSourceRegistration(BundleContext context, DataSourceFactory dsf, final Dictionary config, final Dictionary decryptedConfig) {
         Object dsName = config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
         if (dsName != null && config.get(JNDI_SERVICE_NAME) == null) {
             config.put(JNDI_SERVICE_NAME, dsName);
@@ -69,7 +69,7 @@ public class DataSourceRegistration implements Closeable {
         try {
             String typeName = (String)config.get(DATASOURCE_TYPE);
             Class<?> type = getType(typeName);
-            Object ds = createDs(dsf, type, config);
+            Object ds = createDs(dsf, type, decryptedConfig);
             if (ds instanceof AutoCloseable) {
                 dataSource = (AutoCloseable)ds;
             }
@@ -104,10 +104,10 @@ public class DataSourceRegistration implements Closeable {
         }
     }
 
-    private Object createDs(DataSourceFactory dsf, Class<?> type, Dictionary config) throws SQLException {
-        Properties props = toProperties(config);
+    private Object createDs(DataSourceFactory dsf, Class<?> type, Dictionary decryptedConfig) throws SQLException {
+        Properties props = toProperties(decryptedConfig);
         if (type == DataSource.class) {
-            addDataSourceName(dsf, config, props);
+            addDataSourceName(dsf, decryptedConfig, props);
             return dsf.createDataSource(props);
         } else if (type == ConnectionPoolDataSource.class) {
             return dsf.createConnectionPoolDataSource(props);

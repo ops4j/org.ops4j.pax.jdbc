@@ -1,9 +1,6 @@
 package org.ops4j.pax.jdbc.config.impl;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.jasypt.encryption.StringEncryptor;
@@ -35,29 +32,31 @@ public class Decryptor {
     }
 
     @SuppressWarnings("rawtypes")
-    public void decrypt(final Dictionary config) {
-        StringEncryptor encryptor = (StringEncryptor) this.encryptorServiceTracker.getService();
-        if (encryptor != null) {
-            decrypt(config, encryptor);
-        }
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void decrypt(final Dictionary config, StringEncryptor encryptor) {
-        Map<String, String> decryptedConfig = new HashMap<String, String>();
+    public Dictionary<String, String> decrypt(final Dictionary config) {
+        StringEncryptor encryptor = null;
+        Dictionary<String, String> decryptedConfig = new Hashtable<String, String>();
         for (Enumeration e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
             String value = (String) config.get(key);
             if (isEncrypted(value)) {
                 String cipherText = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
                         value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
-                String plainText = encryptor.decrypt(cipherText);
-                decryptedConfig.put(key, plainText);
+                if(encryptor == null) {
+                    try {
+                        encryptor = (StringEncryptor) this.encryptorServiceTracker.waitForService(30000);
+                    } catch (InterruptedException e1) {
+                        /* ignore */
+                    }
+                }
+                if (encryptor != null) {
+                    String plainText = encryptor.decrypt(cipherText);
+                    decryptedConfig.put(key, plainText);
+                }
+            } else {
+                decryptedConfig.put(key, value);
             }
         }
-        for (Entry<String, String> entry : decryptedConfig.entrySet()) {
-            config.put(entry.getKey(), entry.getValue());
-        }
+        return decryptedConfig;
     }
 
     public boolean isEncrypted(String value) {

@@ -73,7 +73,7 @@ public class DataSourceRegistrationTest {
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, "myDsName");
-        DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties);
+        DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties, properties);
         c.verify();
 
         // Check that correct properties were sent to DataSourceFactory
@@ -121,7 +121,7 @@ public class DataSourceRegistrationTest {
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.DATASOURCE_TYPE,
             ConnectionPoolDataSource.class.getSimpleName());
-        DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties);
+        DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties, properties);
         publisher.close();
         c.verify();
     }
@@ -149,7 +149,7 @@ public class DataSourceRegistrationTest {
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.DATASOURCE_TYPE, XADataSource.class.getSimpleName());
-        new DataSourceRegistration(context, dsf, properties);
+        new DataSourceRegistration(context, dsf, properties, properties);
         c.verify();
     }
 
@@ -165,7 +165,7 @@ public class DataSourceRegistrationTest {
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.DATASOURCE_TYPE, "something else");
-        new DataSourceRegistration(context, dsf, properties);
+        new DataSourceRegistration(context, dsf, properties, properties);
         c.verify();
     }
 

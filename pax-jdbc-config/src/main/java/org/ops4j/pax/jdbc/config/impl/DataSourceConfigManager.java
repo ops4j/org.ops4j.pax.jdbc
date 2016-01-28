@@ -69,12 +69,12 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             return;
         }
 
-        decryptor.decrypt(config);
+        Dictionary<String, String> decryptedConfig = decryptor.decrypt(config);
 
         try {
-            String filter = getFilter(config);
+            String filter = getFilter(decryptedConfig);
             Filter filterO = context.createFilter(filter);
-            DataSourceFactoryTracker tracker = new DataSourceFactoryTracker(context, filterO, config);
+            DataSourceFactoryTracker tracker = new DataSourceFactoryTracker(context, filterO, config, decryptedConfig);
             tracker.open();
             trackers.put(pid, tracker);
         }
