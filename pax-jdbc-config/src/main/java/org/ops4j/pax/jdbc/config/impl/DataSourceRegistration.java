@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class DataSourceRegistration implements Closeable {
 
     static final String DATASOURCE_TYPE = "dataSourceType";
-    private static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
+    static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
 
     // These config keys will not be forwarded to the DataSourceFactory
     private static final String[] NOT_FORWARDED_KEYS = {
@@ -61,11 +61,10 @@ public class DataSourceRegistration implements Closeable {
     private ServiceRegistration serviceReg;
 
     public DataSourceRegistration(BundleContext context, DataSourceFactory dsf, final Dictionary config, final Dictionary decryptedConfig) {
-        Object dsName = config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
-        if (dsName != null && config.get(JNDI_SERVICE_NAME) == null) {
+        String dsName = getDSName(config);
+        if (dsName != null) {
             config.put(JNDI_SERVICE_NAME, dsName);
         }
-        
         try {
             String typeName = (String)config.get(DATASOURCE_TYPE);
             Class<?> type = getType(typeName);
@@ -73,10 +72,16 @@ public class DataSourceRegistration implements Closeable {
             if (ds instanceof AutoCloseable) {
                 dataSource = (AutoCloseable)ds;
             }
+            LOG.info("Creating DataSource {}", dsName);
             serviceReg = context.registerService(type.getName(), ds, config);
         } catch (SQLException e) {
             LOG.warn(e.getMessage(), e);
         }
+    }
+    
+    static String getDSName(Dictionary config) {
+        String dsName = (String)config.get(DataSourceRegistration.JNDI_SERVICE_NAME);
+        return dsName != null ? dsName : (String)config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
     }
 
     @Override

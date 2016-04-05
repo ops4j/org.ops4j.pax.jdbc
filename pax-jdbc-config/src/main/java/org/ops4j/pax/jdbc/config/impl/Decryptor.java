@@ -1,7 +1,6 @@
 package org.ops4j.pax.jdbc.config.impl;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.osgi.util.tracker.ServiceTracker;

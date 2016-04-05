@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
  * for the DataSourceFactories
  */
+@SuppressWarnings({ "rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
 
@@ -60,7 +61,6 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         return "datasource";
     }
 
-    @SuppressWarnings({ "rawtypes"})
     @Override
     public void updated(final String pid, final Dictionary config) throws ConfigurationException {
         deleted(pid);
@@ -74,6 +74,8 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         try {
             String filter = getFilter(decryptedConfig);
             Filter filterO = context.createFilter(filter);
+            LOG.info("Detected config for DataSource {}. Tracking DSF with filter {}", 
+                     DataSourceRegistration.getDSName(config), filter);
             DataSourceFactoryTracker tracker = new DataSourceFactoryTracker(context, filterO, config, decryptedConfig);
             tracker.open();
             trackers.put(pid, tracker);
@@ -83,9 +85,6 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         }
     }
 
-
-
-    @SuppressWarnings("rawtypes")
     private String getFilter(Dictionary config) throws ConfigurationException {
         String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
