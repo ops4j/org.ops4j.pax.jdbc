@@ -41,16 +41,19 @@ public class HsqldbDataSourceFactory implements DataSourceFactory {
 
     private void setProperties(JDBCCommonDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
+        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);
-        if (url != null) {
+        if (databaseName != null) {
+            ds.setDatabaseName(databaseName);
+        }
+        else if (url != null) {
             ds.setUrl(url);
         }
-        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null && url == null) {
+        else {
             throw new SQLException("missing required property "
                 + DataSourceFactory.JDBC_DATABASE_NAME);
+            
         }
-        ds.setDatabaseName(databaseName);
 
         if (props.containsKey(DataSourceFactory.JDBC_PASSWORD)) {
             String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
