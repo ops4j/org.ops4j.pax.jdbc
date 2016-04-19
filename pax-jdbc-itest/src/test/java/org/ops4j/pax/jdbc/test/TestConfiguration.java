@@ -121,6 +121,21 @@ public class TestConfiguration {
         }
         return success;
     }
+    
+    public static boolean isHsqldbAvailable() {
+        ServerConfiguration config = new ServerConfiguration("hsqldb");
+        config.getUrl();
+
+        String serverName = config.getServerName();
+        String portNumber = config.getPortNumber();
+        int port = (portNumber == null) ? 9001 : Integer.parseInt(portNumber);
+
+        boolean success = checkSocketConnection(serverName, port);
+        if (!success) {
+            LOG.warn("cannot connect to HSQLDB at {}:{}, ignoring test", serverName, port);
+        }
+        return success;
+    }
 
     public static boolean checkSocketConnection(String serverName, int port) {
         Socket socket = new Socket();
