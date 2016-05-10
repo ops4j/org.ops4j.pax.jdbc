@@ -16,24 +16,20 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import java.io.Closeable;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
-import javax.sql.XADataSource;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
+import javax.sql.XADataSource;
+import java.io.Closeable;
+import java.sql.SQLException;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Properties;
 
 @SuppressWarnings({
     "rawtypes", "unchecked"
@@ -43,18 +39,9 @@ public class DataSourceRegistration implements Closeable {
     static final String DATASOURCE_TYPE = "dataSourceType";
     static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
 
-    // These config keys will not be forwarded to the DataSourceFactory
-    private static final String[] NOT_FORWARDED_KEYS = {
-        "service.pid", //
-        DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, //
-        DataSourceFactory.OSGI_JDBC_DRIVER_NAME, //
-        DataSourceFactory.JDBC_DATASOURCE_NAME, //
-        "service.factoryPid", //
-        "felix.fileinstall.filename", //
-        "aries.managed", //
-        JNDI_SERVICE_NAME, //
-        DATASOURCE_TYPE
-    };
+    // additionally all keys prefixed with "jdbc." will be forwarded (with the prefix stripped).
+    private static final String CONFIG_KEY_PREFIX = "jdbc.";
+    
     private static Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
 
     private AutoCloseable dataSource;
@@ -138,11 +125,14 @@ public class DataSourceRegistration implements Closeable {
     private Properties toProperties(Dictionary dict) {
         Properties props = new Properties();
         Enumeration keys = dict.keys();
-        Set<String> ignoredKeys = new HashSet<String>(Arrays.asList(NOT_FORWARDED_KEYS));
         while (keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
-            if (!ignoredKeys.contains(key)) {
+            // only forward local configuration keys (i. e. those without a dot)
+            // exception: the DATASOURCE_TYPE key (as legacy).
+            if (!key.contains(".") && !DATASOURCE_TYPE.equals(key)) {
                 props.put(key, dict.get(key));
+            } else if (key.startsWith(CONFIG_KEY_PREFIX)) {
+                props.put(key.substring(CONFIG_KEY_PREFIX.length()), dict.get(key));
             }
         }
         return props;
