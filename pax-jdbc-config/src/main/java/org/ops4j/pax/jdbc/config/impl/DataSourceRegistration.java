@@ -29,6 +29,7 @@ import java.io.Closeable;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
 
 @SuppressWarnings({
@@ -60,12 +61,12 @@ public class DataSourceRegistration implements Closeable {
                 dataSource = (AutoCloseable)ds;
             }
             LOG.info("Creating DataSource {}", dsName);
-            serviceReg = context.registerService(type.getName(), ds, config);
+            serviceReg = context.registerService(type.getName(), ds, filterHidden(config));
         } catch (SQLException e) {
             LOG.warn(e.getMessage(), e);
         }
     }
-    
+
     static String getDSName(Dictionary config) {
         String dsName = (String)config.get(DataSourceRegistration.JNDI_SERVICE_NAME);
         return dsName != null ? dsName : (String)config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
@@ -126,16 +127,37 @@ public class DataSourceRegistration implements Closeable {
         Properties props = new Properties();
         Enumeration keys = dict.keys();
         while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
+            final String originalKey = (String) keys.nextElement();
+            final String unhiddenKey = unhide(originalKey);
             // only forward local configuration keys (i. e. those without a dot)
             // exception: the DATASOURCE_TYPE key (as legacy).
-            if (!key.contains(".") && !DATASOURCE_TYPE.equals(key)) {
-                props.put(key, dict.get(key));
-            } else if (key.startsWith(CONFIG_KEY_PREFIX)) {
-                props.put(key.substring(CONFIG_KEY_PREFIX.length()), dict.get(key));
+            if (!unhiddenKey.contains(".") && !DATASOURCE_TYPE.equals(unhiddenKey)) {
+                props.put(unhiddenKey, dict.get(originalKey));
+            } else if (unhiddenKey.startsWith(CONFIG_KEY_PREFIX)) {
+                props.put(unhiddenKey.substring(CONFIG_KEY_PREFIX.length()), dict.get(originalKey));
             }
         }
         return props;
+    }
+
+    private Dictionary filterHidden(Dictionary dict) {
+        final Dictionary filtered = new Hashtable(dict.size());
+        final Enumeration keys = dict.keys();
+        while (keys.hasMoreElements()) {
+            final String key = (String)keys.nextElement();
+            if (!isHidden(key)) {
+                filtered.put(key, dict.get(key));
+            }
+        }
+        return filtered;
+    }
+
+    private String unhide(String key) {
+        return isHidden(key) ? key.substring(1) : key;
+    }
+
+    private boolean isHidden(String key) {
+        return key != null && key.startsWith(".");
     }
 
     private void safeClose(AutoCloseable closeable) {
