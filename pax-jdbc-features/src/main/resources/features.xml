@@ -19,6 +19,13 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
     </feature>
 
+    <feature name="pax-jdbc-db2" description="Provides JDBC DB2 DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-db2/${project.version}</bundle>
+    </feature>
+
     <feature name="pax-jdbc-derby" description="Provides JDBC Derbi Embedded DataSourceFactory" version="${project.version}"
              resolver="(obr)">
         <feature>pax-jdbc-spec</feature>
