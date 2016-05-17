@@ -63,7 +63,9 @@
         <module>pax-jdbc-karaf-itest</module>
 
         <module>pax-jdbc-pool-common</module>
-    </modules>
+        <module>pax-jdbc-db2</module>
+
+		</modules>
 
     <dependencyManagement>
         <dependencies>
