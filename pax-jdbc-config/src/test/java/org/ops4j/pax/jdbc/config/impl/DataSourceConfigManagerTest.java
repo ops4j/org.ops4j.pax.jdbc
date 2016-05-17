@@ -28,8 +28,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Map;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -169,6 +171,77 @@ public class DataSourceConfigManagerTest {
 
         // the encrypted value is still encrypted
         Assert.assertEquals("ENC(ciphertext)", properties.get(DataSourceFactory.JDBC_PASSWORD));
+    }
+
+    /**
+     * Tests:
+     *
+     * - hidden properties (starting with a dot) are not added to service registry.
+     * - nonlocal properties (containing a dot) are not propagated to {@link DataSourceFactory#createDataSource(Properties)}.
+     * - local properties (not containing a dot) are propagated to {@link DataSourceFactory#createDataSource(Properties)}.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHiddenAndPropagation() throws Exception {
+        IMocksControl c = EasyMock.createControl();
+        BundleContext context = c.createMock(BundleContext.class);
+
+        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+        String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
+
+        Filter filter = FrameworkUtil.createFilter(expectedFilter);
+        expect(context.createFilter(expectedFilter)).andReturn(filter);
+        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
+        context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
+                EasyMock.eq(expectedFilter));
+        expectLastCall();
+
+        ServiceReference ref = c.createMock(ServiceReference.class);
+        ServiceReference[] refs = new ServiceReference[] { ref };
+        expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
+
+        expect(context.getService(ref)).andReturn(dsf);
+
+        final String KEY_HIDDEN_JDBC_PASSWORD = "." + DataSourceFactory.JDBC_PASSWORD;
+        final String KEY_NONLOCAL_PROPERTY = "nonlocal.property";
+        final String KEY_LOCAL_PROPERTY = "localproperty";
+        final String VALUE_LOCAL_PROPERTY = "something2";
+        final String dbname = "mydbname";
+        final String password = "thepassword";
+        final String user = "theuser";
+
+        Hashtable<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
+        properties.put(DataSourceFactory.JDBC_DATABASE_NAME, dbname);
+        properties.put(DataSourceFactory.JDBC_USER, user);
+        properties.put(KEY_HIDDEN_JDBC_PASSWORD, password);
+        properties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
+        properties.put(KEY_NONLOCAL_PROPERTY, "something");
+
+        Properties expectedDataSourceProperties = new Properties();
+        expectedDataSourceProperties.put(DataSourceFactory.JDBC_DATABASE_NAME, dbname);
+        expectedDataSourceProperties.put(DataSourceFactory.JDBC_USER, user);
+        expectedDataSourceProperties.put(DataSourceFactory.JDBC_PASSWORD, password);
+        expectedDataSourceProperties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
+
+        DataSource ds = c.createMock(DataSource.class);
+        expect(dsf.createDataSource(EasyMock.eq(expectedDataSourceProperties))).andReturn(ds);
+
+        Hashtable<String, String> expectedServiceProperties = (Hashtable<String, String>)properties.clone();
+        expectedServiceProperties.remove(KEY_HIDDEN_JDBC_PASSWORD);
+        ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
+        expect(context.registerService(anyString(), eq(ds), eq(expectedServiceProperties))).andReturn(sreg);
+
+        Decryptor decryptor = c.createMock(Decryptor.class);
+        expect(decryptor.decrypt(anyObject(Dictionary.class))).andReturn(properties);
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
+
+        // Test config created
+        c.replay();
+        dsManager.updated(TESTPID, properties);
+        c.verify();
     }
 
     private Decryptor createDecryptor(IMocksControl c) throws Exception {
