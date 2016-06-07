@@ -11,3 +11,6 @@ Import-Package:\
   !org.ops4j.pax.jdbc,\
   com.ibm.db2.jcc,\
   *
+  
+Provide-Capability:\
+	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.ibm.db2.jcc.DB2Driver;osgi.jdbc.driver.name=db2

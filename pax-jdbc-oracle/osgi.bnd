@@ -13,3 +13,6 @@ Import-Package:\
   oracle.jdbc.pool,\
   oracle.jdbc.xa.client,\
   *
+
+Provide-Capability:\
+	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=oracle.jdbc.OracleDriver;osgi.jdbc.driver.name=oracle

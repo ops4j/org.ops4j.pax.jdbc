@@ -11,5 +11,6 @@ Import-Package:\
   !org.ops4j.pax.jdbc,\
   *
   
-  
- 
+Provide-Capability:\
+	osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.mariadb.jdbc.Driver;osgi.jdbc.driver.name=mariadb, \
+	osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.mariadb.jdbc.Driver;osgi.jdbc.driver.name=mysql
