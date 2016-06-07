@@ -12,3 +12,5 @@ Import-Package:\
   org.osgi.service.jdbc; version="[1.0,1.1)",\
   *
 
+Provide-Capability:\
+	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory
