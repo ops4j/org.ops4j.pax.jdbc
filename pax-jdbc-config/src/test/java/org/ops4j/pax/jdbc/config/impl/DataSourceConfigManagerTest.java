@@ -206,6 +206,7 @@ public class DataSourceConfigManagerTest {
         final String KEY_HIDDEN_JDBC_PASSWORD = "." + DataSourceFactory.JDBC_PASSWORD;
         final String KEY_NONLOCAL_PROPERTY = "nonlocal.property";
         final String KEY_LOCAL_PROPERTY = "localproperty";
+        final String KEY_DATASOURCE_TYPE = "dataSourceType";
         final String VALUE_LOCAL_PROPERTY = "something2";
         final String dbname = "mydbname";
         final String password = "thepassword";
@@ -219,6 +220,11 @@ public class DataSourceConfigManagerTest {
         properties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
         properties.put(KEY_NONLOCAL_PROPERTY, "something");
 
+        // Exceptions local properties not being forwarded
+        final String VALUE_DATASOURCE_NAME = "myDataSource";
+        properties.put(KEY_DATASOURCE_TYPE, "DataSource");
+        properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, VALUE_DATASOURCE_NAME);
+
         Properties expectedDataSourceProperties = new Properties();
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_DATABASE_NAME, dbname);
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_USER, user);
@@ -230,6 +236,7 @@ public class DataSourceConfigManagerTest {
 
         Hashtable<String, String> expectedServiceProperties = (Hashtable<String, String>)properties.clone();
         expectedServiceProperties.remove(KEY_HIDDEN_JDBC_PASSWORD);
+        expectedServiceProperties.put("osgi.jndi.service.name", VALUE_DATASOURCE_NAME);
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), eq(expectedServiceProperties))).andReturn(sreg);
 
