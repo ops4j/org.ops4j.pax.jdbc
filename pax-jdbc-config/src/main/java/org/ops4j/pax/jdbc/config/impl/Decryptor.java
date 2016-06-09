@@ -36,11 +36,10 @@ public class Decryptor {
         Dictionary<String, String> decryptedConfig = new Hashtable<String, String>();
         for (Enumeration e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
-            Object value = config.get(key);
-            if (value instanceof String && isEncrypted((String)value)) {
-            	String strValue = (String) value;
-                String cipherText = strValue.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
-                		strValue.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
+            String value = String.valueOf(config.get(key));
+            if (config.get(key) instanceof String && isEncrypted(value)){
+            	String cipherText = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
+                		value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
                 if(encryptor == null) {
                     try {
                         encryptor = (StringEncryptor) this.encryptorServiceTracker.waitForService(30000);
@@ -53,7 +52,7 @@ public class Decryptor {
                     decryptedConfig.put(key, plainText);
                 }
             } else {
-                decryptedConfig.put(key,String.valueOf(value));
+                decryptedConfig.put(key,value);
             }
         }
         return decryptedConfig;
