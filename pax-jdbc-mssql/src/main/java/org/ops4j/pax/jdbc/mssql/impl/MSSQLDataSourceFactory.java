@@ -113,8 +113,10 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
     }
     
     private void setIntProperty(String value, Object instance, String methodName) throws Exception {
-        int iValue = new Integer(value);
-        instance.getClass().getMethod(methodName, int.class).invoke(instance, iValue);
+        if (value != null) {
+            int iValue = new Integer(value);
+            instance.getClass().getMethod(methodName, int.class).invoke(instance, iValue);
+        }
     }
 
 }
