@@ -9,3 +9,6 @@ Bundle-Activator:\
   
 Import-Package:\
   *
+
+Provide-Capability:\
+	 osgi.service;objectClass=javax.sql.DataSource

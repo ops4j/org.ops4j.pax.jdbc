@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
@@ -40,6 +39,7 @@ public class DB2DataSourceFactory implements DataSourceFactory {
     private final Class<? extends XADataSource> db2XaDataSourceClass;
     private final Class<?> db2DriverClass;
 
+    @SuppressWarnings("unchecked")
     public DB2DataSourceFactory() throws ClassNotFoundException {
         ClassLoader classLoader = DB2DataSourceFactory.class.getClassLoader();
         this.db2DataSourceClass = (Class<? extends DataSource>)classLoader.loadClass(DB2_DATASOURCE_CLASS);

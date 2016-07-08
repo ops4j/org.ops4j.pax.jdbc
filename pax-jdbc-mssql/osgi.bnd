@@ -11,3 +11,6 @@ Import-Package:\
   !org.ops4j.pax.jdbc,\
   com.microsoft.sqlserver.jdbc,\
   *
+
+Provide-Capability:\
+	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.microsoft.sqlserver.jdbc.SQLServerDriver;osgi.jdbc.driver.name=mssql

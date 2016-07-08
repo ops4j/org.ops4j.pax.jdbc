@@ -46,7 +46,6 @@ public class Activator implements BundleActivator, BundleTrackerCustomizer<List<
     private BundleTracker<List<ServiceRegistration<DataSourceFactory>>> tracker;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void start(final BundleContext bc) throws Exception {
         log.debug("starting bundle {}", BUNDLE_NAME);
         tracker = new BundleTracker<>(bc, Bundle.ACTIVE, this);

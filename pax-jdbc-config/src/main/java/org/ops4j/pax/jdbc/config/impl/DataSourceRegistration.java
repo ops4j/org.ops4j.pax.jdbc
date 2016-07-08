@@ -27,10 +27,7 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import java.io.Closeable;
 import java.sql.SQLException;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
+import java.util.*;
 
 @SuppressWarnings({
     "rawtypes", "unchecked"
@@ -40,6 +37,13 @@ public class DataSourceRegistration implements Closeable {
     static final String DATASOURCE_TYPE = "dataSourceType";
     static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
 
+    // By default all local keys (without a dot) are forwarded to the DataSourceFactory.
+    // These config keys will explicitly not be forwarded to the DataSourceFactory
+    // (even though they are "local" keys without a dot ".")
+    private static final Set<String> NOT_FORWARDED_KEYS = new HashSet<String>(Arrays.asList(new String []{
+            DataSourceFactory.JDBC_DATASOURCE_NAME,
+            DATASOURCE_TYPE
+    }));
     // additionally all keys prefixed with "jdbc." will be forwarded (with the prefix stripped).
     private static final String CONFIG_KEY_PREFIX = "jdbc.";
     
@@ -131,7 +135,7 @@ public class DataSourceRegistration implements Closeable {
             final String unhiddenKey = unhide(originalKey);
             // only forward local configuration keys (i. e. those without a dot)
             // exception: the DATASOURCE_TYPE key (as legacy).
-            if (!unhiddenKey.contains(".") && !DATASOURCE_TYPE.equals(unhiddenKey)) {
+            if (!unhiddenKey.contains(".") && !NOT_FORWARDED_KEYS.contains(unhiddenKey)) {
                 props.put(unhiddenKey, dict.get(originalKey));
             } else if (unhiddenKey.startsWith(CONFIG_KEY_PREFIX)) {
                 props.put(unhiddenKey.substring(CONFIG_KEY_PREFIX.length()), dict.get(originalKey));

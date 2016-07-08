@@ -100,7 +100,7 @@ public class OracleDataSourceFactory implements DataSourceFactory {
         try {
             ConnectionPoolDataSource ds = ConnectionPoolDataSource.class
                 .cast(oracleConnectionPoolDataSourceClass.newInstance());
-            setProperties(ds, oracleXaDataSourceClass, props);
+            setProperties(ds, oracleConnectionPoolDataSourceClass, props);
             return ds;
         }
         catch (Exception ex) {

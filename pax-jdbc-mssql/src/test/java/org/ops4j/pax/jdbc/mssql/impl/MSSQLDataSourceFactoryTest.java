@@ -41,8 +41,6 @@ public class MSSQLDataSourceFactoryTest {
         SQLServerDataSource ds = (SQLServerDataSource)dsf.createDataSource(props);
         validateDS(ds);
     }
-
-
     
     @Test
     public void testConnectionPoolDS() throws SQLException, ClassNotFoundException {
@@ -68,6 +66,14 @@ public class MSSQLDataSourceFactoryTest {
         Assert.assertNotNull(driver);
     }
     
+    @Test
+    public void testEmptyProps() throws SQLException, ClassNotFoundException {
+        MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
+        Properties props = new Properties();
+        SQLServerDataSource ds = (SQLServerDataSource)dsf.createDataSource(props);
+        Assert.assertNotNull(ds);
+    }
+
     private void validateDS(SQLServerDataSource ds) {
         Assert.assertEquals(URL, ds.url);
         Assert.assertEquals(DB, ds.dbName);
@@ -87,4 +93,5 @@ public class MSSQLDataSourceFactoryTest {
         props.put("password", PASSWORD);
         return props;
     }
+
 }

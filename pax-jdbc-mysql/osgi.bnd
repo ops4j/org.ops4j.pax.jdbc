@@ -11,5 +11,5 @@ Import-Package:\
   !org.ops4j.pax.jdbc,\
   *
   
-  
- 
+Provide-Capability:\
+	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.mysql.jdbc.Driver;osgi.jdbc.driver.name=mysql
