@@ -95,6 +95,14 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
     </feature>
 
+	<feature name="pax-jdbc-teradata" description="Provides JDBC Teradata DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-teradata/${project.version}</bundle>
+    </feature>
+
+	
     <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory"
              version="${project.version}"
              resolver="(obr)">
@@ -108,6 +116,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
 
+	
     <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC"
              version="${project.version}"
              resolver="(obr)">
