@@ -97,7 +97,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
                     }
                 }
             }, null);
-            ManagedDataSource mds = new ManagedDataSource<PoolableConnection>(pool, transactionRegistry) {
+            ManagedDataSource<PoolableConnection> mds = new ManagedDataSource<PoolableConnection>(pool, transactionRegistry) {
                 @Override
                 public void close() throws Exception {
                     registration.unregister();

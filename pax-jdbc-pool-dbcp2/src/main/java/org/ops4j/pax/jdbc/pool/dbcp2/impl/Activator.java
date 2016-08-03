@@ -29,6 +29,7 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
     private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
+    @SuppressWarnings("rawtypes")
     private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
 
     @Override

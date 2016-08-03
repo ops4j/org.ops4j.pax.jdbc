@@ -28,10 +28,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.Map;
 
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
