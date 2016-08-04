@@ -64,6 +64,8 @@ public class H2ConfigTest {
             mvnBundle("org.apache.felix", "org.apache.felix.configadmin"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
             mvnBundle("com.h2database", "h2"), //
+            mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config") //
         };
     }

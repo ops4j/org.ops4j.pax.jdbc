@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.narayana.impl.ds;
+package org.ops4j.pax.jdbc.pool.narayana.impl;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -56,8 +56,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */
-    public DbcpXAPooledDataSourceFactory(DataSourceFactory dsFactory, BundleContext bundleContext, TransactionManager tm) {
-        super(dsFactory);
+    public DbcpXAPooledDataSourceFactory(BundleContext bundleContext, TransactionManager tm) {
         this.bundleContext = bundleContext;
         this.tm = tm;
 
@@ -76,9 +75,9 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     }
 
     @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
-            final XADataSource ds = dsFactory.createXADataSource(getNonPoolProps(props));
+            final XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
             DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, (XADataSource) ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();

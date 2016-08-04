@@ -13,8 +13,6 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpPooledDataSourceFactory;
-import org.ops4j.pax.jdbc.pool.dbcp2.impl.ds.DbcpXAPooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class PooledDataSourceFactoryTest {
@@ -26,20 +24,20 @@ public class PooledDataSourceFactoryTest {
         XADataSource xads = c.createMock(XADataSource.class);
         EasyMock.expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(xads).atLeastOnce();
         TransactionManager tm = c.createMock(TransactionManager.class);
-        DbcpXAPooledDataSourceFactory pdsf = new DbcpXAPooledDataSourceFactory(dsf, tm);
+        DbcpXAPooledDataSourceFactory pdsf = new DbcpXAPooledDataSourceFactory(tm);
         c.replay();
-        DataSource ds = pdsf.createDataSource(createValidProps());
+        DataSource ds = pdsf.create(dsf, createValidProps());
         c.verify();
         Assert.assertEquals(ManagedDataSource.class, ds.getClass());
         
         try {
-            pdsf.createDataSource(createInvalidPoolConfig());
+            pdsf.create(dsf, createInvalidPoolConfig());
         } catch (IllegalArgumentException e) {
             Assert.assertEquals("Error setting property dummy:No setter in class org.apache.commons.pool2.impl.GenericObjectPoolConfig for property dummy", e.getMessage());
         }
 
         try {
-            pdsf.createDataSource(createInvalidFactoryConfig());
+            pdsf.create(dsf, createInvalidFactoryConfig());
         } catch (IllegalArgumentException e) {
             Assert.assertEquals("Error setting property dummy:No setter in class org.apache.commons.dbcp2.managed.PoolableManagedConnectionFactory for property dummy", e.getMessage());
         }
@@ -51,21 +49,21 @@ public class PooledDataSourceFactoryTest {
         DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         DataSource exds = c.createMock(DataSource.class);
         EasyMock.expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(exds).atLeastOnce();
-        DbcpPooledDataSourceFactory pdsf = new DbcpPooledDataSourceFactory(dsf);
+        DbcpPooledDataSourceFactory pdsf = new DbcpPooledDataSourceFactory();
 
         c.replay();
-        DataSource ds = pdsf.createDataSource(createValidProps());
+        DataSource ds = pdsf.create(dsf, createValidProps());
         c.verify();
         Assert.assertEquals(PoolingDataSource.class, ds.getClass());
         
         try {
-            pdsf.createDataSource(createInvalidPoolConfig());
+            pdsf.create(dsf, createInvalidPoolConfig());
         } catch (IllegalArgumentException e) {
             Assert.assertEquals("Error setting property dummy:No setter in class org.apache.commons.pool2.impl.GenericObjectPoolConfig for property dummy", e.getMessage());
         }
 
         try {
-            pdsf.createDataSource(createInvalidFactoryConfig());
+            pdsf.create(dsf, createInvalidFactoryConfig());
         } catch (IllegalArgumentException e) {
             Assert.assertEquals("Error setting property dummy:No setter in class org.apache.commons.dbcp2.PoolableConnectionFactory for property dummy", e.getMessage());
         }

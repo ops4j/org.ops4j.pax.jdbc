@@ -2,15 +2,17 @@ package org.ops4j.pax.jdbc.pool.common.impl;
 
 import javax.transaction.TransactionManager;
 
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
 public abstract class AbstractTransactionManagerTracker extends
-    ServiceTracker<TransactionManager, ServiceTracker> {
+    ServiceTracker<TransactionManager, ServiceRegistration> {
 
     private Logger LOG = LoggerFactory.getLogger(TransactionManager.class);
     private ServiceReference<TransactionManager> selectedService;
@@ -20,7 +22,7 @@ public abstract class AbstractTransactionManagerTracker extends
     }
 
     @Override
-    public ServiceTracker addingService(ServiceReference<TransactionManager> reference) {
+    public ServiceRegistration addingService(ServiceReference<TransactionManager> reference) {
         synchronized (this) {
             if (selectedService != null) {
                 LOG.warn("There is more than one TransactionManager service. Ignoring this one");
@@ -30,20 +32,18 @@ public abstract class AbstractTransactionManagerTracker extends
         }
         LOG.info("TransactionManager service detected. Providing support for XA DataSourceFactories");
         TransactionManager tm = context.getService(reference);
-        AbstractDataSourceFactoryTracker dsfTracker = createTracker(context, tm);
-        dsfTracker.open();
-        return dsfTracker;
+        return createService(context, tm);
     }
 
     @Override
     public void modifiedService(ServiceReference<TransactionManager> reference,
-        ServiceTracker dsfTracker) {
+                                ServiceRegistration sreg) {
         LOG.info("TransactionManager service modified");
     }
 
     @Override
     public void removedService(ServiceReference<TransactionManager> reference,
-        ServiceTracker dsfTracker) {
+                               ServiceRegistration sreg) {
         synchronized (this) {
             if (selectedService == null || !selectedService.equals(reference)) {
                 return;
@@ -52,10 +52,10 @@ public abstract class AbstractTransactionManagerTracker extends
         }
         
         LOG.info("TransactionManager service lost. Shutting down support for XA DataSourceFactories");
-        dsfTracker.close();
+        sreg.unregister();
         context.ungetService(reference);
     }
 
-    public abstract AbstractDataSourceFactoryTracker createTracker(BundleContext context,
+    public abstract ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
         TransactionManager tm);
 }

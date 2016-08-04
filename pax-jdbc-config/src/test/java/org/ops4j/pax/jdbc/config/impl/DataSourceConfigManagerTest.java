@@ -16,13 +16,13 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyInt;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.matches;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.matches;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Dictionary;
@@ -37,8 +37,6 @@ import org.jasypt.encryption.StringEncryptor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -60,8 +58,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        Filter filter = FrameworkUtil.createFilter(expectedFilter);
-        expect(context.createFilter(expectedFilter)).andReturn(filter);
         expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
             EasyMock.eq(expectedFilter));
@@ -82,6 +78,7 @@ public class DataSourceConfigManagerTest {
         Decryptor decryptor = c.createMock(Decryptor.class);
 
         Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         expect(decryptor.decrypt(anyObject(Dictionary.class))).andReturn(properties);
@@ -114,7 +111,6 @@ public class DataSourceConfigManagerTest {
         Decryptor decryptor = c.createMock(Decryptor.class);
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("other", "value");
-        expect(decryptor.decrypt(EasyMock.anyObject(Dictionary.class))).andReturn(properties);
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
 
         c.replay();
@@ -136,8 +132,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        Filter filter = FrameworkUtil.createFilter(expectedFilter);
-        expect(context.createFilter(expectedFilter)).andReturn(filter);
         expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
             EasyMock.eq(expectedFilter));
@@ -161,6 +155,7 @@ public class DataSourceConfigManagerTest {
         // Test config created
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         properties.put(DataSourceFactory.JDBC_PASSWORD, "ENC(ciphertext)");
@@ -188,8 +183,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        Filter filter = FrameworkUtil.createFilter(expectedFilter);
-        expect(context.createFilter(expectedFilter)).andReturn(filter);
         expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
                 EasyMock.eq(expectedFilter));

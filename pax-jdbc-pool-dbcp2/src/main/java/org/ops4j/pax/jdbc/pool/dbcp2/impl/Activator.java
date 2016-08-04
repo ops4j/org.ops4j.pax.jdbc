@@ -15,35 +15,49 @@
  */
 package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
-import javax.transaction.TransactionManager;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
+import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.POOL_KEY;
+import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.XA_KEY;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import javax.transaction.TransactionManager;
+
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractTransactionManagerTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
-/**
- * Manage DataSourceFactory tracker
- */
 public class Activator implements BundleActivator {
 
-    private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
-    @SuppressWarnings("rawtypes")
-    private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
+    private AbstractTransactionManagerTracker tmTracker;
 
     @Override
-    public void start(BundleContext context) throws Exception {
-        dsfTracker = new DataSourceFactoryTracker(context);
-        dsfTracker.open();
+    public void start(final BundleContext context) throws Exception {
+        DbcpPooledDataSourceFactory dsf = new DbcpPooledDataSourceFactory();
+        Dictionary<String, String> props = new Hashtable<String, String>();
+        props.put(POOL_KEY, "dbcp2");
+        context.registerService(PooledDataSourceFactory.class, dsf, props);
 
-        tmTracker = new TransactionManagerTracker(context);
+        tmTracker = new AbstractTransactionManagerTracker(context) {
+            
+            @Override
+            public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
+                                                                              TransactionManager tm) {
+                DbcpXAPooledDataSourceFactory dsf = new DbcpXAPooledDataSourceFactory(tm);
+                Dictionary<String, String> props = new Hashtable<String, String>();
+                props.put(POOL_KEY, "dbcp2");
+                props.put(XA_KEY, "true");
+                return context.registerService(PooledDataSourceFactory.class, dsf, props);
+            }
+        };
+                
         tmTracker.open();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        dsfTracker.close();
         tmTracker.close();
     }
 

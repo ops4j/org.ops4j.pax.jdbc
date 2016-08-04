@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.aries.impl.ds;
+package org.ops4j.pax.jdbc.pool.aries.impl;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -48,15 +48,14 @@ public class AriesXaPooledDataSourceFactory extends AriesPooledDataSourceFactory
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */
-    public AriesXaPooledDataSourceFactory(DataSourceFactory dsFactory, AriesTransactionManager tm) {
-        super(dsFactory);
+    public AriesXaPooledDataSourceFactory(AriesTransactionManager tm) {
         this.tm = tm;
     }
 
     @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
-            XADataSource ds = dsFactory.createXADataSource(getNonPoolProps(props));
+            XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
             RecoverableDataSource mds = new RecoverableDataSource();
             mds.setDataSource((CommonDataSource) ds);
             mds.setTransactionManager((AriesTransactionManager) tm);

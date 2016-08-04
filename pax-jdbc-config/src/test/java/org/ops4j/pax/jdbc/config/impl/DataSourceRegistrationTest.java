@@ -119,6 +119,7 @@ public class DataSourceRegistrationTest {
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceRegistration.DATASOURCE_TYPE,
             ConnectionPoolDataSource.class.getSimpleName());
         DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties, properties);
@@ -148,6 +149,7 @@ public class DataSourceRegistrationTest {
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceRegistration.DATASOURCE_TYPE, XADataSource.class.getSimpleName());
         new DataSourceRegistration(context, dsf, properties, properties);
         c.verify();
@@ -164,6 +166,7 @@ public class DataSourceRegistrationTest {
         // create and publish the datasource
         c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceRegistration.DATASOURCE_TYPE, "something else");
         new DataSourceRegistration(context, dsf, properties, properties);
         c.verify();

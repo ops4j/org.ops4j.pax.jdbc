@@ -16,12 +16,16 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
+import static org.ops4j.pax.jdbc.config.impl.DataSourceRegistration.getDSName;
+import static org.osgi.framework.FrameworkUtil.createFilter;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -69,14 +73,21 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             return;
         }
 
-        Dictionary<String, String> decryptedConfig = decryptor.decrypt(config);
-
         try {
-            String filter = getFilter(decryptedConfig);
-            Filter filterO = context.createFilter(filter);
-            LOG.info("Detected config for DataSource {}. Tracking DSF with filter {}", 
-                     DataSourceRegistration.getDSName(config), filter);
-            DataSourceFactoryTracker tracker = new DataSourceFactoryTracker(context, filterO, config, decryptedConfig);
+            Filter dsfFilter = getDSFFilter(config);
+            Filter pdsfFilter = getPDSFFilter(config);
+            config.remove(PooledDataSourceFactory.POOL_KEY);
+            config.remove(PooledDataSourceFactory.XA_KEY);
+            Dictionary<String, String> decryptedConfig = decryptor.decrypt(config);
+            String msg = "Processing config for DataSource {}. ";
+            ServiceTracker tracker;
+            if (pdsfFilter == null) {
+                LOG.info(msg + "Tracking DSF with filter {}", getDSName(config), dsfFilter);
+                tracker = new DataSourceFactoryTracker(context, null, dsfFilter, config, decryptedConfig);
+            } else {
+                LOG.info(msg + "Tracking pooling support with filter {}", getDSName(config), pdsfFilter);
+                tracker = new PooledDataSourceFactoryTracker(context, pdsfFilter, dsfFilter, config, decryptedConfig);
+            }
             tracker.open();
             trackers.put(pid, tracker);
         }
@@ -84,8 +95,30 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
         }
     }
+    
+    private Filter getPDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
+        String pool = (String) config.get("pool");
+        String xa = (String) config.get("xa");
+        if (pool == null && xa == null) {
+            return null;
+        }
+        if (pool == null && xa != null) {
+            throw new ConfigurationException(null, "Can not create XA DataSource without pooling.");
+        }
+        if (xa != null && !"true".equals(xa)) {
+            throw new ConfigurationException(null, "XA can only be set to true");
+        }
+        List<String> filterList = new ArrayList<String>();
+        filterList.add("objectClass=" + PooledDataSourceFactory.class.getName());
+        filterList.add("pool=" + pool);
+        if (xa != null) {
+            filterList.add("xa=" + xa);
+        }
+        String filter = andFilter(filterList);
+        return createFilter(filter);
+    }
 
-    private String getFilter(Dictionary config) throws ConfigurationException {
+    private Filter getDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
         String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (driverClass == null && driverName == null) {
@@ -103,7 +136,8 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             filterList.add(DataSourceFactory.OSGI_JDBC_DRIVER_NAME + "=" + driverName);
         }
         String filter = andFilter(filterList);
-        return filter;
+        
+        return createFilter(filter);
     }
 
     private String andFilter(List<String> filterList) {

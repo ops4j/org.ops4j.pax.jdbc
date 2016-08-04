@@ -18,6 +18,7 @@ package org.ops4j.pax.jdbc.config.impl;
 
 import java.util.Dictionary;
 
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
@@ -28,9 +29,11 @@ import org.osgi.util.tracker.ServiceTracker;
 final class DataSourceFactoryTracker extends ServiceTracker {
     private Dictionary config;
     private Dictionary decryptedConfig;
+    private PooledDataSourceFactory pdsf;
 
-    DataSourceFactoryTracker(BundleContext context, Filter filter, Dictionary config, Dictionary decryptedConfig) {
-        super(context, filter, null);
+    DataSourceFactoryTracker(BundleContext context, PooledDataSourceFactory pdsf, Filter dsfFilter, Dictionary config, Dictionary decryptedConfig) {
+        super(context, dsfFilter, null);
+        this.pdsf = pdsf;
         this.config = config;
         this.decryptedConfig = decryptedConfig;
     }
@@ -39,7 +42,8 @@ final class DataSourceFactoryTracker extends ServiceTracker {
     @Override
     public Object addingService(ServiceReference reference) {
         DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);
-        return new DataSourceRegistration(context, dsf, config, decryptedConfig);
+        DataSourceFactory wrappedDsf = (pdsf == null) ? dsf : new PoolingWrapper(pdsf, dsf);
+        return new DataSourceRegistration(context, wrappedDsf, config, decryptedConfig);
     }
 
     @Override

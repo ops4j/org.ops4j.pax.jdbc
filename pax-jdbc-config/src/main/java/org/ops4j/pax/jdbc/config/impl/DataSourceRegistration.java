@@ -64,7 +64,7 @@ public class DataSourceRegistration implements Closeable {
             if (ds instanceof AutoCloseable) {
                 dataSource = (AutoCloseable)ds;
             }
-            LOG.info("Creating DataSource {}", dsName);
+            LOG.info("Found DataSourceFactory. Creating DataSource {}", dsName);
             serviceReg = context.registerService(type.getName(), ds, filterHidden(config));
         } catch (SQLException e) {
             LOG.warn(e.getMessage(), e);
@@ -72,8 +72,12 @@ public class DataSourceRegistration implements Closeable {
     }
 
     static String getDSName(Dictionary config) {
-        String dsName = (String)config.get(DataSourceRegistration.JNDI_SERVICE_NAME);
-        return dsName != null ? dsName : (String)config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
+        String jndiName = (String)config.get(DataSourceRegistration.JNDI_SERVICE_NAME);
+        String dsName = (String)config.get(DataSourceFactory.JDBC_DATASOURCE_NAME);
+        if (dsName == null && jndiName == null) {
+            throw new IllegalStateException("Can not determine DataSource name. Must set " + DataSourceRegistration.JNDI_SERVICE_NAME + " or " + DataSourceFactory.JDBC_DATASOURCE_NAME);
+        }
+        return jndiName != null ? jndiName : dsName; 
     }
 
     @Override

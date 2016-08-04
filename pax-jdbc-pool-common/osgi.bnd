@@ -6,5 +6,6 @@ Bundle-SymbolicName:\
 
 Import-Package:\
   *
-Export-Package: org.ops4j.pax.jdbc.pool.common.impl.ds,\
- org.ops4j.pax.jdbc.pool.common.impl
+Export-Package: \
+	org.ops4j.pax.jdbc.pool.common.impl,\
+	org.ops4j.pax.jdbc.pool.common

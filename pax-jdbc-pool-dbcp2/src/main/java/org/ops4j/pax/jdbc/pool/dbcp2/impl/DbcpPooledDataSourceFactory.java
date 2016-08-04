@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.narayana.impl.ds;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
-import javax.sql.XADataSource;
-import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.DataSourceConnectionFactory;
 import org.apache.commons.dbcp2.PoolableConnection;
@@ -33,6 +31,7 @@ import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.dbcp2.PoolingDataSource;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
@@ -44,23 +43,11 @@ import org.slf4j.LoggerFactory;
  * XADataSource and handles the XA Resources. This kind of DataSource can then for example be used
  * in persistence.xml as jta-data-source
  */
-public class DbcpPooledDataSourceFactory implements DataSourceFactory {
+public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
     private static final Logger LOG = LoggerFactory.getLogger(DbcpPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
     protected static final String FACTORY_PREFIX = "factory.";
-    protected DataSourceFactory dsFactory;
 
-    /**
-     * Initialize non XA PoolingDataSourceFactory
-     * 
-     * @param dsFactory
-     *            non pooled DataSourceFactory we delegate to
-     */
-    public DbcpPooledDataSourceFactory(DataSourceFactory dsFactory) {
-        this.dsFactory = dsFactory;
-    }
-
-    
     protected Map<String, String> getPoolProps(Properties props) {
         Map<String, String> poolProps = getPrefixed(props, POOL_PREFIX);
         if (poolProps.get("jmxNameBase") == null) {
@@ -111,9 +98,9 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
     }
 
     @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
-            DataSource ds = dsFactory.createDataSource(getNonPoolProps(props));
+            DataSource ds = dsf.createDataSource(getNonPoolProps(props));
             DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory((DataSource) ds);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
@@ -135,21 +122,5 @@ public class DbcpPooledDataSourceFactory implements DataSourceFactory {
                 throw new RuntimeException(e.getMessage(), e);
             }
         }
-    }
-    
-    @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
-        throws SQLException {
-        throw new SQLException("Not supported");
-    }
-
-    @Override
-    public XADataSource createXADataSource(Properties props) throws SQLException {
-        throw new SQLException("Not supported");
-    }
-
-    @Override
-    public Driver createDriver(Properties props) throws SQLException {
-        throw new SQLException("Not supported");
     }
 }

@@ -15,35 +15,54 @@
  */
 package org.ops4j.pax.jdbc.pool.aries.impl;
 
+import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.POOL_KEY;
+import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.XA_KEY;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import javax.transaction.TransactionManager;
 
+import org.apache.aries.transaction.AriesTransactionManager;
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.pool.common.impl.AbstractTransactionManagerTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Manage DataSourceFactory tracker
  */
 public class Activator implements BundleActivator {
 
-    private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
-    @SuppressWarnings("rawtypes")
-    private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
+    private static final String ARIES = "aries";
+    private AbstractTransactionManagerTracker tmTracker;
 
     @Override
-    public void start(BundleContext context) throws Exception {
-        dsfTracker = new AriesDataSourceFactoryTracker(context);
-        dsfTracker.open();
+    public void start(final BundleContext context) throws Exception {
+        AriesPooledDataSourceFactory dsf = new AriesPooledDataSourceFactory();
+        Dictionary<String, String> props = new Hashtable<String, String>();
+        props.put(POOL_KEY, ARIES);
+        context.registerService(PooledDataSourceFactory.class, dsf, props);
 
-        tmTracker = new AriesTransactionManagerTracker(context);
+        tmTracker = new AbstractTransactionManagerTracker(context) {
+            
+            @Override
+            public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
+                                                                              TransactionManager tm) {
+                AriesXaPooledDataSourceFactory dsf = new AriesXaPooledDataSourceFactory((AriesTransactionManager)tm);
+                Dictionary<String, String> props = new Hashtable<String, String>();
+                props.put(POOL_KEY, ARIES);
+                props.put(XA_KEY, "true");
+                return context.registerService(PooledDataSourceFactory.class, dsf, props);
+            }
+        };
+                
         tmTracker.open();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        dsfTracker.close();
         tmTracker.close();
     }
 }

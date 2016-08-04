@@ -31,9 +31,13 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
@@ -66,36 +70,39 @@ public class PoolDbcp2Test {
         };
     }
 
+    @SuppressWarnings({
+     "unchecked", "rawtypes"
+    })
     @Test
     public void testDataSourceFactoryCreated() {
         assertAllBundlesResolved();
-        ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
-            context, DataSourceFactory.class, null);
+        ServiceTracker tracker = new ServiceTracker(context, PooledDataSourceFactory.class, null);
         tracker.open();
+        Object[] services = tracker.getServices();
         Assert.assertEquals("No TransactionManager service installed."
-            + "So we expect only the original DataSourceFactory and our pooling one", 2,
-            tracker.getServiceReferences().length);
-        Set<String> names = getDataFactoryNames(tracker);
-        Set<String> expectedNames = asSet("H2", "H2-pool");
+            + "So we expect only the pooling", 1,
+            services.length);
+        Set<String> names = getProp(tracker, "pool");
+        Set<String> expectedNames = asSet("dbcp2");
         Assert.assertEquals(expectedNames, names);
         // printDataSourceFactories(tracker);
     }
 
     @Test
-    public void testXADataSourceFactoryCreated() throws BundleException, InterruptedException {
+    public void testXADataSourceFactoryCreated() throws BundleException, InterruptedException, InvalidSyntaxException {
         assertAllBundlesResolved();
         Bundle tmBundle = getBundle("org.apache.aries.transaction.manager");
         tmBundle.start();
+        Filter filter = FrameworkUtil.createFilter("(&(objectClass="+PooledDataSourceFactory.class.getName()+")(xa=true)(pool=dbcp2))");
         ServiceTracker<DataSourceFactory, Object> tracker = new ServiceTracker<DataSourceFactory, Object>(
-            context, DataSourceFactory.class, null);
+            context, filter, null);
         tracker.open();
-        Set<String> names = getDataFactoryNames(tracker);
-        Assert.assertEquals(asSet("H2", "H2-pool", "H2-pool-xa"), names);
+        Assert.assertEquals(1, tracker.getServiceReferences().length);
         tmBundle.stop();
         Assert.assertNull(context.getServiceReference(TransactionManager.class));
         Thread.sleep(1000);
-        Set<String> names2 = getDataFactoryNames(tracker);
-        Assert.assertEquals(asSet("H2", "H2-pool"), names2);
+        Assert.assertNull(tracker.getServiceReferences());
+        tracker.close();
         // printDataSourceFactories(tracker);
     }
 
@@ -112,10 +119,10 @@ public class PoolDbcp2Test {
         return null;
     }
 
-    private Set<String> getDataFactoryNames(ServiceTracker<DataSourceFactory, Object> tracker) {
+    private Set<String> getProp(ServiceTracker<DataSourceFactory, Object> tracker, String key) {
         Set<String> results = new HashSet<String>();
         for (ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
-            results.add((String) ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_NAME));
+            results.add((String) ref.getProperty(key));
         }
         return results;
     }

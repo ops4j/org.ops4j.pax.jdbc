@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.aries.impl.ds;
+package org.ops4j.pax.jdbc.pool.aries.impl;
 
-import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.CommonDataSource;
-import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
-import javax.sql.XADataSource;
 
 import org.apache.aries.transaction.jdbc.RecoverableDataSource;
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
@@ -39,26 +37,13 @@ import org.slf4j.LoggerFactory;
  * XADataSource and handles the XA Resources. This kind of DataSource can then for example be used
  * in persistence.xml as jta-data-source
  */
-public class AriesPooledDataSourceFactory implements DataSourceFactory {
+public class AriesPooledDataSourceFactory implements PooledDataSourceFactory {
     private  static final Logger LOG = LoggerFactory.getLogger(AriesPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
-    protected DataSourceFactory dsFactory;
 
-    /**
-     * Initialize XA PoolingDataSourceFactory
-     * 
-     * @param dsFactory
-     *            non pooled DataSourceFactory we delegate to
-     * @param dsFactory
-     *            non pooled DataSourceFactory we delegate to
-     */
-    public AriesPooledDataSourceFactory(DataSourceFactory dsFactory) {
-        this.dsFactory = dsFactory;
-    }
-
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
-            CommonDataSource ds = dsFactory.createDataSource(getNonPoolProps(props));
+            CommonDataSource ds = dsf.createDataSource(getNonPoolProps(props));
             RecoverableDataSource mds = new RecoverableDataSource();
             mds.setDataSource(ds);
             BeanConfig.configure(mds, getPoolProps(props));
@@ -102,19 +87,4 @@ public class AriesPooledDataSourceFactory implements DataSourceFactory {
         return dsProps;
     }
 
-    @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
-        throws SQLException {
-        throw new SQLException("Not supported");
-    }
-
-    @Override
-    public XADataSource createXADataSource(Properties props) throws SQLException {
-        throw new SQLException("Not supported");
-    }
-
-    @Override
-    public Driver createDriver(Properties props) throws SQLException {
-        throw new SQLException("Not supported");
-    }
 }

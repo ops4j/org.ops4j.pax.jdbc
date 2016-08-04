@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.jdbc.pool.dbcp2.impl.ds;
+package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -49,8 +49,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */
-    public DbcpXAPooledDataSourceFactory(DataSourceFactory dsFactory, TransactionManager tm) {
-        super(dsFactory);
+    public DbcpXAPooledDataSourceFactory(TransactionManager tm) {
         this.tm = tm;
 
     }
@@ -68,9 +67,9 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     }
 
     @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
-            XADataSource ds = dsFactory.createXADataSource(getNonPoolProps(props));
+            XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
             DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, (XADataSource) ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
