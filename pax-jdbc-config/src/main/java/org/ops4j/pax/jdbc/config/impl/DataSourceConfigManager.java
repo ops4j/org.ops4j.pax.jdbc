@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
- * for the DataSourceFactories
+ * for the DataSourceFactories and pooling support
  */
 @SuppressWarnings({ "rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
@@ -75,9 +75,8 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
 
         try {
             Filter dsfFilter = getDSFFilter(config);
-            Filter pdsfFilter = getPDSFFilter(config);
-            config.remove(PooledDataSourceFactory.POOL_KEY);
-            config.remove(PooledDataSourceFactory.XA_KEY);
+            Filter pdsfFilter = getPooledDSFFilter(config);
+
             Dictionary<String, String> decryptedConfig = decryptor.decrypt(config);
             String msg = "Processing config for DataSource {}. ";
             ServiceTracker tracker;
@@ -96,9 +95,9 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         }
     }
     
-    private Filter getPDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
-        String pool = (String) config.get("pool");
-        String xa = (String) config.get("xa");
+    private Filter getPooledDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
+        String pool = (String) config.remove(PooledDataSourceFactory.POOL_KEY);
+        String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
         if (pool == null && xa == null) {
             return null;
         }
