@@ -198,10 +198,14 @@ public class DataSourceConfigManagerTest {
         final String KEY_NONLOCAL_PROPERTY = "nonlocal.property";
         final String KEY_LOCAL_PROPERTY = "localproperty";
         final String KEY_DATASOURCE_TYPE = "dataSourceType";
+        final String KEY_POOL_PROPERTY = "pool.maxTotal";
+        final String KEY_FACTORY_PROPERTY = "factory.poolStatements";
         final String VALUE_LOCAL_PROPERTY = "something2";
         final String dbname = "mydbname";
         final String password = "thepassword";
         final String user = "theuser";
+        final String poolMaxTotal = "10";
+        final String factoryPoolStatements = "true";
 
         Hashtable<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
@@ -210,6 +214,8 @@ public class DataSourceConfigManagerTest {
         properties.put(KEY_HIDDEN_JDBC_PASSWORD, password);
         properties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
         properties.put(KEY_NONLOCAL_PROPERTY, "something");
+        properties.put(KEY_POOL_PROPERTY, poolMaxTotal);
+        properties.put(KEY_FACTORY_PROPERTY, factoryPoolStatements);
 
         // Exceptions local properties not being forwarded
         final String VALUE_DATASOURCE_NAME = "myDataSource";
@@ -221,6 +227,8 @@ public class DataSourceConfigManagerTest {
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_USER, user);
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_PASSWORD, password);
         expectedDataSourceProperties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
+        expectedDataSourceProperties.put(KEY_POOL_PROPERTY, poolMaxTotal);
+        expectedDataSourceProperties.put(KEY_FACTORY_PROPERTY, factoryPoolStatements);
 
         DataSource ds = c.createMock(DataSource.class);
         expect(dsf.createDataSource(EasyMock.eq(expectedDataSourceProperties))).andReturn(ds);
