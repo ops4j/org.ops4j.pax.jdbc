@@ -15,35 +15,31 @@
  */
 package org.ops4j.pax.jdbc.pool.hikaricp.impl;
 
-import javax.transaction.TransactionManager;
+import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.POOL_KEY;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Manage DataSourceFactory tracker
+ * Publish pooling hikari poonling support
  */
 public class Activator implements BundleActivator {
 
-    private ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> dsfTracker;
-    private ServiceTracker<TransactionManager, ServiceTracker> tmTracker;
-
     @Override
     public void start(BundleContext context) throws Exception {
-        dsfTracker = new DataSourceFactoryTracker(context);
-        dsfTracker.open();
+        HikariPooledDataSourceFactory dsf = new HikariPooledDataSourceFactory();
+        Dictionary<String, String> props = new Hashtable<String, String>();
+        props.put(POOL_KEY, "hikari");
+        context.registerService(PooledDataSourceFactory.class, dsf, props);
 
-        tmTracker = new TransactionManagerTracker(context);
-        tmTracker.open();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        dsfTracker.close();
-        tmTracker.close();
     }
 
 }

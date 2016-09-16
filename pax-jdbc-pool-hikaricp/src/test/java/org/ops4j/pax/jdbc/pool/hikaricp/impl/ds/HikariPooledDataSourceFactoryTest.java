@@ -10,6 +10,7 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ops4j.pax.jdbc.pool.hikaricp.impl.HikariPooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -47,17 +48,17 @@ public class HikariPooledDataSourceFactoryTest {
         EasyMock.expect(dataSourceFactory.createDataSource(EasyMock.anyObject(Properties.class)))
                 .andReturn(dataSource).atLeastOnce();
 
-        HikariPooledDataSourceFactory pdsf = new HikariPooledDataSourceFactory(dataSourceFactory);
+        HikariPooledDataSourceFactory pdsf = new HikariPooledDataSourceFactory();
 
         c.replay();
-        DataSource ds = pdsf.createDataSource(createValidProps());
+        DataSource ds = pdsf.create(dataSourceFactory, createValidProps());
         c.verify();
         Assert.assertEquals(HikariDataSource.class, ds.getClass());
         
         Assert.assertEquals(((HikariDataSource)ds).getMaximumPoolSize(), 8);
 
         try {
-            pdsf.createDataSource(createInvalidPoolConfig());
+            pdsf.create(dataSourceFactory, createInvalidPoolConfig());
         } catch (RuntimeException e) {
             Assert.assertEquals(
                     "java.beans.IntrospectionException: Method not found: setDummy",
