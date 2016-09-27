@@ -40,9 +40,15 @@ public class DataSourceRegistration implements Closeable {
     // By default all local keys (without a dot) are forwarded to the DataSourceFactory.
     // These config keys will explicitly not be forwarded to the DataSourceFactory
     // (even though they are "local" keys without a dot ".")
+    // Exception: for pooling support keys with prefix pool or factory are always
+    // forwarded.
     private static final Set<String> NOT_FORWARDED_KEYS = new HashSet<String>(Arrays.asList(new String []{
             DataSourceFactory.JDBC_DATASOURCE_NAME,
             DATASOURCE_TYPE
+    }));
+    private static final Set<String> FORWARDED_KEY_PREFIXES = new HashSet<>(Arrays.asList(new String[]{
+            "pool.",
+            "factory."
     }));
     // additionally all keys prefixed with "jdbc." will be forwarded (with the prefix stripped).
     private static final String CONFIG_KEY_PREFIX = "jdbc.";
@@ -137,15 +143,24 @@ public class DataSourceRegistration implements Closeable {
         while (keys.hasMoreElements()) {
             final String originalKey = (String) keys.nextElement();
             final String unhiddenKey = unhide(originalKey);
-            // only forward local configuration keys (i. e. those without a dot)
-            // exception: the DATASOURCE_TYPE key (as legacy).
-            if (!unhiddenKey.contains(".") && !NOT_FORWARDED_KEYS.contains(unhiddenKey)) {
+            if (shouldForwardToDataSourceFactory(unhiddenKey)) {
                 props.put(unhiddenKey, dict.get(originalKey));
             } else if (unhiddenKey.startsWith(CONFIG_KEY_PREFIX)) {
                 props.put(unhiddenKey.substring(CONFIG_KEY_PREFIX.length()), dict.get(originalKey));
             }
         }
         return props;
+    }
+
+    private boolean shouldForwardToDataSourceFactory(String key) {
+        // only forward local configuration keys (i. e. those without a dot)
+        // exception: the DATASOURCE_TYPE key (as legacy).
+        boolean shouldForward = (!key.contains(".") && !NOT_FORWARDED_KEYS.contains(key));
+        for (Iterator<String> it = FORWARDED_KEY_PREFIXES.iterator();
+                !shouldForward && it.hasNext(); ) {
+            shouldForward = key.startsWith(it.next());
+        }
+        return shouldForward;
     }
 
     private Dictionary filterHidden(Dictionary dict) {
