@@ -56,6 +56,7 @@
         <module>pax-jdbc-mariadb</module>
         <module>pax-jdbc-oracle</module>
         <module>pax-jdbc-mssql</module>
+        <module>pax-jdbc-jtds</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool-dbcp2</module>
         <module>pax-jdbc-pool-hikaricp</module>
