@@ -15,7 +15,7 @@
     <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}"
              resolver="(obr)">
         <feature>pax-jdbc-spec</feature>
-        
+
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/1.9.2_1</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
@@ -96,6 +96,13 @@
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
+    </feature>
+
+   <feature name="pax-jdbc-jtds" description="Provides JDBC jTDS DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-jtds/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory"

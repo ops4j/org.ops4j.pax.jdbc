@@ -36,6 +36,7 @@
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.8.10.1</sqlite.version>
         <narayana.version>5.2.8.Final</narayana.version>
+        <jtds.version>1.3.1</jtds.version>
     </properties>
 
     <scm>
@@ -47,7 +48,7 @@
 
     <modules>
         <module>pax-jdbc</module>
-	<module>pax-jdbc-db2</module>
+        <module>pax-jdbc-db2</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
         <module>pax-jdbc-mysql</module>
@@ -250,6 +251,12 @@
                 <version>${h2.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>net.sourceforge.jtds</groupId>
+                <artifactId>jtds</artifactId>
+                <version>${jtds.version}</version>
+            </dependency>
+
             <!--  The official PostgreSQL driver is not an OSGi bundle. -->
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -269,7 +276,7 @@
                 <artifactId>mariadb-java-client</artifactId>
                 <version>${mariadb.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-dbcp2</artifactId>
@@ -290,7 +297,7 @@
                 <artifactId>geronimo-jta_1.1_spec</artifactId>
                 <version>${jta.bundle.version}</version>
             </dependency>
-            
+
         </dependencies>
     </dependencyManagement>
 
