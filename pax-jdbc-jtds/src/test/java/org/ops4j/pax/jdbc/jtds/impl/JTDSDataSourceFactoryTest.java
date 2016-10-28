@@ -35,7 +35,7 @@ public class JTDSDataSourceFactoryTest {
     public void testDS() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
-        JtdsDataSource ds = (JtdsDataSource)dsf.createDataSource(props);
+        JtdsDataSource ds = dsf.createDataSource(props);
         validateDS(ds);
     }
 
@@ -59,7 +59,7 @@ public class JTDSDataSourceFactoryTest {
     public void testDriver() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
-        Driver driver = (Driver)dsf.createDriver(props);
+        Driver driver = dsf.createDriver(props);
         Assert.assertNotNull(driver);
     }
 
@@ -67,7 +67,7 @@ public class JTDSDataSourceFactoryTest {
     public void testEmptyProps() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = new Properties();
-        JtdsDataSource ds = (JtdsDataSource)dsf.createDataSource(props);
+        JtdsDataSource ds = dsf.createDataSource(props);
         Assert.assertNotNull(ds);
     }
 

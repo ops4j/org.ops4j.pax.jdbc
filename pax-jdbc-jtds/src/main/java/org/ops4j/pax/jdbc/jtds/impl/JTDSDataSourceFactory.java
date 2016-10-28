@@ -15,35 +15,29 @@
  */
 package org.ops4j.pax.jdbc.jtds.impl;
 
-import java.sql.Driver;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
-
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
-import javax.sql.XADataSource;
 
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import net.sourceforge.jtds.jdbc.Driver;
+import net.sourceforge.jtds.jdbcx.JtdsDataSource;
+
 public class JTDSDataSourceFactory implements DataSourceFactory {
+	private static final List<Method> methods = Arrays.asList(JtdsDataSource.class.getMethods());
 
-    private static final String JTDS_DRIVER_FQCN = "net.sourceforge.jtds.jdbc.Driver";
-    private static final String JTDS_DATASOURCE_FQCN = "net.sourceforge.jtds.jdbcx.JtdsDataSource";
-
-    private final Class<?> jtdsDriverClass;
-    private final Class<?> jtdsDataSourceClass;
-
-    public JTDSDataSourceFactory() throws ClassNotFoundException {
+    public JTDSDataSourceFactory() {
         super();
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        this.jtdsDriverClass = classLoader.loadClass(JTDS_DRIVER_FQCN);
-        this.jtdsDataSourceClass = classLoader.loadClass(JTDS_DATASOURCE_FQCN);
     }
 
     @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public JtdsDataSource createDataSource(Properties props) throws SQLException {
         try {
-            return setProperties(jtdsDataSourceClass.newInstance(), props);
+            return setProperties(new JtdsDataSource(), props);
         }
         catch (Exception ex) {
             throw new SQLException(ex);
@@ -51,10 +45,9 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
-        throws SQLException {
+    public JtdsDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
         try {
-            return setProperties(jtdsDataSourceClass.newInstance(), props);
+            return setProperties(new JtdsDataSource(), props);
         }
         catch (Exception ex) {
             throw new SQLException(ex);
@@ -62,9 +55,9 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
     }
 
     @Override
-    public XADataSource createXADataSource(Properties props) throws SQLException {
+    public JtdsDataSource createXADataSource(Properties props) throws SQLException {
         try {
-            return setProperties(jtdsDataSourceClass.newInstance(), props);
+            return setProperties(new JtdsDataSource(), props);
         }
         catch (Exception ex) {
             throw new SQLException(ex);
@@ -72,39 +65,35 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
     }
 
     @Override
-    public Driver createDriver(Properties props) throws SQLException {
-        try {
-            return Driver.class.cast(jtdsDriverClass.newInstance());
-        }
-        catch (Exception ex) {
-            throw new SQLException(ex);
-        }
+    public Driver createDriver(Properties props) {
+    	return new Driver();
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T setProperties(Object dataSourceInstance, Properties props) throws Exception {
-        setProperty(props.getProperty(DataSourceFactory.JDBC_DATABASE_NAME), dataSourceInstance,
-            "setDatabaseName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceInstance,
-            "setServerName");
-        setIntProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance,
-            "setPortNumber");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_USER), dataSourceInstance, "setUser");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceInstance,
-            "setPassword");
-        return (T) dataSourceInstance;
+    private JtdsDataSource setProperties(JtdsDataSource dsi, Properties props) throws Exception {
+    	for (Entry<Object, Object> prop : props.entrySet()) {
+    		setProperty(dsi, String.valueOf(prop.getKey()), String.valueOf(prop.getValue()));
+    	}
+    	return dsi;
     }
 
-    private void setProperty(String value, Object instance, String methodName) throws Exception {
-        if (value != null) {
-            instance.getClass().getMethod(methodName, String.class).invoke(instance, value);
+    private void setProperty(JtdsDataSource dsi, String key, String value) throws Exception {
+        if (value == null) {
+            return;
         }
-    }
 
-    private void setIntProperty(String value, Object instance, String methodName) throws Exception {
-        if (value != null) {
-            int iValue = new Integer(value);
-            instance.getClass().getMethod(methodName, int.class).invoke(instance, iValue);
+        for (Method method : methods) {
+        	if (method.getParameterTypes().length==1 && method.getName().equalsIgnoreCase("set"+key)) {
+        		Class<?> type = method.getParameterTypes()[0];
+        		if (String.class==type) {
+        			method.invoke(dsi, value);
+        		} else if (Integer.TYPE==type) {
+        			method.invoke(dsi, Integer.parseInt(value));
+        		} else if (Long.TYPE==type) {
+        			method.invoke(dsi, Long.parseLong(value));
+        		} else if (Boolean.TYPE==type) {
+        			method.invoke(dsi, Boolean.parseBoolean(value));
+        		}
+        	}
         }
     }
 
