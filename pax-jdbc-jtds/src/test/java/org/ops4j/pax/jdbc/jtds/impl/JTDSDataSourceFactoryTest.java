@@ -1,5 +1,5 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
+µ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,10 +15,14 @@
  */
 package org.ops4j.pax.jdbc.jtds.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.jtds.jdbc.Driver;
@@ -43,7 +47,7 @@ public class JTDSDataSourceFactoryTest {
     public void testConnectionPoolDS() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
-        JtdsDataSource ds = (JtdsDataSource)dsf.createConnectionPoolDataSource(props);
+        JtdsDataSource ds = dsf.createConnectionPoolDataSource(props);
         validateDS(ds);
     }
 
@@ -51,7 +55,7 @@ public class JTDSDataSourceFactoryTest {
     public void testXADS() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
-        JtdsDataSource ds = (JtdsDataSource)dsf.createXADataSource(props);
+        JtdsDataSource ds = dsf.createXADataSource(props);
         validateDS(ds);
     }
 
@@ -60,7 +64,7 @@ public class JTDSDataSourceFactoryTest {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
         Driver driver = dsf.createDriver(props);
-        Assert.assertNotNull(driver);
+        assertNotNull(driver);
     }
 
     @Test
@@ -68,15 +72,48 @@ public class JTDSDataSourceFactoryTest {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = new Properties();
         JtdsDataSource ds = dsf.createDataSource(props);
-        Assert.assertNotNull(ds);
+        assertNotNull(ds);
+    }
+
+    @Test
+    public void testParseUrl() throws Exception {
+        JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
+        Map<String, String> result = dsf.parseUrl(null);
+        assertTrue(result.isEmpty());
+
+        result = dsf.parseUrl("");
+        assertTrue(result.isEmpty());
+
+        result = dsf.parseUrl("jdbc:bla");
+        assertTrue(result.isEmpty());
+
+        result = dsf.parseUrl("jdbc:jtds:sqlserver//");
+        assertTrue(result.isEmpty());
+
+        result = dsf.parseUrl("jdbc:jtds:sqlserver://host");
+        assertEquals("1", result.get("SERVERTYPE"));
+        assertEquals("host", result.get("SERVERNAME"));
+
+        result = dsf.parseUrl("jdbc:jtds:sqlserver://host/testdb");
+        assertEquals("1", result.get("SERVERTYPE"));
+        assertEquals("host", result.get("SERVERNAME"));
+        assertEquals("1433", result.get("PORTNUMBER"));
+        assertEquals("testdb", result.get("DATABASENAME"));
+
+        result = dsf.parseUrl("jdbc:jtds:sqlserver://host:1434/bla;appName=Test");
+        assertEquals("1", result.get("SERVERTYPE"));
+        assertEquals("host", result.get("SERVERNAME"));
+        assertEquals("1434", result.get("PORTNUMBER"));
+        assertEquals("bla", result.get("DATABASENAME"));
+        assertEquals("Test", result.get("APPNAME"));
     }
 
     private void validateDS(JtdsDataSource ds) {
-        Assert.assertEquals(DB, ds.getDatabaseName());
-        Assert.assertEquals(SERVER, ds.getServerName());
-        Assert.assertEquals(1433, ds.getPortNumber());
-        Assert.assertEquals(USER, ds.getUser());
-        Assert.assertEquals(PASSWORD, ds.getPassword());
+        assertEquals(DB, ds.getDatabaseName());
+        assertEquals(SERVER, ds.getServerName());
+        assertEquals(1433, ds.getPortNumber());
+        assertEquals(USER, ds.getUser());
+        assertEquals(PASSWORD, ds.getPassword());
     }
 
     private Properties testProps() {

@@ -16,9 +16,12 @@
 package org.ops4j.pax.jdbc.jtds.impl;
 
 import java.lang.reflect.Method;
+import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -28,7 +31,7 @@ import net.sourceforge.jtds.jdbc.Driver;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 
 public class JTDSDataSourceFactory implements DataSourceFactory {
-	private static final List<Method> methods = Arrays.asList(JtdsDataSource.class.getMethods());
+    private static final List<Method> methods = Arrays.asList(JtdsDataSource.class.getMethods());
 
     public JTDSDataSourceFactory() {
         super();
@@ -66,14 +69,39 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
 
     @Override
     public Driver createDriver(Properties props) {
-    	return new Driver();
+        return new Driver();
     }
 
     private JtdsDataSource setProperties(JtdsDataSource dsi, Properties props) throws Exception {
-    	for (Entry<Object, Object> prop : props.entrySet()) {
-    		setProperty(dsi, String.valueOf(prop.getKey()), String.valueOf(prop.getValue()));
-    	}
-    	return dsi;
+        Map<String, String> propsFromUrl = parseUrl(props.getProperty(JDBC_URL));
+        for (String prop : props.stringPropertyNames()) {
+            propsFromUrl.put(prop, props.getProperty(prop));
+        }
+        for (Entry<String, String> prop : propsFromUrl.entrySet()) {
+            setProperty(dsi, prop.getKey(), prop.getValue());
+        }
+        return dsi;
+    }
+
+    Map<String, String> parseUrl(String url) {
+        Map<String, String> result = new HashMap<>();
+        if (url==null || url.trim().isEmpty()) {
+            return result;
+        }
+
+        if (!url.toLowerCase().startsWith("jdbc:jtds:")) {
+            return result;
+        }
+
+        try {
+            DriverPropertyInfo[] propInfo = new Driver().getPropertyInfo(url, null);
+            for (DriverPropertyInfo info : propInfo) {
+                result.put(info.name, info.value);
+            }
+            return result;
+        } catch (SQLException e) {
+            return result;
+        }
     }
 
     private void setProperty(JtdsDataSource dsi, String key, String value) throws Exception {
@@ -82,18 +110,18 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
         }
 
         for (Method method : methods) {
-        	if (method.getParameterTypes().length==1 && method.getName().equalsIgnoreCase("set"+key)) {
-        		Class<?> type = method.getParameterTypes()[0];
-        		if (String.class==type) {
-        			method.invoke(dsi, value);
-        		} else if (Integer.TYPE==type) {
-        			method.invoke(dsi, Integer.parseInt(value));
-        		} else if (Long.TYPE==type) {
-        			method.invoke(dsi, Long.parseLong(value));
-        		} else if (Boolean.TYPE==type) {
-        			method.invoke(dsi, Boolean.parseBoolean(value));
-        		}
-        	}
+            if (method.getParameterTypes().length==1 && method.getName().equalsIgnoreCase("set"+key)) {
+                Class<?> type = method.getParameterTypes()[0];
+                if (String.class==type) {
+                    method.invoke(dsi, value);
+                } else if (Integer.TYPE==type) {
+                    method.invoke(dsi, Integer.parseInt(value));
+                } else if (Long.TYPE==type) {
+                    method.invoke(dsi, Long.parseLong(value));
+                } else if (Boolean.TYPE==type) {
+                    method.invoke(dsi, Boolean.parseBoolean(value));
+                }
+            }
         }
     }
 
