@@ -18,24 +18,21 @@ package org.ops4j.pax.jdbc.config.impl;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.jasypt.encryption.StringEncryptor;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ManagedServiceFactory;
-import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
     private static final String FACTORY_PID = "org.ops4j.datasource";
-    private ServiceTracker encryptorServiceTracker;
+    private StringEncryptorTracker encryptorServiceTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
-
-        encryptorServiceTracker = new ServiceTracker(context, StringEncryptor.class.getName(), null);
+        encryptorServiceTracker = new StringEncryptorTracker(context);
         encryptorServiceTracker.open();
         Decryptor decryptor = new Decryptor(encryptorServiceTracker);
         DataSourceConfigManager configManager = new DataSourceConfigManager(context, decryptor);
