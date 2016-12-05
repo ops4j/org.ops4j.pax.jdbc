@@ -22,6 +22,7 @@ import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.matches;
 import static org.junit.Assert.assertEquals;
 
@@ -254,9 +255,10 @@ public class DataSourceConfigManagerTest {
         StringEncryptor encryptor = c.createMock(StringEncryptor.class);
         expect(encryptor.decrypt(matches("ciphertext"))).andReturn("plaintext");
 
-        ServiceTracker encryptorServiceTracker = c.createMock(ServiceTracker.class);
-        expect(encryptorServiceTracker.waitForService(anyInt())).andReturn(encryptor);
-        Decryptor decryptor = new Decryptor(encryptorServiceTracker);
+        StringEncryptorTracker tracker = c.createMock(StringEncryptorTracker.class);
+        EasyMock.expect(tracker.getStringEncryptor(EasyMock.isNull(String.class))).andReturn(encryptor);
+
+        Decryptor decryptor = new Decryptor(tracker);
         return decryptor;
     }
 }

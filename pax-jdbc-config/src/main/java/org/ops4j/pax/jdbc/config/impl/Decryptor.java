@@ -1,10 +1,3 @@
-package org.ops4j.pax.jdbc.config.impl;
-
-import java.util.*;
-
-import org.jasypt.encryption.StringEncryptor;
-import org.osgi.util.tracker.ServiceTracker;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -21,43 +14,83 @@ import org.osgi.util.tracker.ServiceTracker;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.ops4j.pax.jdbc.config.impl;
+
+import java.util.*;
+
+import org.jasypt.encryption.StringEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Decryptor for cipher texts.
+ */
 public class Decryptor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Decryptor.class);
+
     private static final String ENCRYPTED_PROPERTY_PREFIX = "ENC(";
     private static final String ENCRYPTED_PROPERTY_SUFFIX = ")";
-    private ServiceTracker encryptorServiceTracker;
-    
-    public Decryptor(ServiceTracker encryptorServiceTracker) {
-        this.encryptorServiceTracker = encryptorServiceTracker;
+    private static final char ALIAS_SEPARATOR = ',';
+
+    private final StringEncryptorTracker encryptorServiceTracker;
+
+    /**
+     * Create new decryptor instance.
+     *
+     * @param tracker custom StringEncryptor tracker the supports aliases
+     */
+    public Decryptor(final StringEncryptorTracker tracker) {
+        this.encryptorServiceTracker = tracker;
     }
 
+    /**
+     * Decrypt configuration.
+     *
+     * @param config configuration to decrypt
+     * @return decrypted configuration
+     */
     @SuppressWarnings("rawtypes")
     public Dictionary<String, String> decrypt(final Dictionary config) {
-        StringEncryptor encryptor = null;
-        Dictionary<String, String> decryptedConfig = new Hashtable<String, String>();
+        Dictionary<String, String> decryptedConfig = new Hashtable<>();
         for (Enumeration e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
             String value = String.valueOf(config.get(key));
-            if (config.get(key) instanceof String && isEncrypted(value)){
-            	String cipherText = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
-                		value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
-                if(encryptor == null) {
-                    try {
-                        encryptor = (StringEncryptor) this.encryptorServiceTracker.waitForService(30000);
-                    } catch (InterruptedException e1) {
-                        /* ignore */
-                    }
-                }
-                if (encryptor != null) {
-                    String plainText = encryptor.decrypt(cipherText);
+            if (config.get(key) instanceof String && isEncrypted(value)) {
+                final String plainText = decryptValue(value);
+                if (plainText != null) {
                     decryptedConfig.put(key, plainText);
                 }
             } else {
-                decryptedConfig.put(key,value);
+                decryptedConfig.put(key, value);
             }
         }
         return decryptedConfig;
     }
 
+    /**
+     * Decrypt encrypted configuration value. Alias is optional and separated with ALIAS_SEPARATOR character.
+     *
+     * @param value encrypted configuration value, composite of cipher text and alias
+     * @return decrypted (plain text) configuration value
+     */
+    private String decryptValue(final String value) {
+        final String argument = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
+                value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
+        final int aliasPos = argument.indexOf(ALIAS_SEPARATOR);
+        final String cipherText = aliasPos > -1 ? argument.substring(0, aliasPos) : argument;
+        final String alias = aliasPos > -1 ? argument.substring(aliasPos + 1).trim() : null;
+
+        StringEncryptor encryptor = encryptorServiceTracker.getStringEncryptor(alias);
+        return encryptor != null ? encryptor.decrypt(cipherText) : null;
+    }
+
+    /**
+     * Check whether a value is encrypted.
+     *
+     * @param value configuration value
+     * @return <code>true</code> if value is encrypted, <code>false</code> otherwise
+     */
     public boolean isEncrypted(String value) {
         return value.startsWith(ENCRYPTED_PROPERTY_PREFIX)
                 && value.endsWith(ENCRYPTED_PROPERTY_SUFFIX);
