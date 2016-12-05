@@ -35,7 +35,7 @@ public class Activator implements BundleActivator {
         encryptorServiceTracker = new StringEncryptorTracker(context);
         encryptorServiceTracker.open();
         Decryptor decryptor = new Decryptor(encryptorServiceTracker);
-        DataSourceConfigManager configManager = new DataSourceConfigManager(context, decryptor);
+        DataSourceConfigManager configManager = new DataSourceConfigManager(context, decryptor, new ExternalConfigLoader());
         context.registerService(ManagedServiceFactory.class.getName(), configManager, props);
     }
 

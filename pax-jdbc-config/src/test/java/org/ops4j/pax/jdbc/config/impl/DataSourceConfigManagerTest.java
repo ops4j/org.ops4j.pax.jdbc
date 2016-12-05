@@ -16,13 +16,11 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.matches;
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +41,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourceConfigManagerTest {
@@ -84,7 +81,7 @@ public class DataSourceConfigManagerTest {
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         expect(decryptor.decrypt(anyObject(Dictionary.class))).andReturn(properties);
 
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor, new ExternalConfigLoader());
 
         // Test config created
         c.replay();
@@ -112,7 +109,7 @@ public class DataSourceConfigManagerTest {
         Decryptor decryptor = c.createMock(Decryptor.class);
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("other", "value");
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor, new ExternalConfigLoader());
 
         c.replay();
         try {
@@ -151,7 +148,7 @@ public class DataSourceConfigManagerTest {
         expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
 
         Decryptor decryptor = createDecryptor(c);
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor, new ExternalConfigLoader());
 
         // Test config created
         c.replay();
@@ -165,6 +162,61 @@ public class DataSourceConfigManagerTest {
 
         // the encrypted value is still encrypted
         Assert.assertEquals("ENC(ciphertext)", properties.get(DataSourceFactory.JDBC_PASSWORD));
+    }
+    
+    @Test
+    public void testEncryptorWithExternalSecret() throws Exception {
+        IMocksControl c = EasyMock.createControl();
+        BundleContext context = c.createMock(BundleContext.class);
+
+        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+        String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
+
+        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
+        context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
+            EasyMock.eq(expectedFilter));
+        expectLastCall();
+
+        ServiceReference ref = c.createMock(ServiceReference.class);
+        ServiceReference[] refs = new ServiceReference[] { ref };
+        expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
+
+        expect(context.getService(ref)).andReturn(dsf);
+
+        DataSource ds = c.createMock(DataSource.class);
+        expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
+
+        ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
+        expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
+        
+        Dictionary<String, String> loadedProps = new Hashtable<String, String>();
+        loadedProps.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
+        loadedProps.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
+        loadedProps.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
+        loadedProps.put(DataSourceFactory.JDBC_PASSWORD, "ENC(ciphertext)");
+        
+        // mock is created to ensure external configuration loader is called
+        ExternalConfigLoader externalConfigLoader = c.createMock(ExternalConfigLoader.class);
+        expect(externalConfigLoader.resolve(anyObject(Dictionary.class))).andReturn(loadedProps).atLeastOnce();
+        
+        Decryptor decryptor = createDecryptor(c);
+        
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor, externalConfigLoader);
+
+        // Test config created
+        c.replay();
+        
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, loadedProps.get(DataSourceRegistration.JNDI_SERVICE_NAME));
+        properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, loadedProps.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
+        properties.put(DataSourceFactory.JDBC_DATABASE_NAME, loadedProps.get(DataSourceFactory.JDBC_DATABASE_NAME));
+        String externalEncryptedValue = "FILE(" + ExternalConfigLoaderTest.createExternalSecret(loadedProps.get(DataSourceFactory.JDBC_PASSWORD)) + ")";
+        properties.put(DataSourceFactory.JDBC_PASSWORD, externalEncryptedValue);
+        dsManager.updated(TESTPID, properties);
+        c.verify();
+
+        // the encrypted/external value is still encrypted/external
+        Assert.assertEquals(externalEncryptedValue, properties.get(DataSourceFactory.JDBC_PASSWORD));
     }
 
     /**
@@ -243,7 +295,7 @@ public class DataSourceConfigManagerTest {
         Decryptor decryptor = c.createMock(Decryptor.class);
         expect(decryptor.decrypt(anyObject(Dictionary.class))).andReturn(properties);
 
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor);
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor, new ExternalConfigLoader());
 
         // Test config created
         c.replay();
