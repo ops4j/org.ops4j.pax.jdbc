@@ -52,12 +52,14 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
      */
     private Map<String, ServiceTracker> trackers;
     private Decryptor decryptor;
+    
+    private ExternalConfigLoader externalConfigLoader;
 
-
-    public DataSourceConfigManager(BundleContext context, Decryptor decryptor) {
+    public DataSourceConfigManager(BundleContext context, Decryptor decryptor, ExternalConfigLoader externalConfigLoader) {
         this.context = context;
         this.trackers = new HashMap<String, ServiceTracker>();
         this.decryptor = decryptor;
+        this.externalConfigLoader = externalConfigLoader;
     }
 
     @Override
@@ -76,8 +78,9 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         try {
             Filter dsfFilter = getDSFFilter(config);
             Filter pdsfFilter = getPooledDSFFilter(config);
-
-            Dictionary<String, String> decryptedConfig = decryptor.decrypt(config);
+            
+            Dictionary<String, String> loadedConfig = externalConfigLoader.resolve(config);
+            Dictionary<String, String> decryptedConfig = decryptor.decrypt(loadedConfig);
             String msg = "Processing config for DataSource {}. ";
             ServiceTracker tracker;
             if (pdsfFilter == null) {
