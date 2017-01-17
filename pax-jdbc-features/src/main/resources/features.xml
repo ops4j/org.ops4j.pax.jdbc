@@ -29,6 +29,14 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-db2/${project.version}</bundle>
     </feature>
 
+	<feature name="pax-jdbc-teradata" description="Provides JDBC Teradata DataSourceFactory" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-teradata/${project.version}</bundle>
+    </feature>
+
+	
     <feature name="pax-jdbc-derby" description="Provides JDBC Derbi Embedded DataSourceFactory" version="${project.version}"
              resolver="(obr)">
         <feature>pax-jdbc-spec</feature>
