@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
-
+<features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
     <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}" resolver="(obr)">
         <bundle>mvn:org.osgi/org.osgi.service.jdbc/1.0.0</bundle>
     </feature>
@@ -131,6 +132,16 @@
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
+    </feature>
+    
+    <feature name="pax-jdbc-pool-c3p0" description="Provides JDBC Pooling using C3P0"
+             version="${project.version}" resolver="(obr)">
+        <feature>pax-jdbc-spec</feature>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${c3p0.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-c3p0/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-hikaricp" description="Provides JDBC Pooling DataSourceFactory using HikariCP"
