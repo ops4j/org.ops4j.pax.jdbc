@@ -91,9 +91,9 @@
     <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory"
              version="${project.version}"
              resolver="(obr)">
-        <feature>transaction</feature>
         <feature>pax-jdbc-spec</feature>
-
+        
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
     </feature>
 
