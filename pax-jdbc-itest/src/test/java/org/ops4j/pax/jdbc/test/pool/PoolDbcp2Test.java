@@ -15,9 +15,6 @@
  */
 package org.ops4j.pax.jdbc.test.pool;
 
-import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +24,10 @@ import javax.transaction.TransactionManager;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
+import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -46,8 +42,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * Checks that the pax-jdbc-pool-dbcp2 module creates an XA pooled and a normal pooled
  * DataSourceFactory
  */
-@RunWith(PaxExam.class)
-public class PoolDbcp2Test {
+public class PoolDbcp2Test extends AbstractJdbcTest {
 
     @Inject
     BundleContext context;
@@ -110,14 +105,6 @@ public class PoolDbcp2Test {
         return new HashSet<String>(Arrays.asList(values));
     }
 
-    private Bundle getBundle(String symbolicName) {
-        for (Bundle bundle : context.getBundles()) {
-            if (bundle.getSymbolicName().equals(symbolicName)) {
-                return bundle;
-            }
-        }
-        return null;
-    }
 
     private Set<String> getProp(ServiceTracker<DataSourceFactory, Object> tracker, String key) {
         Set<String> results = new HashSet<String>();
@@ -125,32 +112,6 @@ public class PoolDbcp2Test {
             results.add((String) ref.getProperty(key));
         }
         return results;
-    }
-
-    @SuppressWarnings("unused")
-    private void printDataSourceFactories(ServiceTracker<DataSourceFactory, Object> tracker) {
-        for (ServiceReference<DataSourceFactory> ref : tracker.getServiceReferences()) {
-            System.out.println("DataSourceFactory Service");
-            String[] keys = ref.getPropertyKeys();
-            Arrays.sort(keys);
-            for (String key : keys) {
-                System.out.println("  " + key + ":" + ref.getProperty(key));
-            }
-        }
-    }
-
-    private void assertAllBundlesResolved() {
-        for (Bundle bundle : context.getBundles()) {
-            if (bundle.getState() == Bundle.INSTALLED) {
-                // Provoke exception
-                try {
-                    bundle.start();
-                }
-                catch (BundleException e) {
-                    Assert.fail(e.getMessage());
-                }
-            }
-        }
     }
 
 }

@@ -18,20 +18,15 @@
 package org.ops4j.pax.jdbc.test.derbyclient;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeThat;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 
 import org.apache.derby.drda.NetworkServerControl;
 import org.junit.Rule;
@@ -43,11 +38,12 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.derbyclient.constants.ClientConnectionConstant;
+import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 @RunWith(PaxExam.class)
-public class DerbyClientNativeDataSourceTest {
+public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -75,7 +71,6 @@ public class DerbyClientNativeDataSourceTest {
 
     @Test
     public void createDataSourceAndConnection() throws SQLException, InterruptedException {
-        assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
@@ -83,49 +78,31 @@ public class DerbyClientNativeDataSourceTest {
         props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
-        DataSource dataSource = dsf.createDataSource(props);
-        assertNotNull(dataSource);
-        Connection connection = dataSource.getConnection();
-        assertNotNull(connection);
-        connection.close();
+        dsf.createDataSource(props).getConnection().close();
     }
 
     @Test
     public void connectWithDefaultPort() throws SQLException {
-
         assumeThat(dbConfig.getPortNumber(), is("1527"));
-
-        assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
-        DataSource dataSource = dsf.createDataSource(props);
-        assertNotNull(dataSource);
-        Connection connection = dataSource.getConnection();
-        assertNotNull(connection);
-        connection.close();
+        dsf.createDataSource(props).getConnection().close();
     }
 
     @Test
     public void connectWithDefaultHostAndPort() throws SQLException {
-
         assumeThat(dbConfig.getPortNumber(), is("1527"));
         assumeThat(dbConfig.getServerName(), is("localhost"));
-
-        assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
-        DataSource dataSource = dsf.createDataSource(props);
-        assertNotNull(dataSource);
-        Connection connection = dataSource.getConnection();
-        assertNotNull(connection);
-        connection.close();
+        dsf.createDataSource(props).getConnection().close();
     }
 
 }

@@ -1,29 +1,22 @@
 package org.ops4j.pax.jdbc.test.pool;
 
-import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
-
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.util.tracker.ServiceTracker;
+import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 
 /**
  * Checks that the pax-jdbc-pool-hikaricp module creates an XA pooled and a normal pooled
  * DataSourceFactory
  */
-@RunWith(PaxExam.class)
-public class PoolHikaricpTest {
+public class PoolHikaricpTest extends AbstractJdbcTest {
 
-    @Inject
-    BundleContext context;
+    @Inject @Filter("(pool=hikari)")
+    PooledDataSourceFactory pdsf;
 
     @Configuration
     public Option[] config() {
@@ -37,17 +30,9 @@ public class PoolHikaricpTest {
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-hikaricp"), };
     }
 
-    @SuppressWarnings({
-     "unchecked", "rawtypes"
-    })
     @Test
     public void testDataSourceFactoryCreated() {
-        final ServiceTracker tracker = new ServiceTracker(context, PooledDataSourceFactory.class, null);
-        tracker.open();
-        Assert.assertEquals(1, tracker.getServiceReferences().length);
-        String poolName = (String)tracker.getServiceReferences()[0].getProperty("pool");
-        Assert.assertEquals("hikari", poolName);
-        tracker.close();
+        // Just testing we get the service injected 
     }
 
 }

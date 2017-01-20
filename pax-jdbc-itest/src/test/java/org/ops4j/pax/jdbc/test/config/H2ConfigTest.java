@@ -17,8 +17,6 @@ package org.ops4j.pax.jdbc.test.config;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -35,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.osgi.framework.BundleContext;
+import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -47,16 +45,13 @@ import org.osgi.util.tracker.ServiceTracker;
  * DataSource is present as a service
  */
 @RunWith(PaxExam.class)
-public class H2ConfigTest {
+public class H2ConfigTest extends AbstractJdbcTest {
 
     private static final String JNDI_NAME = "osgi.jndi.service.name";
 
     @Inject
     ConfigurationAdmin configAdmin;
-
-    @Inject
-    BundleContext context;
-
+    
     @Configuration
     public Option[] config() {
         return new Option[] { //

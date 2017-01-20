@@ -17,30 +17,23 @@
  */
 package org.ops4j.pax.jdbc.test.sqlite;
 
-import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.mvnBundle;
-import static org.ops4j.pax.jdbc.test.TestConfiguration.regressionDefaults;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
+import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-@RunWith(PaxExam.class)
-public class SqliteNativeDataSourceTest {
+public class SqliteNativeDataSourceTest extends AbstractJdbcTest {
 
     @Inject
     @Filter(value = "(osgi.jdbc.driver.name=sqlite)", timeout = 20000000)
@@ -57,13 +50,8 @@ public class SqliteNativeDataSourceTest {
 
     @Test
     public void createDataSourceAndConnection() throws SQLException {
-        assertNotNull(dsf);
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, ":memory:");
-        DataSource dataSource = dsf.createDataSource(props);
-        assertNotNull(dataSource);
-        Connection connection = dataSource.getConnection();
-        assertNotNull(connection);
-        connection.close();
+        dsf.createDataSource(props).getConnection().close();
     }
 }
