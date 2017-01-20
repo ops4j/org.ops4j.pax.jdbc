@@ -101,9 +101,8 @@
     <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory"
              version="${project.version}"
              resolver="(obr)">
-        <feature>pax-jdbc</feature>
-
-        <bundle dependency="true">wrap:mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
+        <feature>pax-jdbc-spec</feature>
+        <bundle dependency="true">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
     </feature>
 
