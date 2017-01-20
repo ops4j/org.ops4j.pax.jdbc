@@ -2,11 +2,13 @@ package org.ops4j.pax.jdbc.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.replaceConfigurationFile;
 
 import java.io.File;
 import java.sql.Connection;
@@ -15,14 +17,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.apache.karaf.features.FeaturesService;
 import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class AbstractJdbcTest {
+    @Inject
+    FeaturesService featuresService;
 
     protected ConfigurationManager cm = new ConfigurationManager();
 
@@ -44,7 +50,7 @@ public class AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "");
         return dsf.createDataSource(props);
     }
-
+    
     protected void checkDataSource(DataSource dataSource) throws SQLException {
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
@@ -63,7 +69,16 @@ public class AbstractJdbcTest {
         statement.close();
         connection.close();
     }
+    
+    protected void assertFeatureInstalled(String featureName) throws Exception {
+        assertTrue("Required feature " + featureName + " not installed", 
+                   featuresService.isInstalled(featuresService.getFeature(featureName)));
+    }
 
+    protected Option applyConfig(String configName) {
+        return replaceConfigurationFile("etc/" + configName, new File("src/test/resources/" + configName));
+    }
+    
     protected Option karafDefaults() {
         return composite(
         // KarafDistributionOption.debugConfiguration("5005", true),
