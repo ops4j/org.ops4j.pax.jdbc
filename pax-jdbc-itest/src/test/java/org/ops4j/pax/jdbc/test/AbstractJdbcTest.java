@@ -24,8 +24,11 @@ import org.osgi.framework.BundleException;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractJdbcTest {
+    private static final boolean equinoxConsole = false;
+    
     @Inject
     protected BundleContext context;
+    
 
     protected void assertAllBundlesResolved() {
         for (Bundle bundle : context.getBundles()) {
@@ -69,7 +72,7 @@ public abstract class AbstractJdbcTest {
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-            when(TestConfiguration.equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
+            when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
             junitBundles(),
             mvnBundle("org.osgi", "org.osgi.service.jdbc")
             );

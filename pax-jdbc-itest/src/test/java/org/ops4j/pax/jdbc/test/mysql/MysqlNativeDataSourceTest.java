@@ -43,16 +43,14 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public MysqlRule mysql = new MysqlRule();
-
-    @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Inject
     @Filter("(osgi.jdbc.driver.name=mysql)")
     private DataSourceFactory dsf;
 
-    private ServerConfiguration dbConfig = new ServerConfiguration("mysql");
+    @Rule
+    public ServerConfiguration dbConfig = new ServerConfiguration("mysql");
 
     @Configuration
     public Option[] config() {
@@ -67,7 +65,7 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         dsf.createDataSource(props).getConnection().close();
@@ -75,7 +73,7 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void connectWithDefaultPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is("3306"));
+        assumeThat(dbConfig.getPortNumber(), is(3306));
 
         assertNotNull(dsf);
         Properties props = new Properties();
@@ -88,7 +86,7 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void connectWithDefaultHostAndPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is("3306"));
+        assumeThat(dbConfig.getPortNumber(), is(3306));
         assumeThat(dbConfig.getServerName(), is("localhost"));
 
         Properties props = new Properties();
@@ -104,7 +102,7 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         
         thrown.expect(SQLException.class);
@@ -119,7 +117,7 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
 

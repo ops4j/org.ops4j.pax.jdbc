@@ -42,16 +42,14 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public MariaDbRule mysql = new MariaDbRule();
-
-    @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Inject
     @Filter(value = "(osgi.jdbc.driver.name=mariadb)", timeout = 1000000)
     private DataSourceFactory dsf;
 
-    private ServerConfiguration dbConfig = new ServerConfiguration("mariadb");
+    @Rule
+    public ServerConfiguration dbConfig = new ServerConfiguration("mariadb");
 
     @Configuration
     public Option[] config() {
@@ -65,7 +63,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         dsf.createDataSource(props).getConnection().close();
@@ -73,7 +71,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void connectWithDefaultPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is("3306"));
+        assumeThat(dbConfig.getPortNumber(), is(3306));
 
         assertNotNull(dsf);
         Properties props = new Properties();
@@ -86,7 +84,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void connectWithDefaultHostAndPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is("3306"));
+        assumeThat(dbConfig.getPortNumber(), is(3306));
         assumeThat(dbConfig.getServerName(), is("localhost"));
 
         assertNotNull(dsf);
@@ -103,7 +101,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         DataSource dataSource = dsf.createDataSource(props);
         thrown.expect(SQLException.class);
@@ -117,7 +115,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
         DataSource dataSource = dsf.createDataSource(props);

@@ -75,7 +75,7 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumber());
+        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
         dsf.createDataSource(props).getConnection().close();
@@ -83,7 +83,7 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void connectWithDefaultPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is("1527"));
+        assumeThat(dbConfig.getPortNumber(), is(1527));
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
@@ -95,7 +95,7 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void connectWithDefaultHostAndPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is("1527"));
+        assumeThat(dbConfig.getPortNumber(), is(1527));
         assumeThat(dbConfig.getServerName(), is("localhost"));
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());

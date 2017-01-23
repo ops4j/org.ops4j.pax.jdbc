@@ -30,12 +30,13 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
+import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class PostgresqlNativeDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public PostgresqlRule postgresql = new PostgresqlRule();
+    public ServerConfiguration postgresql = new ServerConfiguration("postgresql");
 
     @Inject
     @Filter("(osgi.jdbc.driver.name=PostgreSQL JDBC Driver)")

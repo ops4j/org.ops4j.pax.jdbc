@@ -36,7 +36,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class MariaDbDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public MariaDbRule mariadb = new MariaDbRule();
+    public ServerConfiguration config = new ServerConfiguration("mariadb");
 
     @Inject
     @Filter("(osgi.jdbc.driver.class=org.mariadb.jdbc.Driver)")
@@ -52,8 +52,6 @@ public class MariaDbDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void createDataSourceAndConnection() throws SQLException {
-        ServerConfiguration config = new ServerConfiguration("mariadb");
-
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_URL, config.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, config.getUser());

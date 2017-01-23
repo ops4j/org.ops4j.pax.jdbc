@@ -36,7 +36,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class PostgresqlDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public PostgresqlRule postgresql = new PostgresqlRule();
+    public ServerConfiguration config = new ServerConfiguration("postgresql");
 
     @Inject
     @Filter("(osgi.jdbc.driver.class=org.postgresql.Driver)")
@@ -52,8 +52,6 @@ public class PostgresqlDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void createDataSourceAndConnection() throws SQLException {
-        ServerConfiguration config = new ServerConfiguration("postgresql");
-
         Properties props = new Properties();
         // props.setProperty(DataSourceFactory.JDBC_URL, config.getUrl());
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, config.getDatabaseName());

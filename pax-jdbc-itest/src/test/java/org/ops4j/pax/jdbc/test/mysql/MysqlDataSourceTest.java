@@ -36,7 +36,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class MysqlDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public MysqlRule mysql = new MysqlRule();
+    public ServerConfiguration config = new ServerConfiguration("mysql");
 
     @Inject
     @Filter("(osgi.jdbc.driver.class=com.mysql.jdbc.Driver)")
@@ -52,8 +52,6 @@ public class MysqlDataSourceTest extends AbstractJdbcTest {
 
     @Test
     public void createDataSourceAndConnection() throws SQLException {
-        ServerConfiguration config = new ServerConfiguration("mysql");
-
         Properties props = new Properties();
         props.setProperty(DataSourceFactory.JDBC_URL, config.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, config.getUser());
