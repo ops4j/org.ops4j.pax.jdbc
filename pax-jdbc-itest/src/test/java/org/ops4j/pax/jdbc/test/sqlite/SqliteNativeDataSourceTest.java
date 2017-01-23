@@ -18,7 +18,6 @@
 package org.ops4j.pax.jdbc.test.sqlite;
 
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 
 import java.sql.SQLException;
@@ -36,13 +35,13 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class SqliteNativeDataSourceTest extends AbstractJdbcTest {
 
     @Inject
-    @Filter(value = "(osgi.jdbc.driver.name=sqlite)", timeout = 20000000)
+    @Filter(value = "(osgi.jdbc.driver.name=sqlite)")
     private DataSourceFactory dsf;
 
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-            systemProperty("osgi.console").value("6666"), //
+            //systemProperty("osgi.console").value("6666"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite"), //
             wrappedBundle(mvnBundle("org.xerial", "sqlite-jdbc")) //
         );

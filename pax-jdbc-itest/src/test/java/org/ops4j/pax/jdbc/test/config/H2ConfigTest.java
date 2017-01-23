@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -69,13 +68,14 @@ public class H2ConfigTest extends AbstractJdbcTest {
     public void testDataSourceFromConfig() throws SQLException, IOException,
         InvalidSyntaxException, InterruptedException {
         org.osgi.service.cm.Configuration config = createConfigForDataSource();
-        ServiceTracker<DataSource, Object> tracker = new ServiceTracker<DataSource, Object>(
+        ServiceTracker<DataSource, DataSource> tracker = new ServiceTracker<DataSource, DataSource>(
             context, DataSource.class, null);
         tracker.open();
-        DataSource dataSource = (DataSource) tracker.waitForService(1000);
+        DataSource dataSource = tracker.waitForService(1000);
         assertDataSourceWorks(dataSource);
-        assertServicePropertiesPresent(tracker);
+        assertServicePropertiesPresent(tracker.getServiceReference());
         checkDataSourceIsDeletedWhenConfigIsDeleted(config, tracker);
+        tracker.close();
     }
 
     private org.osgi.service.cm.Configuration createConfigForDataSource() throws IOException {
@@ -89,28 +89,22 @@ public class H2ConfigTest extends AbstractJdbcTest {
         return config;
     }
 
-    private void assertDataSourceWorks(DataSource dataSource) throws InterruptedException,
-        SQLException {
+    private void assertDataSourceWorks(DataSource dataSource) throws SQLException {
         assertNotNull("No DataSource service found", dataSource);
-        Connection connection = dataSource.getConnection();
-        assertNotNull(connection);
-        connection.close();
+        dataSource.getConnection().close();
     }
 
-    private void assertServicePropertiesPresent(ServiceTracker<DataSource, Object> tracker) {
-        ServiceReference<DataSource> ref = tracker.getServiceReference();
-        Assert.assertEquals("org.h2.Driver",
-            ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
+    private void assertServicePropertiesPresent(ServiceReference<DataSource> ref) {
+        Assert.assertEquals("org.h2.Driver", ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
         Assert.assertEquals("jdbc:h2:mem:pax", ref.getProperty(DataSourceFactory.JDBC_URL));
         Assert.assertEquals("h2test", ref.getProperty(JNDI_NAME));
     }
 
     private void checkDataSourceIsDeletedWhenConfigIsDeleted(
-        org.osgi.service.cm.Configuration config, ServiceTracker<DataSource, Object> tracker)
+        org.osgi.service.cm.Configuration config, ServiceTracker<DataSource, DataSource> tracker)
         throws IOException, InterruptedException {
         config.delete();
-        Thread.sleep(1000);
-        DataSource dataSource = (DataSource) tracker.getService();
-        assertNull(dataSource);
+        Thread.sleep(200);
+        assertNull((DataSource) tracker.getService());
     }
 }
