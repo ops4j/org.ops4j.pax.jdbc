@@ -71,7 +71,7 @@ public class H2ConfigTest extends AbstractJdbcTest {
         ServiceTracker<DataSource, DataSource> tracker = new ServiceTracker<DataSource, DataSource>(
             context, DataSource.class, null);
         tracker.open();
-        DataSource dataSource = tracker.waitForService(1000);
+        DataSource dataSource = tracker.waitForService(2000);
         assertDataSourceWorks(dataSource);
         assertServicePropertiesPresent(tracker.getServiceReference());
         checkDataSourceIsDeletedWhenConfigIsDeleted(config, tracker);
