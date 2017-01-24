@@ -45,6 +45,7 @@ public class Activator implements BundleActivator {
         C3p0PooledDataSourceFactory dsf = new C3p0PooledDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(POOL_KEY, "c3p0");
+        props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
         tmTracker = new AbstractTransactionManagerTracker(context) {

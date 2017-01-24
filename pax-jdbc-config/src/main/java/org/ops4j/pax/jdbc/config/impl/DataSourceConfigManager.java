@@ -100,24 +100,32 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
     
     private Filter getPooledDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
         String pool = (String) config.remove(PooledDataSourceFactory.POOL_KEY);
-        String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
-        if (pool == null && xa == null) {
-            return null;
+        boolean isXa = isXa(config);
+        if (pool == null) {
+            if (isXa) {
+                throw new ConfigurationException(null, "Can not create XA DataSource without pooling.");
+            } else {
+                return null;
+            }
         }
-        if (pool == null && xa != null) {
-            throw new ConfigurationException(null, "Can not create XA DataSource without pooling.");
-        }
-        if (xa != null && !"true".equals(xa)) {
-            throw new ConfigurationException(null, "XA can only be set to true");
-        }
+        
         List<String> filterList = new ArrayList<String>();
         filterList.add("objectClass=" + PooledDataSourceFactory.class.getName());
         filterList.add("pool=" + pool);
-        if (xa != null) {
-            filterList.add("xa=" + xa);
-        }
+        filterList.add("xa=" + isXa);
         String filter = andFilter(filterList);
         return createFilter(filter);
+    }
+    
+    private boolean isXa(Dictionary config) throws ConfigurationException {
+        String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
+        if (xa == null) {
+            return false;
+        }
+        if (!"true".equals(xa)) {
+            throw new ConfigurationException(null, "XA can only be set to true");
+        }
+        return true;
     }
 
     private Filter getDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
