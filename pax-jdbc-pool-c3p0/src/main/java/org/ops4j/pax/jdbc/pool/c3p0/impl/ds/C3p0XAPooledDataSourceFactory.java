@@ -35,8 +35,6 @@ public class C3p0XAPooledDataSourceFactory extends C3p0PooledDataSourceFactory {
     /**
      * Initialize XA PoolingDataSourceFactory
      * 
-     * @param dsFactory
-     *            non pooled DataSourceFactory we delegate to
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */

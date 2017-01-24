@@ -51,8 +51,6 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     /**
      * Initialize XA PoolingDataSourceFactory
      * 
-     * @param dsFactory
-     *            non pooled DataSourceFactory we delegate to
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */
