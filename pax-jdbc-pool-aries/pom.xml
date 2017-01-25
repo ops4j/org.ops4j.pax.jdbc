@@ -54,9 +54,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-         <groupId>org.ops4j.pax.jdbc</groupId>
-         <artifactId>pax-jdbc-pool-common</artifactId>
-         <version>${project.version}</version>
+         	<groupId>org.ops4j.pax.jdbc</groupId>
+         	<artifactId>pax-jdbc-pool-common</artifactId>
+         	<version>${project.version}</version>
         </dependency>
     </dependencies>
 

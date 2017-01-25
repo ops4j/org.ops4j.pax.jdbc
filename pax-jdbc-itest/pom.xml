@@ -130,6 +130,24 @@
             <scope>provided</scope>
         </dependency>
 
+		<dependency>
+	        <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-validation_1.0_spec</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.apache.geronimo.components</groupId>
+            <artifactId>geronimo-connector</artifactId>
+            <version>3.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-j2ee-connector_1.6_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-pool-aries</artifactId>
