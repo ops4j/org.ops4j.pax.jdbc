@@ -16,6 +16,7 @@
 package org.ops4j.pax.jdbc.pool.hikaricp.impl;
 
 import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.POOL_KEY;
+import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.XA_KEY;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -25,7 +26,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Publish pooling hikari poonling support
+ * Publish hikari pooling support
  */
 public class Activator implements BundleActivator {
 
@@ -34,6 +35,7 @@ public class Activator implements BundleActivator {
         HikariPooledDataSourceFactory dsf = new HikariPooledDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(POOL_KEY, "hikari");
+        props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
     }

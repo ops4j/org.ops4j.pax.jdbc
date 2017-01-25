@@ -51,6 +51,7 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
     @Inject
     @Filter(value = "(osgi.jdbc.driver.name=derbyclient)")
     private DataSourceFactory dsf;
+    
     private ServerConfiguration dbConfig = new ServerConfiguration("derbyclient");
 
     public void startDerbyServer() throws Exception {

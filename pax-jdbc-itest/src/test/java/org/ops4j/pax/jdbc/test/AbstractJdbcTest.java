@@ -67,7 +67,7 @@ public abstract class AbstractJdbcTest {
                 START_LEVEL_SYSTEM_BUNDLES),
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-    
+            systemProperty("pax.exam.osgi.unresolved.fail").value("true"),
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value(
