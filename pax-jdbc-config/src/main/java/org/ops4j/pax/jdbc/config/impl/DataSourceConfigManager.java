@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
 
-    private Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
+    private Logger LOG = LoggerFactory.getLogger(DataSourceConfigManager.class);
     BundleContext context;
 
     /**

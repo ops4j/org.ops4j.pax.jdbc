@@ -16,18 +16,16 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.jasypt.encryption.StringEncryptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Decryptor for cipher texts.
  */
 public class Decryptor {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Decryptor.class);
 
     private static final String ENCRYPTED_PROPERTY_PREFIX = "ENC(";
     private static final String ENCRYPTED_PROPERTY_SUFFIX = ")";
