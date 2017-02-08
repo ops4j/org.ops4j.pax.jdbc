@@ -30,20 +30,17 @@ public class PoolDbcp2Test extends AbstractJdbcTest {
     
     @Inject @org.ops4j.pax.exam.util.Filter("(pool=dbcp2)(xa=false)")
     PooledDataSourceFactory pool;
-
+    
     @Configuration
     public Option[] config() {
         return new Option[] {
             regressionDefaults(), //
+            poolDefaults(), //
             mvnBundle("com.h2database", "h2"), //
             mvnBundle("org.apache.commons", "commons-pool2"), //
             mvnBundle("commons-logging", "commons-logging"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
-            mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"), //
             mvnBundle("org.apache.commons", "commons-dbcp2"), //
-            mvnBundle("org.apache.aries", "org.apache.aries.util"), //
-            mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
         };
     }

@@ -34,8 +34,6 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates pooled and optionally XA ready DataSources out of a non pooled DataSourceFactory. XA
@@ -44,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * in persistence.xml as jta-data-source
  */
 public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(DbcpPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
     protected static final String FACTORY_PREFIX = "factory.";
 
@@ -111,7 +108,6 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
             return new PoolingDataSource<PoolableConnection>(pool);
         }
         catch (Throwable e) {
-            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             }

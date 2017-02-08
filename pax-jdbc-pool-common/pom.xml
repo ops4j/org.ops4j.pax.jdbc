@@ -1,52 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.ops4j.pax</groupId>
-		<artifactId>jdbc</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
-	</parent>
-	
-    <groupId>org.ops4j.pax.jdbc</groupId>
-	<artifactId>pax-jdbc-pool-common</artifactId>
-	<packaging>bundle</packaging>
-    
-    <name>OPS4J Pax JDBC Pooling Support Base</name>
-	
-    <properties>
-		<bundle.symbolicName>org.ops4j.pax.jdbc.pool.common</bundle.symbolicName>
-	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-jta_1.1_spec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.enterprise</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.ops4j.pax</groupId>
+        <artifactId>jdbc</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+    </parent>
 
-	</dependencies>
+    <groupId>org.ops4j.pax.jdbc</groupId>
+    <artifactId>pax-jdbc-pool-common</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>OPS4J Pax JDBC Pooling Support Base</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+        </dependency>
+    </dependencies>
 </project>

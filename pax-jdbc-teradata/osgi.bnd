@@ -1,16 +1,9 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.teradata
 
 Bundle-Activator:\
-  ${bundle.namespace}.impl.Activator
+  org.ops4j.pax.jdbc.teradata.impl.Activator
 
 Import-Package:\
-  !org.ops4j.pax.jdbc,\
   com.teradata.jdbc,\
   *
-  
-  
- 

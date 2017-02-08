@@ -1,11 +1,5 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.pool.dbcp2
 
 Bundle-Activator:\
   org.ops4j.pax.jdbc.pool.dbcp2.impl.Activator
-  
-Import-Package:\
-  *

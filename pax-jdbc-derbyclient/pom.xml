@@ -11,26 +11,10 @@
 
     <name>OPS4J Pax JDBC Apache Derby Client Driver Adapter</name>
 
-    <properties>
-        <bundle.symbolicName>org.ops4j.pax.jdbc.derbyclient</bundle.symbolicName>
-        <bundle.namespace>org.ops4j.pax.jdbc.derbyclient</bundle.namespace>
-    </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.jdbc</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derbyclient</artifactId>
-            <scope>provided</scope>
         </dependency>
         
         <dependency>
@@ -38,20 +22,5 @@
             <artifactId>derbynet</artifactId>
             <scope>test</scope>
         </dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>

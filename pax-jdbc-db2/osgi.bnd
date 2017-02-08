@@ -1,16 +1,12 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.db2
 
 Bundle-Activator:\
-  ${bundle.namespace}.impl.Activator
+  org.ops4j.pax.jdbc.db2.impl.Activator
 
 Import-Package:\
-  !org.ops4j.pax.jdbc,\
   com.ibm.db2.jcc,\
   *
-  
+
 Provide-Capability:\
 	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.ibm.db2.jcc.DB2Driver;osgi.jdbc.driver.name=db2

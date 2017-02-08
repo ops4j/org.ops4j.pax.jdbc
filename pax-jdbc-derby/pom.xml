@@ -12,44 +12,11 @@
 
     <name>OPS4J Pax JDBC Apache Derby Driver Adapter</name>
 
-    <properties>
-        <bundle.symbolicName>org.ops4j.pax.jdbc.derby</bundle.symbolicName>
-        <bundle.namespace>org.ops4j.pax.jdbc.derby</bundle.namespace>
-    </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <scope>provided</scope>
         </dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

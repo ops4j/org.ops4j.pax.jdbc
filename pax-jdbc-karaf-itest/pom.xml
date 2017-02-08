@@ -16,7 +16,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.karaf.features</groupId>
             <artifactId>org.apache.karaf.features.core</artifactId>
@@ -37,22 +36,6 @@
             <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.jdbc</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

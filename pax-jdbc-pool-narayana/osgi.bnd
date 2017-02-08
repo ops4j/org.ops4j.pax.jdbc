@@ -1,11 +1,5 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.pool.narayana
 
 Bundle-Activator:\
   org.ops4j.pax.jdbc.pool.narayana.impl.Activator
-  
-Import-Package:\
-  *

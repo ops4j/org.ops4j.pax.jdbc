@@ -1,14 +1,10 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.jtds
 
 Bundle-Activator:\
-  ${bundle.namespace}.impl.Activator
+  org.ops4j.pax.jdbc.jtds.impl.Activator
 
 Import-Package:\
-  !org.ops4j.pax.jdbc,\
   net.sourceforge.jtds.jdbc,\
   net.sourceforge.jtds.jdbcx,\
   *

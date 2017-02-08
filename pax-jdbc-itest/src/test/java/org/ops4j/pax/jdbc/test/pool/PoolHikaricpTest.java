@@ -21,11 +21,10 @@ public class PoolHikaricpTest extends AbstractJdbcTest {
     public Option[] config() {
         return new Option[] { //
                 regressionDefaults(), //
+                poolDefaults(), //
                 mvnBundle("commons-logging", "commons-logging"),
                 mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"),
                 mvnBundle("com.zaxxer", "HikariCP"),
-                mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"),
-                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"),
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-hikaricp"),
                 };
     }

@@ -73,7 +73,6 @@ public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
             hconfig.setDataSource(ds);
             return new HikariDataSource(hconfig);
         } catch (Throwable e) {
-            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             } else if (e instanceof RuntimeException) {

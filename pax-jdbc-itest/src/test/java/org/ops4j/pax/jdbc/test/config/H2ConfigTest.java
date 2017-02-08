@@ -55,23 +55,23 @@ public class H2ConfigTest extends AbstractJdbcTest {
     public Option[] config() {
         return new Option[] { //
             regressionDefaults(), //
-            mvnBundle("org.apache.felix", "org.apache.felix.configadmin"), //
+            poolDefaults(), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
-            mvnBundle("com.h2database", "h2"), //
-            mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config") //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
+            mvnBundle("com.h2database", "h2") //
         };
     }
 
+    @SuppressWarnings({
+     "unchecked", "rawtypes"
+    })
     @Test
     public void testDataSourceFromConfig() throws SQLException, IOException,
         InvalidSyntaxException, InterruptedException {
         org.osgi.service.cm.Configuration config = createConfigForDataSource();
-        ServiceTracker<DataSource, DataSource> tracker = new ServiceTracker<DataSource, DataSource>(
-            context, DataSource.class, null);
+        ServiceTracker tracker = new ServiceTracker(context, DataSource.class, null);
         tracker.open();
-        DataSource dataSource = tracker.waitForService(2000);
+        DataSource dataSource = (DataSource)tracker.waitForService(2000);
         assertDataSourceWorks(dataSource);
         assertServicePropertiesPresent(tracker.getServiceReference());
         checkDataSourceIsDeletedWhenConfigIsDeleted(config, tracker);
@@ -94,7 +94,8 @@ public class H2ConfigTest extends AbstractJdbcTest {
         dataSource.getConnection().close();
     }
 
-    private void assertServicePropertiesPresent(ServiceReference<DataSource> ref) {
+    @SuppressWarnings("rawtypes")
+    private void assertServicePropertiesPresent(ServiceReference ref) {
         Assert.assertEquals("org.h2.Driver", ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
         Assert.assertEquals("jdbc:h2:mem:pax", ref.getProperty(DataSourceFactory.JDBC_URL));
         Assert.assertEquals("h2test", ref.getProperty(JNDI_NAME));

@@ -1,14 +1,10 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc
 
 Bundle-Activator:\
-  ${bundle.namespace}.impl.Activator
+  org.ops4j.pax.jdbc.impl.Activator
 
 Import-Package:\
-  !org.ops4j.pax.jdbc,\
   org.osgi.service.jdbc; version="[1.0,1.1)",\
   *
 

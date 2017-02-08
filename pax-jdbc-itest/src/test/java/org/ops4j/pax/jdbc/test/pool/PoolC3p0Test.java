@@ -39,14 +39,11 @@ public class PoolC3p0Test extends AbstractJdbcTest {
     public Option[] config() {
         return new Option[] {
             regressionDefaults(), //
+            poolDefaults(), //
             mvnBundle("com.h2database", "h2"),
             mvnBundle("commons-logging", "commons-logging"),
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"),
-            mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"),
-            mvnBundle("org.apache.aries", "org.apache.aries.util"),
-            mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager"),
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.c3p0"),
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"),
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-c3p0"),
         };
     }

@@ -18,14 +18,10 @@ public class PoolAriesTest extends AbstractJdbcTest {
     public Option[] config() {
         return new Option[] { //
                 regressionDefaults(), //
-                mvnBundle("org.apache.geronimo.specs" , "geronimo-validation_1.0_spec"),
+                poolDefaults(), //
                 mvnBundle("org.apache.geronimo.components", "geronimo-connector"),
                 mvnBundle("org.apache.geronimo.specs", "geronimo-j2ee-connector_1.6_spec"),
                 mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.jdbc"),
-                mvnBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec"),
-                mvnBundle("org.apache.aries", "org.apache.aries.util"),
-                mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager"),
-                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"),
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-aries"),
                 };
     }

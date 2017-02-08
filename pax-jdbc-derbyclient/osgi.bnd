@@ -1,15 +1,8 @@
-Bundle-Version>:\
-  ${pom.version}
-
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.derbyclient
 
 Bundle-Activator:\
-  ${bundle.namespace}.impl.Activator
-  
-Import-Package:\
-  !org.ops4j.pax.jdbc,\
-  *
+  org.ops4j.pax.jdbc.derbyclient.impl.Activator
   
 Provide-Capability:\
 	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.apache.derby.jdbc.ClientDriver;osgi.jdbc.driver.name=derbyclient

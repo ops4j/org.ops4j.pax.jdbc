@@ -79,7 +79,6 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             return new ManagedDataSource<PoolableConnection>(pool, transactionRegistry);
         }
         catch (Throwable e) {
-            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             }

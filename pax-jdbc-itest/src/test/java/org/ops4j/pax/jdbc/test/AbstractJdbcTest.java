@@ -4,6 +4,7 @@ import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.when;
 
@@ -25,10 +26,9 @@ import org.osgi.framework.BundleException;
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractJdbcTest {
     private static final boolean equinoxConsole = false;
-    
+
     @Inject
     protected BundleContext context;
-    
 
     protected void assertAllBundlesResolved() {
         for (Bundle bundle : context.getBundles()) {
@@ -36,8 +36,7 @@ public abstract class AbstractJdbcTest {
                 // Provoke exception
                 try {
                     bundle.start();
-                }
-                catch (BundleException e) {
+                } catch (BundleException e) {
                     Assert.fail(e.getMessage());
                 }
             }
@@ -58,24 +57,35 @@ public abstract class AbstractJdbcTest {
     }
 
     public Option regressionDefaults() {
-        return composite(
-    
-            // add SLF4J and logback bundles .. 1.7.0 is needed for aries transaction
-            mavenBundle("org.slf4j", "slf4j-api").version("1.7.0").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            systemProperty("pax.exam.osgi.unresolved.fail").value("true"),
-            // Set logback configuration via system property.
-            // This way, both the driver and the container use the same configuration
-            systemProperty("logback.configurationFile").value(
-                "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-            when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")),
-            junitBundles(),
-            mvnBundle("org.osgi", "org.osgi.service.jdbc")
-            );
+        return composite //
+        (
+         // add SLF4J and logback bundles .. 1.7.0 is needed for aries transaction
+         mavenBundle("org.slf4j", "slf4j-api").version("1.7.0").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+         mavenBundle("ch.qos.logback", "logback-core").versionAsInProject()
+             .startLevel(START_LEVEL_SYSTEM_BUNDLES),
+         mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject()
+             .startLevel(START_LEVEL_SYSTEM_BUNDLES),
+         systemProperty("pax.exam.osgi.unresolved.fail").value("true"),
+         // Set logback configuration via system property.
+         // This way, both the driver and the container use the same configuration
+         systemProperty("logback.configurationFile")
+             .value("file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
+         when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")), junitBundles(),
+         mvnBundle("org.osgi", "org.osgi.service.jdbc"), //
+         mvnBundle("org.apache.felix", "org.apache.felix.configadmin")
+        );
+    }
+
+    public Option poolDefaults() {
+        return composite //
+        (//
+         systemPackage("javax.transaction;version=1.1.0"),
+         systemPackage("javax.transaction.xa;version=1.1.0"),
+         mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"),
+         mvnBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec"),
+         mvnBundle("org.apache.aries", "org.apache.aries.util"),
+         mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager") //
+        );
     }
 
 }
