@@ -34,7 +34,7 @@ public class AbstractJdbcTest {
 
     String karafVersion = cm.getProperty("karaf.version");
 
-    MavenUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf")
+    MavenUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal")
         .version(karafVersion).type("tar.gz");
 
     MavenUrlReference paxJdbcRepo() {
