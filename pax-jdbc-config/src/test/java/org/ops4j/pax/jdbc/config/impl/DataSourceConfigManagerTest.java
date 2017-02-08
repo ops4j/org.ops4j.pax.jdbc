@@ -56,7 +56,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
             EasyMock.eq(expectedFilter));
         expectLastCall();
@@ -130,7 +129,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
             EasyMock.eq(expectedFilter));
         expectLastCall();
@@ -172,7 +170,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
             EasyMock.eq(expectedFilter));
         expectLastCall();
@@ -236,7 +233,6 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         String expectedFilter = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
 
-        expect(context.getProperty("org.osgi.framework.version")).andReturn("1.5.0");
         context.addServiceListener(EasyMock.anyObject(ServiceListener.class),
                 EasyMock.eq(expectedFilter));
         expectLastCall();

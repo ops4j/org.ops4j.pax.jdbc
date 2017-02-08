@@ -27,13 +27,12 @@
             <artifactId>org.osgi.core</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
+            <artifactId>org.osgi.compendium</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
         	<groupId>org.ops4j.pax.jdbc</groupId>
         	<artifactId>pax-jdbc-pool-common</artifactId>
