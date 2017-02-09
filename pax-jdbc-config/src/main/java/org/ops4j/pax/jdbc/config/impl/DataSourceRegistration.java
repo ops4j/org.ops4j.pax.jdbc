@@ -16,18 +16,27 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
+import java.io.Closeable;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
+import javax.sql.XADataSource;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
-import javax.sql.XADataSource;
-import java.io.Closeable;
-import java.sql.SQLException;
-import java.util.*;
 
 @SuppressWarnings({
     "rawtypes", "unchecked"
@@ -112,6 +121,7 @@ public class DataSourceRegistration implements Closeable {
     }
 
     private Object createDs(DataSourceFactory dsf, Class<?> type, Dictionary decryptedConfig) throws SQLException {
+        Objects.requireNonNull(dsf, "Must provide a DataSourceFactory");
         Properties props = toProperties(decryptedConfig);
         if (type == DataSource.class) {
             addDataSourceName(dsf, decryptedConfig, props);

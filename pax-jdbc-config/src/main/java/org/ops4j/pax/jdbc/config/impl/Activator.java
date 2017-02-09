@@ -26,22 +26,18 @@ import org.osgi.service.cm.ManagedServiceFactory;
 public class Activator implements BundleActivator {
 
     private static final String FACTORY_PID = "org.ops4j.datasource";
-    private StringEncryptorTracker encryptorServiceTracker;
+    private DataSourceConfigManager configManager;
 
     @Override
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
-        encryptorServiceTracker = new StringEncryptorTracker(context);
-        encryptorServiceTracker.open();
-        Decryptor decryptor = new Decryptor(encryptorServiceTracker);
-        DataSourceConfigManager configManager = new DataSourceConfigManager(context, decryptor, new ExternalConfigLoader());
+        configManager = new DataSourceConfigManager(context);
         context.registerService(ManagedServiceFactory.class.getName(), configManager, props);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        encryptorServiceTracker.close();
     }
 
 }

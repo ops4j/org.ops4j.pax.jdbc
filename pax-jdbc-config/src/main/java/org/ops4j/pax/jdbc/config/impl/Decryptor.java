@@ -30,16 +30,51 @@ public class Decryptor {
     private static final String ENCRYPTED_PROPERTY_PREFIX = "ENC(";
     private static final String ENCRYPTED_PROPERTY_SUFFIX = ")";
     private static final char ALIAS_SEPARATOR = ',';
+    private static final String DECRYPTOR_ALIAS = "decryptor";
 
-    private final StringEncryptorTracker encryptorServiceTracker;
+    private StringEncryptor decryptor;
 
     /**
      * Create new decryptor instance.
      *
      * @param tracker custom StringEncryptor tracker the supports aliases
      */
-    public Decryptor(final StringEncryptorTracker tracker) {
-        this.encryptorServiceTracker = tracker;
+    public Decryptor(final StringEncryptor decryptor) {
+        this.decryptor = decryptor;
+    }
+    
+    public static String getAlias(final Dictionary<String, Object> config) {
+        String alias = getValue(config, DECRYPTOR_ALIAS);
+        for (Enumeration<String> e = config.keys(); e.hasMoreElements();) {
+            final String key = (String) e.nextElement();
+            String value = getValue(config, key);
+            String newAlias = getAlias(value);
+            if (newAlias != null) {
+                if (alias == null) {
+                    alias = newAlias;
+                } else {
+                    if (!alias.equals(newAlias)) {
+                        throw new RuntimeException("Only one alias is supported but found at least two: " + newAlias + ", " + alias);
+                    }
+            }
+            }
+        }
+        return alias;
+    }
+
+    private static String getValue(final Dictionary<String, Object> config, final String key) {
+        Object value = config.get(key);
+        return value == null ? null : value.toString();
+    }
+    
+    private static String getAlias(final String value) {
+        if (!isEncrypted(value)) {
+            return null;
+        }
+        final String argument = value.substring(ENCRYPTED_PROPERTY_PREFIX.length(),
+                value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
+        final int aliasPos = argument.indexOf(ALIAS_SEPARATOR);
+        return aliasPos > -1 ? argument.substring(aliasPos + 1).trim() : null;
     }
 
     /**
@@ -48,10 +83,12 @@ public class Decryptor {
      * @param config configuration to decrypt
      * @return decrypted configuration
      */
-    @SuppressWarnings("rawtypes")
-    public Dictionary<String, String> decrypt(final Dictionary config) {
-        Dictionary<String, String> decryptedConfig = new Hashtable<>();
-        for (Enumeration e = config.keys(); e.hasMoreElements();) {
+    public Dictionary<String, Object> decrypt(final Dictionary<String, Object> config) {
+        if (decryptor == null) {
+            return config;
+        }
+        Dictionary<String, Object> decryptedConfig = new Hashtable<>();
+        for (Enumeration<String> e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
             String value = String.valueOf(config.get(key));
             if (config.get(key) instanceof String && isEncrypted(value)) {
@@ -65,7 +102,7 @@ public class Decryptor {
         }
         return decryptedConfig;
     }
-
+    
     /**
      * Decrypt encrypted configuration value. Alias is optional and separated with ALIAS_SEPARATOR character.
      *
@@ -77,10 +114,7 @@ public class Decryptor {
                 value.length() - ENCRYPTED_PROPERTY_SUFFIX.length());
         final int aliasPos = argument.indexOf(ALIAS_SEPARATOR);
         final String cipherText = aliasPos > -1 ? argument.substring(0, aliasPos) : argument;
-        final String alias = aliasPos > -1 ? argument.substring(aliasPos + 1).trim() : null;
-
-        StringEncryptor encryptor = encryptorServiceTracker.getStringEncryptor(alias);
-        return encryptor != null ? encryptor.decrypt(cipherText) : null;
+        return decryptor.decrypt(cipherText);
     }
 
     /**
@@ -89,8 +123,19 @@ public class Decryptor {
      * @param value configuration value
      * @return <code>true</code> if value is encrypted, <code>false</code> otherwise
      */
-    public boolean isEncrypted(String value) {
+    public static boolean isEncrypted(String value) {
         return value.startsWith(ENCRYPTED_PROPERTY_PREFIX)
                 && value.endsWith(ENCRYPTED_PROPERTY_SUFFIX);
+    }
+    
+    public static boolean isEncrypted(Dictionary<String, Object> loadedConfig) {
+        Enumeration<Object> values = loadedConfig.elements();
+        while (values.hasMoreElements()) {
+            Object value = values.nextElement();
+            if (value instanceof String && isEncrypted((String)value)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
