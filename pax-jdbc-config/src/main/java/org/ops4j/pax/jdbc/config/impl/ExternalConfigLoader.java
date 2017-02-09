@@ -43,8 +43,8 @@ public class ExternalConfigLoader {
      * @return loaded configuration
      */
     @SuppressWarnings("rawtypes")
-    public Dictionary<String, String> resolve(final Dictionary config) {
-        Dictionary<String, String> loadedConfig = new Hashtable<>();
+    public Dictionary<String, Object> resolve(final Dictionary config) {
+        Dictionary<String, Object> loadedConfig = new Hashtable<>();
         for (Enumeration e = config.keys(); e.hasMoreElements();) {
             final String key = (String) e.nextElement();
             String value = String.valueOf(config.get(key));
@@ -56,7 +56,7 @@ public class ExternalConfigLoader {
                     loadedConfig.put(key, loadedValue);
                 }
             } else {
-                loadedConfig.put(key, value);
+                loadedConfig.put(key, config.get(key));
             }
         }
         return loadedConfig;

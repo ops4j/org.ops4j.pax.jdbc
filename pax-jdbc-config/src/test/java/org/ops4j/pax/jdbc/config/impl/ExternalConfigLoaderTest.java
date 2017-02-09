@@ -16,6 +16,8 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,24 +25,27 @@ import java.nio.file.Paths;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import static org.junit.Assert.assertEquals;
+import java.util.Map;
+
 import org.junit.Test;
 
 public class ExternalConfigLoaderTest {
 
     @Test
     public void testNoExternalConfig() {
-        final Dictionary<String, Object> dsProps = new Hashtable<>();
-        dsProps.put("dataSourceName", "testDS");
-        dsProps.put("timeout", 2000);
+        final Map<String, Object> expectedProps = new Hashtable<>();
+        expectedProps.put("dataSourceName", "testDS");
+        expectedProps.put("timeout", 2000);
+        
+        Dictionary<String, Object> dsProps = new Hashtable<String, Object>(expectedProps);
 
         final ExternalConfigLoader externalConfigLoader = new ExternalConfigLoader();
-        final Dictionary<String, String> loadedConfig = externalConfigLoader.resolve(dsProps);
+        externalConfigLoader.resolve(dsProps);
 
-        for (Enumeration<String> e = loadedConfig.keys(); e.hasMoreElements();) {
+        for (Enumeration<String> e = dsProps.keys(); e.hasMoreElements();) {
             String key = (String) e.nextElement();
-            String expectedValue = String.valueOf(dsProps.get(key));
-            String actualValue = String.valueOf(loadedConfig.get(key));
+            String expectedValue = String.valueOf(expectedProps.get(key));
+            String actualValue = String.valueOf(dsProps.get(key));
             assertEquals(expectedValue, actualValue);
         }
     }
@@ -55,11 +60,11 @@ public class ExternalConfigLoaderTest {
         dsProps.put("timeout", 2000);
 
         final ExternalConfigLoader externalConfigLoader = new ExternalConfigLoader();
-        final Dictionary<String, String> loadedConfig = externalConfigLoader.resolve(dsProps);
+        Dictionary<String, Object> loaded = externalConfigLoader.resolve(dsProps);
 
-        assertEquals("testDS", loadedConfig.get("dataSourceName"));
-        assertEquals("password", loadedConfig.get("password"));
-        assertEquals("2000", loadedConfig.get("timeout"));
+        assertEquals("testDS", loaded.get("dataSourceName"));
+        assertEquals("password", loaded.get("password"));
+        assertEquals(2000, loaded.get("timeout"));
     }
 
     public static String createExternalSecret(final String value) {

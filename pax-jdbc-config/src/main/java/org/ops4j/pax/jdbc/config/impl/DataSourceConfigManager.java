@@ -16,15 +16,18 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.ops4j.pax.jdbc.config.impl.DataSourceRegistration.getDSName;
 import static org.osgi.framework.FrameworkUtil.createFilter;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jasypt.encryption.StringEncryptor;
+import org.ops4j.pax.jdbc.config.impl.tracker.MultiServiceTracker;
+import org.ops4j.pax.jdbc.config.impl.tracker.TrackerCallback;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -32,7 +35,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,23 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({ "rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
+    private final class TrackerCallbackImpl implements TrackerCallback {
+        private final Dictionary<String, Object> config;
+
+        private TrackerCallbackImpl(Dictionary<String, Object> config) {
+            this.config = config;
+        }
+
+        @Override
+        public Closeable activate(MultiServiceTracker tracker) {
+            StringEncryptor decryptor = tracker.getService(StringEncryptor.class);
+            Dictionary<String, Object> decryptedConfig = new Decryptor(decryptor).decrypt(config);
+            PooledDataSourceFactory pdsf = tracker.getService(PooledDataSourceFactory.class);
+            DataSourceFactory dsf = tracker.getService(DataSourceFactory.class);
+            DataSourceFactory actualDsf = pdsf != null ? new PoolingWrapper(pdsf, dsf) : dsf;
+            return new DataSourceRegistration(context, actualDsf, config, decryptedConfig);
+        }
+    }
 
     private Logger LOG = LoggerFactory.getLogger(DataSourceConfigManager.class);
     BundleContext context;
@@ -50,16 +69,11 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
     /**
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
-    private Map<String, ServiceTracker> trackers;
-    private Decryptor decryptor;
-    
-    private ExternalConfigLoader externalConfigLoader;
+    private Map<String, MultiServiceTracker> trackers;
 
-    public DataSourceConfigManager(BundleContext context, Decryptor decryptor, ExternalConfigLoader externalConfigLoader) {
+    public DataSourceConfigManager(BundleContext context) {
         this.context = context;
-        this.trackers = new HashMap<String, ServiceTracker>();
-        this.decryptor = decryptor;
-        this.externalConfigLoader = externalConfigLoader;
+        this.trackers = new HashMap<String, MultiServiceTracker>();
     }
 
     @Override
@@ -76,20 +90,17 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         }
 
         try {
-            Filter dsfFilter = getDSFFilter(config);
-            Filter pdsfFilter = getPooledDSFFilter(config);
-            
-            Dictionary<String, String> loadedConfig = externalConfigLoader.resolve(config);
-            Dictionary<String, String> decryptedConfig = decryptor.decrypt(loadedConfig);
-            String msg = "Processing config for DataSource {}. ";
-            ServiceTracker tracker;
-            if (pdsfFilter == null) {
-                LOG.info(msg + "Tracking DSF with filter {}", getDSName(config), dsfFilter);
-                tracker = new DataSourceFactoryTracker(context, null, dsfFilter, config, decryptedConfig);
-            } else {
-                LOG.info(msg + "Tracking pooling support with filter {}", getDSName(config), pdsfFilter);
-                tracker = new PooledDataSourceFactoryTracker(context, pdsfFilter, dsfFilter, config, decryptedConfig);
+            Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
+            final MultiServiceTracker tracker = createTracker(new TrackerCallbackImpl(loadedConfig));
+            Filter dsfFilter = getDSFFilter(loadedConfig);
+            Filter pdsfFilter = getPooledDSFFilter(loadedConfig);
+            if (Decryptor.isEncrypted(loadedConfig)) {
+                tracker.track(StringEncryptor.class, getAliasFilter(loadedConfig));
             }
+            if (pdsfFilter != null) {
+                tracker.track(PooledDataSourceFactory.class, pdsfFilter);
+            }
+            tracker.track(DataSourceFactory.class, dsfFilter);
             tracker.open();
             trackers.put(pid, tracker);
         }
@@ -97,9 +108,20 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
         }
     }
+
+    private Filter getAliasFilter(Dictionary<String, Object> loadedConfig) throws InvalidSyntaxException {
+        String alias = Decryptor.getAlias(loadedConfig);
+        String objectClassName = "(objectClassName=" + StringEncryptor.class.getName() + ")";
+        return alias == null ? createFilter(objectClassName) : createFilter("(&" + objectClassName + "(alias=" + alias + "))");
+    }
     
-    private Filter getPooledDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
-        String pool = (String) config.remove(PooledDataSourceFactory.POOL_KEY);
+    MultiServiceTracker createTracker(TrackerCallback callback) {
+        return new MultiServiceTracker(context, callback);
+    } 
+
+    private Filter getPooledDSFFilter(Dictionary config)
+        throws ConfigurationException, InvalidSyntaxException {
+        String pool = (String)config.remove(PooledDataSourceFactory.POOL_KEY);
         boolean isXa = isXa(config);
         if (pool == null) {
             if (isXa) {
@@ -166,12 +188,11 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
 
     @Override
     public void deleted(String pid) {
-        ServiceTracker tracker = trackers.get(pid);
+        MultiServiceTracker tracker = trackers.get(pid);
         if (tracker != null) {
             tracker.close();
             trackers.remove(pid);
         }
     }
-    
 
 }

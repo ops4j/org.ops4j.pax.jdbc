@@ -18,168 +18,111 @@ package org.ops4j.pax.jdbc.config.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.util.text.BasicTextEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
  * @author kameshs
- *
  */
-@SuppressWarnings({"rawtypes","unchecked"})
+@SuppressWarnings({
+                   "rawtypes", "unchecked"
+})
 public class DecryptorTest {
 
-	@Test
-	public void testDecryptWithNoEncryptedProperties() {
-		Dictionary dsProps = new Hashtable<>();
-		dsProps.put("dataSourceName", "testDS");
-		dsProps.put("timeout", 2000);
+    @Test
+    public void testDecryptWithNoEncryptedProperties() {
+        Dictionary dsProps = new Hashtable<>();
+        dsProps.put("dataSourceName", "testDS");
+        dsProps.put("timeout", 2000);
 
-		IMocksControl c = EasyMock.createControl();
-		StringEncryptorTracker serviceTracker = c.createMock(StringEncryptorTracker.class);
+        Decryptor decryptor = new Decryptor(getEncryptor());
+        Dictionary decryptedConfig = decryptor.decrypt(dsProps);
 
-		Decryptor decryptor = new Decryptor(serviceTracker);
-		Dictionary decryptedConfig = decryptor.decrypt(dsProps);
+        for (Enumeration e = decryptedConfig.keys(); e.hasMoreElements();) {
+            String key = (String)e.nextElement();
+            String expectedValue = String.valueOf(dsProps.get(key));
+            String actualValue = String.valueOf(decryptedConfig.get(key));
+            assertEquals(expectedValue, actualValue);
+        }
+    }
 
-		for (Enumeration e = decryptedConfig.keys(); e.hasMoreElements();) {
-			String key = (String) e.nextElement();
-			String expectedValue = String.valueOf(dsProps.get(key));
-			String actualValue = String.valueOf(decryptedConfig.get(key));
-			assertEquals(expectedValue, actualValue);
-		}
-	}
 
-	@Test
-	public void testDecryptWithEncryptedProperties(){
 
-		final String myPassword = "password";
-		final TestStringEnryptor testStringEnryptor = new TestStringEnryptor();
-		String encryptedPassword = testStringEnryptor.encrypt(myPassword);
+    @Test
+    public void testDecryptWithEncryptedProperties() {
 
-		Dictionary dsProps = new Hashtable<>();
-		dsProps.put("dataSourceName", "testDS");
-		dsProps.put("password", "ENC("+encryptedPassword+")");
-		dsProps.put("timeout", 2000);
+        final String myPassword = "password";
+        final StringEncryptor testStringEnryptor = getEncryptor();
+        String encryptedPassword = testStringEnryptor.encrypt(myPassword);
 
-		IMocksControl c = EasyMock.createControl();
+        Dictionary dsProps = new Hashtable<>();
+        dsProps.put("dataSourceName", "testDS");
+        dsProps.put("password", "ENC(" + encryptedPassword + ")");
+        dsProps.put("timeout", 2000);
 
-                StringEncryptorTracker serviceTracker = c.createMock(StringEncryptorTracker.class);
-                EasyMock.expect(serviceTracker.getStringEncryptor(EasyMock.isNull(String.class))).andReturn(testStringEnryptor);
-                
-		c.replay();
+        Decryptor decryptor = new Decryptor(testStringEnryptor);
+        Dictionary decryptedConfig = decryptor.decrypt(dsProps);
 
-                Decryptor decryptor = new Decryptor(serviceTracker);
-		Dictionary decryptedConfig = decryptor.decrypt(dsProps);
-		c.verify();
-		
-		assertEquals("testDS", decryptedConfig.get("dataSourceName"));
-		assertEquals("password", decryptedConfig.get("password"));
-		assertEquals("2000", decryptedConfig.get("timeout"));
-	}
+        assertEquals("testDS", decryptedConfig.get("dataSourceName"));
+        assertEquals("password", decryptedConfig.get("password"));
+        assertEquals("2000", decryptedConfig.get("timeout"));
+    }
 
-	@Test
-	public void testDecryptWithEncryptedPropertiesAndAlias(){
-		final String myPassword = "password";
-                final String alias = "testAlias";
-		final TestStringEnryptor testStringEnryptor = new TestStringEnryptor();
-		String encryptedPassword = testStringEnryptor.encrypt(myPassword);
+    @Test
+    public void testDecryptWithEncryptedPropertiesAndAlias() {
+        final String myPassword = "password";
+        final String alias = "testAlias";
+        final StringEncryptor testStringEnryptor = getEncryptor();
+        String encryptedPassword = testStringEnryptor.encrypt(myPassword);
 
-		Dictionary dsProps = new Hashtable<>();
-		dsProps.put("dataSourceName", "testDS");
-		dsProps.put("password", "ENC("+encryptedPassword+", " + alias + ")");
-		dsProps.put("timeout", 2000);
+        Dictionary dsProps = new Hashtable<>();
+        dsProps.put("dataSourceName", "testDS");
+        dsProps.put("password", "ENC(" + encryptedPassword + ", " + alias + ")");
+        dsProps.put("timeout", 2000);
 
-		IMocksControl c = EasyMock.createControl();
+        Decryptor decryptor = new Decryptor(testStringEnryptor);
+        Dictionary decryptedConfig = decryptor.decrypt(dsProps);
 
-                StringEncryptorTracker serviceTracker = c.createMock(StringEncryptorTracker.class);
-                EasyMock.expect(serviceTracker.getStringEncryptor(EasyMock.eq(alias))).andReturn(testStringEnryptor);
-                
-		c.replay();
+        assertEquals("testDS", decryptedConfig.get("dataSourceName"));
+        assertEquals("password", decryptedConfig.get("password"));
+        assertEquals("2000", decryptedConfig.get("timeout"));
+    }
 
-                Decryptor decryptor = new Decryptor(serviceTracker);
-		Dictionary decryptedConfig = decryptor.decrypt(dsProps);
-		c.verify();
-		
-		assertEquals("testDS", decryptedConfig.get("dataSourceName"));
-		assertEquals("password", decryptedConfig.get("password"));
-		assertEquals("2000", decryptedConfig.get("timeout"));
-	}
-        
-	@Test
-	public void testDecryptWithEncryptedPropertiesAndUnknownAlias(){
-		final String myPassword = "password";
-                final String alias = "testAlias";
-		final TestStringEnryptor testStringEnryptor = new TestStringEnryptor();
-		String encryptedPassword = testStringEnryptor.encrypt(myPassword);
+    @Test
+    public void testDecryptWithEncryptedPropertiesAndUnknownAlias() {
+        Dictionary dsProps = new Hashtable<>();
+        dsProps.put("dataSourceName", "testDS");
+        dsProps.put("password", "ENC(something,testAlias)");
+        dsProps.put("timeout", 2000);
+        Assert.assertEquals("testAlias", Decryptor.getAlias(dsProps));
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testDecryptWithTwoDifferentAliases() {
+        Dictionary dsProps = new Hashtable<>();
+        dsProps.put("password", "ENC(something,testAlias)");
+        dsProps.put("password2", "ENC(something,testAlias2)");
+        Decryptor.getAlias(dsProps);
+    }
 
-		Dictionary dsProps = new Hashtable<>();
-		dsProps.put("dataSourceName", "testDS");
-		dsProps.put("password", "ENC("+encryptedPassword+", " + alias + ")");
-		dsProps.put("timeout", 2000);
-
-		IMocksControl c = EasyMock.createControl();
-
-                StringEncryptorTracker serviceTracker = c.createMock(StringEncryptorTracker.class);
-                EasyMock.expect(serviceTracker.getStringEncryptor(EasyMock.anyString())).andReturn(null);
-                
-		c.replay();
-
-                Decryptor decryptor = new Decryptor(serviceTracker);
-		Dictionary decryptedConfig = decryptor.decrypt(dsProps);
-		c.verify();
-		
-		assertEquals("testDS", decryptedConfig.get("dataSourceName"));
-		assertNull(decryptedConfig.get("password"));
-		assertEquals("2000", decryptedConfig.get("timeout"));
-	}
-        
-	@Test
-	public void testIsEncrypted() {
-		IMocksControl c = EasyMock.createControl();
-
-		String value = "ENC(123456abce)";
-
-		StringEncryptorTracker serviceTracker = c.createMock(StringEncryptorTracker.class);
-		Decryptor decryptor = new Decryptor(serviceTracker);
-
-		boolean isEncrypted = decryptor.isEncrypted(value);
-		assertTrue(isEncrypted);
-
-		value = "123456abce";
-		isEncrypted = decryptor.isEncrypted(value);
-		assertFalse(isEncrypted);
-	}
-
-	private static final class TestStringEnryptor implements StringEncryptor{
-
-		private final BasicTextEncryptor textEncryptor;
-
-		public TestStringEnryptor() {
-			textEncryptor = new BasicTextEncryptor();
-			textEncryptor.setPassword("myPassword");
-		}
-
-		@Override
-		public String decrypt(String cipherText) {
-
-			return textEncryptor.decrypt(cipherText);
-		}
-
-		@Override
-		public String encrypt(String decipherText) {			
-			return textEncryptor.encrypt(decipherText);
-		}
-
-	}
+    @Test
+    public void testIsEncrypted() {
+        assertTrue(Decryptor.isEncrypted("ENC(123456abce)"));
+        assertFalse(Decryptor.isEncrypted("123456abce"));
+    }
+    
+    private StandardPBEStringEncryptor getEncryptor() {
+        StandardPBEStringEncryptor textEncryptor = new StandardPBEStringEncryptor();
+        textEncryptor.setPassword("myPassword");
+        return textEncryptor;
+    }
 
 }
