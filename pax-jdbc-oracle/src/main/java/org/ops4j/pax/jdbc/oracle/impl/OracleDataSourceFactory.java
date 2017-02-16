@@ -79,8 +79,12 @@ public class OracleDataSourceFactory implements DataSourceFactory {
 
         String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
         if (portNumber != null) {
-            clazz.getMethod("setPortNumber", Integer.class)
-                .invoke(ds, Integer.parseInt(portNumber));
+            int portNum = Integer.parseInt(portNumber);
+            try {
+                clazz.getMethod("setPortNumber", Integer.class).invoke(ds, portNum);
+            } catch (NoSuchMethodException e) {
+                clazz.getMethod("setPortNumber", int.class).invoke(ds, portNum);
+            }
         }
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
