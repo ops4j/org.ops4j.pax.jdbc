@@ -21,7 +21,6 @@ public class PoolAriesTest extends AbstractJdbcTest {
                 poolDefaults(), //
                 mvnBundle("org.apache.geronimo.components", "geronimo-connector"),
                 mvnBundle("org.apache.geronimo.specs", "geronimo-j2ee-connector_1.6_spec"),
-                mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.jdbc"),
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-aries"),
                 };
     }
