@@ -55,6 +55,8 @@ public class AriesXaPooledDataSourceFactory extends AriesPooledDataSourceFactory
         try {
             XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
             RecoverableDataSource mds = new RecoverableDataSource();
+            mds.setUsername(props.getProperty(DataSourceFactory.JDBC_USER));
+            mds.setUsername(props.getProperty(DataSourceFactory.JDBC_PASSWORD));
             mds.setDataSource((CommonDataSource) ds);
             mds.setTransactionManager((AriesTransactionManager) tm);
             BeanConfig.configure(mds, getPoolProps(props));
