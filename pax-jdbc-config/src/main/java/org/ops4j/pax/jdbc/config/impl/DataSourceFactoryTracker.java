@@ -25,7 +25,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 final class DataSourceFactoryTracker extends ServiceTracker {
     private Dictionary config;
     private Dictionary decryptedConfig;
@@ -38,7 +38,6 @@ final class DataSourceFactoryTracker extends ServiceTracker {
         this.decryptedConfig = decryptedConfig;
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     public Object addingService(ServiceReference reference) {
         DataSourceFactory dsf = (DataSourceFactory) context.getService(reference);

@@ -10,7 +10,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class PooledDataSourceFactoryTracker extends ServiceTracker {
     private Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
 

@@ -30,14 +30,14 @@ public class ExternalConfigLoaderTest {
 
     @Test
     public void testNoExternalConfig() {
-        final Dictionary dsProps = new Hashtable<>();
+        final Dictionary<String, Object> dsProps = new Hashtable<>();
         dsProps.put("dataSourceName", "testDS");
         dsProps.put("timeout", 2000);
 
         final ExternalConfigLoader externalConfigLoader = new ExternalConfigLoader();
-        final Dictionary loadedConfig = externalConfigLoader.resolve(dsProps);
+        final Dictionary<String, String> loadedConfig = externalConfigLoader.resolve(dsProps);
 
-        for (Enumeration e = loadedConfig.keys(); e.hasMoreElements();) {
+        for (Enumeration<String> e = loadedConfig.keys(); e.hasMoreElements();) {
             String key = (String) e.nextElement();
             String expectedValue = String.valueOf(dsProps.get(key));
             String actualValue = String.valueOf(loadedConfig.get(key));
@@ -49,13 +49,13 @@ public class ExternalConfigLoaderTest {
     public void testExternalConfig() {
         final String myExternalPassword = createExternalSecret("password");
 
-        Dictionary dsProps = new Hashtable<>();
+        Dictionary<String, Object> dsProps = new Hashtable<>();
         dsProps.put("dataSourceName", "testDS");
         dsProps.put("password", "FILE(" + myExternalPassword + ")");
         dsProps.put("timeout", 2000);
 
         final ExternalConfigLoader externalConfigLoader = new ExternalConfigLoader();
-        final Dictionary loadedConfig = externalConfigLoader.resolve(dsProps);
+        final Dictionary<String, String> loadedConfig = externalConfigLoader.resolve(dsProps);
 
         assertEquals("testDS", loadedConfig.get("dataSourceName"));
         assertEquals("password", loadedConfig.get("password"));

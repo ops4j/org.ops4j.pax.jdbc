@@ -29,6 +29,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class StringEncryporTrackerTest {
 
     @Before

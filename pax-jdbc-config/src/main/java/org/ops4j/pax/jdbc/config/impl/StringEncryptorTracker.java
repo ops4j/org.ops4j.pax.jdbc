@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * StringEncryptor service tracker. It is a wrapper to get service for a given alias.
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class StringEncryptorTracker extends ServiceTracker {
 
     /**
