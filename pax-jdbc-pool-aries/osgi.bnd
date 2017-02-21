@@ -14,5 +14,4 @@ Import-Package: \
 	!org.apache.xbean.blueprint.context.impl,\
 	!org.apache.aries.util.tracker,\
 	!org.apache.aries.blueprint,\
-	!org.tranql.connector*,\
 	*
