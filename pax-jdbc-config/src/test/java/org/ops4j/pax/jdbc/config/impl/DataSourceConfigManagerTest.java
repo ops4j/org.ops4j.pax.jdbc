@@ -16,12 +16,7 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.matches;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Dictionary;
@@ -60,12 +55,12 @@ public class DataSourceConfigManagerTest {
             EasyMock.eq(expectedFilter));
         expectLastCall();
 
-        ServiceReference ref = c.createMock(ServiceReference.class);
-        ServiceReference[] refs = new ServiceReference[] { ref };
+        ServiceReference<DataSourceFactory> ref = c.createMock(ServiceReference.class);
+        ServiceReference<DataSourceFactory>[] refs = new ServiceReference[] { ref };
         expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
 
         expect(context.getService(ref)).andReturn(dsf);
-        
+
         DataSource ds = c.createMock(DataSource.class);
         expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
 
@@ -93,7 +88,7 @@ public class DataSourceConfigManagerTest {
         expect(context.ungetService(ref)).andReturn(true);
         sreg.unregister();
         expectLastCall();
-        
+
         // Test config removed
         c.replay();
         dsManager.updated(TESTPID, null);
@@ -133,8 +128,8 @@ public class DataSourceConfigManagerTest {
             EasyMock.eq(expectedFilter));
         expectLastCall();
 
-        ServiceReference ref = c.createMock(ServiceReference.class);
-        ServiceReference[] refs = new ServiceReference[] { ref };
+        ServiceReference<DataSourceFactory> ref = c.createMock(ServiceReference.class);
+        ServiceReference<DataSourceFactory>[] refs = new ServiceReference[] { ref };
         expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
 
         expect(context.getService(ref)).andReturn(dsf);
@@ -161,7 +156,7 @@ public class DataSourceConfigManagerTest {
         // the encrypted value is still encrypted
         Assert.assertEquals("ENC(ciphertext)", properties.get(DataSourceFactory.JDBC_PASSWORD));
     }
-    
+
     @Test
     public void testEncryptorWithExternalSecret() throws Exception {
         IMocksControl c = EasyMock.createControl();
@@ -174,8 +169,8 @@ public class DataSourceConfigManagerTest {
             EasyMock.eq(expectedFilter));
         expectLastCall();
 
-        ServiceReference ref = c.createMock(ServiceReference.class);
-        ServiceReference[] refs = new ServiceReference[] { ref };
+        ServiceReference<DataSourceFactory> ref = c.createMock(ServiceReference.class);
+        ServiceReference<DataSourceFactory>[] refs = new ServiceReference[] { ref };
         expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
 
         expect(context.getService(ref)).andReturn(dsf);
@@ -185,24 +180,24 @@ public class DataSourceConfigManagerTest {
 
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), anyObject(Dictionary.class))).andReturn(sreg);
-        
+
         Dictionary<String, String> loadedProps = new Hashtable<String, String>();
         loadedProps.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         loadedProps.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         loadedProps.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         loadedProps.put(DataSourceFactory.JDBC_PASSWORD, "ENC(ciphertext)");
-        
+
         // mock is created to ensure external configuration loader is called
         ExternalConfigLoader externalConfigLoader = c.createMock(ExternalConfigLoader.class);
         expect(externalConfigLoader.resolve(anyObject(Dictionary.class))).andReturn(loadedProps).atLeastOnce();
-        
+
         Decryptor decryptor = createDecryptor(c);
-        
+
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context, decryptor, externalConfigLoader);
 
         // Test config created
         c.replay();
-        
+
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, loadedProps.get(DataSourceRegistration.JNDI_SERVICE_NAME));
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, loadedProps.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
@@ -237,8 +232,8 @@ public class DataSourceConfigManagerTest {
                 EasyMock.eq(expectedFilter));
         expectLastCall();
 
-        ServiceReference ref = c.createMock(ServiceReference.class);
-        ServiceReference[] refs = new ServiceReference[] { ref };
+        ServiceReference<DataSourceFactory> ref = c.createMock(ServiceReference.class);
+        ServiceReference<DataSourceFactory>[] refs = new ServiceReference[] { ref };
         expect(context.getServiceReferences((String) null, expectedFilter)).andReturn(refs);
 
         expect(context.getService(ref)).andReturn(dsf);
