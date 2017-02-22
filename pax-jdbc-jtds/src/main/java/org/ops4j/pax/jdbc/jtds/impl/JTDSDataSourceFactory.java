@@ -75,7 +75,7 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
     private JtdsDataSource setProperties(JtdsDataSource dsi, Properties props) throws Exception {
         Map<String, String> propsFromUrl = parseUrl(props.getProperty(JDBC_URL));
         for (String prop : props.stringPropertyNames()) {
-            propsFromUrl.put(prop, props.getProperty(prop));
+            propsFromUrl.put(prop.toUpperCase(), props.getProperty(prop));
         }
         for (Entry<String, String> prop : propsFromUrl.entrySet()) {
             setProperty(dsi, prop.getKey(), prop.getValue());

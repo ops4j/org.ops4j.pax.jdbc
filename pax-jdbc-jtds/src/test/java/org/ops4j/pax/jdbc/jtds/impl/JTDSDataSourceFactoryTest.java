@@ -15,9 +15,7 @@
  */
 package org.ops4j.pax.jdbc.jtds.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class JTDSDataSourceFactoryTest {
     private static final String PASSWORD = "testpassword";
 
     @Test
-    public void testDS() throws SQLException, ClassNotFoundException {
+    public void testDS() throws SQLException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
         JtdsDataSource ds = dsf.createDataSource(props);
@@ -44,7 +42,7 @@ public class JTDSDataSourceFactoryTest {
     }
 
     @Test
-    public void testConnectionPoolDS() throws SQLException, ClassNotFoundException {
+    public void testConnectionPoolDS() throws SQLException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
         JtdsDataSource ds = dsf.createConnectionPoolDataSource(props);
@@ -52,7 +50,7 @@ public class JTDSDataSourceFactoryTest {
     }
 
     @Test
-    public void testXADS() throws SQLException, ClassNotFoundException {
+    public void testXADS() throws SQLException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
         JtdsDataSource ds = dsf.createXADataSource(props);
@@ -60,7 +58,7 @@ public class JTDSDataSourceFactoryTest {
     }
 
     @Test
-    public void testDriver() throws SQLException, ClassNotFoundException {
+    public void testDriver() {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
         Driver driver = dsf.createDriver(props);
@@ -68,7 +66,7 @@ public class JTDSDataSourceFactoryTest {
     }
 
     @Test
-    public void testEmptyProps() throws SQLException, ClassNotFoundException {
+    public void testEmptyProps() throws SQLException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = new Properties();
         JtdsDataSource ds = dsf.createDataSource(props);
@@ -106,6 +104,21 @@ public class JTDSDataSourceFactoryTest {
         assertEquals("1434", result.get("PORTNUMBER"));
         assertEquals("bla", result.get("DATABASENAME"));
         assertEquals("Test", result.get("APPNAME"));
+    }
+
+    @Test
+    public void testPropsWithUrl() throws SQLException
+    {
+        JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
+        Properties props = new Properties();
+        props.put("databaseName", DB);
+        props.put("user", USER);
+        props.put("password", PASSWORD);
+        props.put("url", "jdbc:jtds:sqlserver://testhost:1433/to-be-overwritten;domain=my-domain;useNTLMv2=true");
+        JtdsDataSource ds = dsf.createDataSource(props);
+        validateDS(ds);
+        assertEquals("my-domain", ds.getDomain());
+        assertTrue(ds.getUseNTLMV2());
     }
 
     private void validateDS(JtdsDataSource ds) {
