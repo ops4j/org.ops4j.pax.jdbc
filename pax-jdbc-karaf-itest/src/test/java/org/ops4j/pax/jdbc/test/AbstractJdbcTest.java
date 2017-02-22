@@ -83,7 +83,7 @@ public class AbstractJdbcTest {
         return composite(
         // KarafDistributionOption.debugConfiguration("5005", true),
             karafDistributionConfiguration().frameworkUrl(karafUrl)
-                .unpackDirectory(new File("target/exam")).useDeployFolder(false), //
+                .unpackDirectory(new File("target/exam")).useDeployFolder(true), //
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(), //
             keepRuntimeFolder());
     }

@@ -31,12 +31,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-features</artifactId>
-            <version>${project.version}</version>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pax-jdbc-features</artifactId>
+			<version>${project.version}</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+			
+		</dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
