@@ -29,16 +29,26 @@ import net.sourceforge.jtds.jdbc.Driver;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 
 public class JTDSDataSourceFactoryTest {
+	
     private static final String DB = "testdb";
     private static final String SERVER = "testhost";
     private static final String PORT = "1433";
     private static final String USER = "testuser";
     private static final String PASSWORD = "testpassword";
+    private static final String URL = "jdbc:jtds:sqlserver://" + SERVER + ":" + PORT + "/" + DB + ";integratedSecurity=true;domain=testDomain;useNTLMv2=true";
 
     @Test
     public void testDS() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
+        JtdsDataSource ds = dsf.createDataSource(props);
+        validateDS(ds);
+    }
+    
+    @Test
+    public void testDSWithURL() throws SQLException, ClassNotFoundException {
+        JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
+        Properties props = testPropsWithURL();      
         JtdsDataSource ds = dsf.createDataSource(props);
         validateDS(ds);
     }
@@ -50,6 +60,14 @@ public class JTDSDataSourceFactoryTest {
         JtdsDataSource ds = dsf.createConnectionPoolDataSource(props);
         validateDS(ds);
     }
+    
+    @Test
+    public void testConnectionPoolDSWithURL() throws SQLException, ClassNotFoundException {
+        JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
+        Properties props = testPropsWithURL();  
+        JtdsDataSource ds = dsf.createConnectionPoolDataSource(props);
+        validateDS(ds);
+    }
 
     @Test
     public void testXADS() throws SQLException, ClassNotFoundException {
@@ -58,11 +76,27 @@ public class JTDSDataSourceFactoryTest {
         JtdsDataSource ds = dsf.createXADataSource(props);
         validateDS(ds);
     }
+    
+    @Test
+    public void testXADSwithURL() throws SQLException, ClassNotFoundException {
+        JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
+        Properties props = testPropsWithURL();
+        JtdsDataSource ds = dsf.createXADataSource(props);
+        validateDS(ds);
+    }
 
     @Test
     public void testDriver() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = testProps();
+        Driver driver = dsf.createDriver(props);
+        assertNotNull(driver);
+    }
+    
+    @Test
+    public void testDriverWithURL() throws SQLException, ClassNotFoundException {
+        JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
+        Properties props = testPropsWithURL();
         Driver driver = dsf.createDriver(props);
         assertNotNull(driver);
     }
@@ -123,6 +157,12 @@ public class JTDSDataSourceFactoryTest {
         props.put("portNumber", PORT);
         props.put("user", USER);
         props.put("password", PASSWORD);
+        return props;
+    }
+    
+    private Properties testPropsWithURL() {
+        Properties props = testProps();
+        props.put("url", URL);
         return props;
     }
 
