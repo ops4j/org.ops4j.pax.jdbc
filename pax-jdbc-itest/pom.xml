@@ -68,6 +68,13 @@
 
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
+			<artifactId>pax-jdbc-jtds</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-sqlite</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
@@ -235,6 +242,12 @@
         </dependency>
 
         <dependency>
+			<groupId>net.sourceforge.jtds</groupId>
+			<artifactId>jtds</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
             <groupId>org.apache.aries</groupId>
             <artifactId>org.apache.aries.util</artifactId>
             <version>1.1.0</version>
