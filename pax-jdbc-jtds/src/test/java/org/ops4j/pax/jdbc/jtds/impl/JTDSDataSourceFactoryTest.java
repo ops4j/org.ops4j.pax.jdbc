@@ -29,7 +29,6 @@ import net.sourceforge.jtds.jdbc.Driver;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 
 public class JTDSDataSourceFactoryTest {
-	
     private static final String DB = "testdb";
     private static final String SERVER = "testhost";
     private static final String PORT = "1433";
@@ -44,7 +43,6 @@ public class JTDSDataSourceFactoryTest {
         JtdsDataSource ds = dsf.createDataSource(props);
         validateDS(ds);
     }
-    
     @Test
     public void testDSWithURL() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
@@ -60,7 +58,6 @@ public class JTDSDataSourceFactoryTest {
         JtdsDataSource ds = dsf.createConnectionPoolDataSource(props);
         validateDS(ds);
     }
-    
     @Test
     public void testConnectionPoolDSWithURL() throws SQLException, ClassNotFoundException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
@@ -141,6 +138,7 @@ public class JTDSDataSourceFactoryTest {
         assertEquals("bla", result.get("DATABASENAME"));
         assertEquals("Test", result.get("APPNAME"));
     }
+
 
     private void validateDS(JtdsDataSource ds) {
         assertEquals(DB, ds.getDatabaseName());
