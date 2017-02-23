@@ -73,42 +73,13 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
     }
 
     private JtdsDataSource setProperties(JtdsDataSource dsi, Properties props) throws Exception {
-    	
-    	// Properties parsed from the URL. Includes jtds driver defaults.
         Map<String, String> propsFromUrl = parseUrl(props.getProperty(JDBC_URL));
+        for (String prop : props.stringPropertyNames()) {
+            propsFromUrl.put(prop.toUpperCase(), props.getProperty(prop));
+        }
         for (Entry<String, String> prop : propsFromUrl.entrySet()) {
             setProperty(dsi, prop.getKey(), prop.getValue());
         }
-              
-        // Some OSGi-known properties from the config. Overrides properties previously parsed from the URL       
-        Properties properties = new Properties();      
-        properties.putAll(props);
-        
-        String serverName= (String) properties.remove(JDBC_SERVER_NAME);
-        if(serverName != null)
-        	dsi.setServerName(serverName);
-        
-        String databaseName = (String) properties.remove(JDBC_DATABASE_NAME);
-        if(databaseName != null)
-        	dsi.setDatabaseName(databaseName);
-        
-        String user = (String) properties.remove(JDBC_USER);
-        if(user!=null)
-        	dsi.setUser(user);
-        
-        String password = (String) properties.remove(JDBC_PASSWORD);
-        if(password != null)
-        	dsi.setPassword(password);
-        
-        String portNumber = (String) properties.remove(JDBC_PORT_NUMBER);
-        if(portNumber != null)
-        	dsi.setPortNumber(Integer.parseInt(portNumber));
-        
-        // Other jtds properties
-        for (String prop : properties.stringPropertyNames()) {
-            setProperty(dsi, prop, (String) properties.get(prop));
-        }
-        
         return dsi;
     }
 
@@ -123,8 +94,6 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
         }
 
         try {
-        	// This call returns the properties parsed from the URL, adding
-        	// some additional properties defaulted by the driver
             DriverPropertyInfo[] propInfo = new Driver().getPropertyInfo(url, null);
             for (DriverPropertyInfo info : propInfo) {
                 result.put(info.name, info.value);
