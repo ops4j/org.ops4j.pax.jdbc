@@ -8,11 +8,11 @@ Bundle-Activator:\
 Private-Package: \
 	org.apache.aries.transaction.jdbc,\
 	org.ops4j.pax.jdbc.pool.aries.impl,\
-	org.apache.aries.transaction.jdbc.internal
+	org.apache.aries.transaction.jdbc.internal,\
+	org.tranql.connector*
 	
 Import-Package: \
 	!org.apache.xbean.blueprint.context.impl,\
 	!org.apache.aries.util.tracker,\
 	!org.apache.aries.blueprint,\
-	!org.tranql.connector*,\
 	*

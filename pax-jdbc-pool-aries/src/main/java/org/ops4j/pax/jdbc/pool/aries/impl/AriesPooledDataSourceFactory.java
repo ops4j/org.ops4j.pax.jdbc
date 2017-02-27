@@ -46,7 +46,7 @@ public class AriesPooledDataSourceFactory implements PooledDataSourceFactory {
             CommonDataSource ds = dsf.createDataSource(getNonPoolProps(props));
             RecoverableDataSource mds = new RecoverableDataSource();
             mds.setUsername(props.getProperty(DataSourceFactory.JDBC_USER));
-            mds.setUsername(props.getProperty(DataSourceFactory.JDBC_PASSWORD));
+            mds.setPassword(props.getProperty(DataSourceFactory.JDBC_PASSWORD));
             mds.setDataSource(ds);
             BeanConfig.configure(mds, getPoolProps(props));
             mds.start();
