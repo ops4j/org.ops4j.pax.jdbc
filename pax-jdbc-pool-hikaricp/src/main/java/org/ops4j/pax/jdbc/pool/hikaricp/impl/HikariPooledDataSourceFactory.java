@@ -22,8 +22,6 @@ import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -34,7 +32,6 @@ import com.zaxxer.hikari.HikariDataSource;
  * in persistence.xml as jta-data-source
  */
 public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(HikariPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "hikari.";
 
     public HikariPooledDataSourceFactory() {

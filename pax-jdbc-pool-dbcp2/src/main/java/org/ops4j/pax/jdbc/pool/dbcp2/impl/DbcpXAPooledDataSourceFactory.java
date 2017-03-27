@@ -34,11 +34,8 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
-    private Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
     protected TransactionManager tm;
 
     /**
