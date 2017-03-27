@@ -113,7 +113,7 @@ public class DataSourceConfigManagerTest {
     public void testEncryptor() throws Exception {
         final DataSourceFactory dsf = expectTracked(c, context, DataSourceFactory.class, H2_DSF_FILTER);
         DataSource ds = c.createMock(DataSource.class);
-        Capture<Properties> capturedProps = new Capture<>();
+        Capture<Properties> capturedProps = EasyMock.newCapture();
         expect(dsf.createDataSource(EasyMock.capture(capturedProps))).andReturn(ds);
         expectRegistration(ds);
         

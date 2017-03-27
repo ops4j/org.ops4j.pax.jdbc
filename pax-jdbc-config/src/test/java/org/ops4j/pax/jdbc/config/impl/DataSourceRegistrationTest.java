@@ -50,8 +50,8 @@ public class DataSourceRegistrationTest {
     @Test
     public void testPublishedAndUnpublished() throws ConfigurationException,
         InvalidSyntaxException, SQLException {
-        Capture<Properties> capturedDsProps = new Capture<Properties>();
-        Capture<Dictionary> capturedServiceProps = new Capture<Dictionary>();
+        Capture<Properties> capturedDsProps = EasyMock.newCapture();
+        Capture<Dictionary> capturedServiceProps = EasyMock.newCapture();
 
         IMocksControl c = EasyMock.createControl();
         BundleContext context = c.createMock(BundleContext.class);
