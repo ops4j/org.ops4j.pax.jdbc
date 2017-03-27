@@ -26,6 +26,7 @@ import java.util.Map;
 import org.jasypt.encryption.StringEncryptor;
 import org.ops4j.pax.jdbc.config.impl.tracker.MultiServiceTracker;
 import org.ops4j.pax.jdbc.config.impl.tracker.TrackerCallback;
+import org.ops4j.pax.jdbc.hook.PreHook;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -57,7 +58,8 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             PooledDataSourceFactory pdsf = tracker.getService(PooledDataSourceFactory.class);
             DataSourceFactory dsf = tracker.getService(DataSourceFactory.class);
             DataSourceFactory actualDsf = pdsf != null ? new PoolingWrapper(pdsf, dsf) : dsf;
-            return new DataSourceRegistration(context, actualDsf, config, decryptedConfig);
+            PreHook preHook = tracker.getService(PreHook.class);
+            return new DataSourceRegistration(context, actualDsf, config, decryptedConfig, preHook);
         }
     }
 
@@ -99,6 +101,10 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
                 tracker.track(PooledDataSourceFactory.class, pdsfFilter);
             }
             tracker.track(DataSourceFactory.class, dsfFilter);
+            String preHookName = (String)loadedConfig.get(PreHook.CONFIG_KEY_NAME);
+            if (preHookName != null) {
+                tracker.track(PreHook.class, createFilter(eqFilter("name", preHookName)));
+            }
             tracker.open();
             trackers.put(pid, tracker);
         }

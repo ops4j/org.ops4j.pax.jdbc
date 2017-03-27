@@ -3,4 +3,5 @@ Bundle-SymbolicName:\
 
 Export-Package: \
 	org.ops4j.pax.jdbc.pool.common.impl,\
-	org.ops4j.pax.jdbc.pool.common
+	org.ops4j.pax.jdbc.pool.common,\
+	org.ops4j.pax.jdbc.hook

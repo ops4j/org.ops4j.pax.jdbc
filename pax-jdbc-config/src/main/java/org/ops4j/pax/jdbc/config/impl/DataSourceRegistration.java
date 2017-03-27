@@ -32,6 +32,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -67,19 +68,24 @@ public class DataSourceRegistration implements Closeable {
     private AutoCloseable dataSource;
     private ServiceRegistration serviceReg;
 
-    public DataSourceRegistration(BundleContext context, DataSourceFactory dsf, final Dictionary config, final Dictionary decryptedConfig) {
+    public DataSourceRegistration(BundleContext context, DataSourceFactory dsf, final Dictionary config, final Dictionary decryptedConfig, final PreHook preHook) {
         String dsName = getDSName(config);
         if (dsName != null) {
             config.put(JNDI_SERVICE_NAME, dsName);
         }
         try {
+            LOG.info("Found DataSourceFactory. Creating DataSource {}", dsName);
             String typeName = (String)config.get(DATASOURCE_TYPE);
             Class<?> type = getType(typeName);
             Object ds = createDs(dsf, type, decryptedConfig);
             if (ds instanceof AutoCloseable) {
                 dataSource = (AutoCloseable)ds;
             }
-            LOG.info("Found DataSourceFactory. Creating DataSource {}", dsName);
+            if (preHook != null && ds instanceof DataSource) {
+                LOG.info("Executing pre hook for DataSource {}", dsName);
+                preHook.prepare((DataSource)ds);
+                LOG.info("Pre hook finished. Publishing DataSource {}", dsName);
+            }
             serviceReg = context.registerService(type.getName(), ds, filterHidden(config));
         } catch (SQLException e) {
             LOG.warn(e.getMessage(), e);

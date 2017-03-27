@@ -34,6 +34,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.config.impl.tracker.TrackerCallback;
+import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceListener;
@@ -70,6 +71,43 @@ public class DataSourceConfigManagerTest {
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
+
+        // Test config created
+        c.replay();
+        dsManager.updated(TESTPID, properties);
+
+        c.verify();
+
+        c.reset();
+
+        context.removeServiceListener(EasyMock.anyObject(ServiceListener.class));
+        expectLastCall().atLeastOnce();
+        sreg.unregister();
+        expectLastCall();
+        expect(context.ungetService(EasyMock.anyObject(ServiceReference.class))).andReturn(true).atLeastOnce();
+        // Test config removed
+        c.replay();
+        dsManager.updated(TESTPID, null);
+        
+        c.verify();
+    }
+    
+    @Test
+    public void testPreHook() throws Exception {
+        DataSourceFactory dsf = expectTracked(c, context, DataSourceFactory.class, H2_DSF_FILTER);
+        DataSource ds = expectDataSourceCreated(dsf);
+        ServiceRegistration sreg = expectRegistration(ds);
+        PreHook preHook = expectTracked(c, context, PreHook.class, "(name=myhook)");
+        preHook.prepare(EasyMock.anyObject(DataSource.class));
+        EasyMock.expectLastCall().once();
+
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
+        properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
+        properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
+        properties.put(PreHook.CONFIG_KEY_NAME, "myhook");
 
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
 
