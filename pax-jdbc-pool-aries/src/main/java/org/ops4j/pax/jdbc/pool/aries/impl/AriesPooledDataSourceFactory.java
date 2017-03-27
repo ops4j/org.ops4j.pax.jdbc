@@ -27,8 +27,6 @@ import org.apache.aries.transaction.jdbc.RecoverableDataSource;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates pooled and optionally XA ready DataSources out of a non pooled DataSourceFactory.
@@ -38,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * in persistence.xml as jta-data-source
  */
 public class AriesPooledDataSourceFactory implements PooledDataSourceFactory {
-    private  static final Logger LOG = LoggerFactory.getLogger(AriesPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
 
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
@@ -53,7 +50,6 @@ public class AriesPooledDataSourceFactory implements PooledDataSourceFactory {
             return mds;
         }
         catch (Throwable e) {
-            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             }
