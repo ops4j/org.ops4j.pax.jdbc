@@ -19,10 +19,8 @@ package org.ops4j.pax.jdbc.config.impl;
 import static org.osgi.framework.FrameworkUtil.createFilter;
 
 import java.io.Closeable;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jasypt.encryption.StringEncryptor;
@@ -111,10 +109,15 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
 
     private Filter getAliasFilter(Dictionary<String, Object> loadedConfig) throws InvalidSyntaxException {
         String alias = Decryptor.getAlias(loadedConfig);
-        String objectClassName = "(objectClassName=" + StringEncryptor.class.getName() + ")";
-        return alias == null ? createFilter(objectClassName) : createFilter("(&" + objectClassName + "(alias=" + alias + "))");
+        return andFilter(eqFilter("objectClassName", StringEncryptor.class.getName()),
+                         eqFilter("alias", alias));
     }
     
+    /**
+     * Allows to override tracker creation fort tests
+     * @param callback
+     * @return
+     */
     MultiServiceTracker createTracker(TrackerCallback callback) {
         return new MultiServiceTracker(context, callback);
     } 
@@ -131,12 +134,9 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             }
         }
         
-        List<String> filterList = new ArrayList<String>();
-        filterList.add("objectClass=" + PooledDataSourceFactory.class.getName());
-        filterList.add("pool=" + pool);
-        filterList.add("xa=" + isXa);
-        String filter = andFilter(filterList);
-        return createFilter(filter);
+        return andFilter(eqFilter("objectClass", PooledDataSourceFactory.class.getName()),
+                         eqFilter("pool", pool),
+                         eqFilter("xa", Boolean.toString(isXa)));
     }
     
     private boolean isXa(Dictionary config) throws ConfigurationException {
@@ -159,31 +159,29 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
                     + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + " or "
                     + DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         }
-        List<String> filterList = new ArrayList<String>();
-        filterList.add("objectClass=" + DataSourceFactory.class.getName());
-        if (driverClass != null) {
-            filterList.add(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=" + driverClass);
-        }
-        if (driverName != null) {
-            filterList.add(DataSourceFactory.OSGI_JDBC_DRIVER_NAME + "=" + driverName);
-        }
-        String filter = andFilter(filterList);
-        
-        return createFilter(filter);
+        return andFilter(eqFilter("objectClass", DataSourceFactory.class.getName()),
+                         eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driverClass),
+                         eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, driverName));
+    }
+    
+    private String eqFilter(String key, String value) {
+        return value != null ? "(" + key + "=" + value + ")" : null;
     }
 
-    private String andFilter(List<String> filterList) {
+    private Filter andFilter(String... filterList) throws InvalidSyntaxException {
         StringBuilder filter = new StringBuilder();
-        if (filterList.size() > 1) {
-            filter.append("(&");
-        }
+        int count = 0;
         for (String filterPart : filterList) {
-            filter.append("(" + filterPart + ")");
+            if (filterPart != null) {
+                filter.append(filterPart);
+                count ++;
+            }
         }
-        if (filterList.size() > 1) {
+        
+        if (count > 1) {
             filter.append(")");
         }
-        return filter.toString();
+        return createFilter(((count > 1) ? "(&" : "") + filter.toString());
     }
 
     @Override
