@@ -1,5 +1,7 @@
 package org.ops4j.pax.jdbc.hook;
 
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 /**
@@ -20,7 +22,13 @@ public interface PreHook {
     /**
      * Config key to refer to a PreHook service
      */
-    public static final String CONFIG_KEY_NAME = "preHook";
+    public static final String CONFIG_KEY_NAME = "ops4j.preHook";
     
-    void prepare(DataSource ds);
+    /**
+     * Will be called before publishing the DataSource
+     * 
+     * @param ds
+     * @throws Exception in case of exception the DataSource will not be published
+     */
+    void prepare(DataSource ds) throws SQLException;
 }

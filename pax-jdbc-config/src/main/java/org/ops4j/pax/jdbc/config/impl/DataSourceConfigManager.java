@@ -103,7 +103,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             tracker.track(DataSourceFactory.class, dsfFilter);
             String preHookName = (String)loadedConfig.get(PreHook.CONFIG_KEY_NAME);
             if (preHookName != null) {
-                tracker.track(PreHook.class, createFilter(eqFilter("name", preHookName)));
+                tracker.track(PreHook.class, createFilter(eqFilter(PreHook.KEY_NAME, preHookName)));
             }
             tracker.open();
             trackers.put(pid, tracker);
