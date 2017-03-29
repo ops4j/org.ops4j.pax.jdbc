@@ -27,8 +27,8 @@ public interface PreHook {
     /**
      * Will be called before publishing the DataSource
      * 
-     * @param ds
-     * @throws Exception in case of exception the DataSource will not be published
+     * @param ds data source to work on
+     * @throws SQLException in case of exception the DataSource will not be published
      */
     void prepare(DataSource ds) throws SQLException;
 }

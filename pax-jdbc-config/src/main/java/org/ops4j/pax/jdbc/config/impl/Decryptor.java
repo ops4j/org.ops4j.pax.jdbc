@@ -37,7 +37,7 @@ public class Decryptor {
     /**
      * Create new decryptor instance.
      *
-     * @param tracker custom StringEncryptor tracker the supports aliases
+     * @param decryptor custom StringEncryptor tracker the supports aliases
      */
     public Decryptor(final StringEncryptor decryptor) {
         this.decryptor = decryptor;
