@@ -149,11 +149,16 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
         if (xa == null) {
             return false;
+        } else {
+        	if ("true".equals(xa)) {
+        		return true;
+        	} else if ("false".equals(xa)) {
+        		return false;
+        	} else {
+        		throw new ConfigurationException(null, "Invalid XA configuration provided, XA can only be set to true or false");
+        	}
         }
-        if (!"true".equals(xa)) {
-            throw new ConfigurationException(null, "XA can only be set to true");
-        }
-        return true;
+        
     }
 
     private Filter getDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
