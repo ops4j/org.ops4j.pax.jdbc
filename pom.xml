@@ -41,6 +41,7 @@
         <postgresql.version>9.4.1212.jre7</postgresql.version>
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.16.1</sqlite.version>
+        <hikaricp.version>2.4.11</hikaricp.version>
     </properties>
 
     <scm>
@@ -314,6 +315,12 @@
                 <groupId>org.apache.servicemix.bundles</groupId>
                 <artifactId>org.apache.servicemix.bundles.c3p0</artifactId>
                 <version>${c3p0.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP-java7</artifactId>
+        	    <version>${hikaricp.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

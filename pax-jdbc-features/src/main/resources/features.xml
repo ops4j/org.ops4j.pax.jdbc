@@ -150,7 +150,7 @@
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-hikaricp/${project.version}</bundle>
-        <bundle>mvn:com.zaxxer/HikariCP/2.4.1</bundle>
+        <bundle>mvn:com.zaxxer/HikariCP-java7/${hikaricp.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC"
