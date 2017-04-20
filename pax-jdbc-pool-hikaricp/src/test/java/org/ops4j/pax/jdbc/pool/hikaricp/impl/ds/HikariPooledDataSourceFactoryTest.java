@@ -61,7 +61,7 @@ public class HikariPooledDataSourceFactoryTest {
             pdsf.create(dataSourceFactory, createInvalidPoolConfig());
         } catch (RuntimeException e) {
             Assert.assertEquals(
-                    "java.beans.IntrospectionException: Method not found: setDummy",
+                    "Property dummy does not exist on target class com.zaxxer.hikari.HikariConfig",
                     e.getMessage());
         }
 
