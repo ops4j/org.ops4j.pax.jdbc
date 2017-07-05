@@ -117,6 +117,7 @@
              resolver="(obr)">
         <feature>pax-jdbc-spec</feature>
 
+        <bundle>wrap:mvn:net.sourceforge.jtds/jtds/${jtds.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-jtds/${project.version}</bundle>
     </feature>
 
