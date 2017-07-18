@@ -38,6 +38,7 @@
         <pax.exam.version>4.10.0</pax.exam.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.5.2</pax.url.version>
+        <pax.transx.version>0.2.0-SNAPSHOT</pax.transx.version>
         <postgresql.version>9.4.1212.jre7</postgresql.version>
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.16.1</sqlite.version>
@@ -68,6 +69,7 @@
         <module>pax-jdbc-pool-hikaricp</module>
         <module>pax-jdbc-pool-aries</module>
         <module>pax-jdbc-pool-narayana</module>
+        <module>pax-jdbc-pool-transx</module>
         <module>pax-jdbc-features</module>
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>
@@ -321,6 +323,12 @@
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP-java7</artifactId>
         	    <version>${hikaricp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.transx</groupId>
+                <artifactId>pax-transx-jdbc</artifactId>
+                <version>${pax.transx.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
