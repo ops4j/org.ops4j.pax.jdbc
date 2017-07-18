@@ -7,7 +7,6 @@
 
     <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
-        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc/${project.version}</bundle>
     </feature>

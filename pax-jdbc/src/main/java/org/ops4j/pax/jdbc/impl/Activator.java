@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.ServiceLoader;
 
-import org.ops4j.spi.SafeServiceLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -66,8 +66,7 @@ public class Activator implements BundleActivator, BundleTrackerCustomizer<List<
         try {
             ServiceReference<?>[] registered = bundle.getRegisteredServices();
             ClassLoader cl = bundle.adapt(BundleWiring.class).getClassLoader();
-            SafeServiceLoader serviceLoader = new SafeServiceLoader(cl);
-            List<Driver> drivers = serviceLoader.load(Driver.class.getName());
+            ServiceLoader<Driver> drivers = ServiceLoader.load(Driver.class, cl);
             List<ServiceRegistration<DataSourceFactory>> registrations = new ArrayList<>();
             for (Driver driver : drivers) {
                 boolean alreadyRegistered = false;
