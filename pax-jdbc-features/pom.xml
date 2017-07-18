@@ -111,6 +111,7 @@
                                     <feature>pax-jdbc-pool-hikaricp</feature>
                                     <feature>pax-jdbc-pool-aries</feature>
                                     <feature>pax-jdbc-pool-narayana</feature>
+                                    <feature>pax-jdbc-pool-transx</feature>
                                 </features>
                                 <verifyTransitive>false</verifyTransitive>
                                 <ignoreMissingConditions>true</ignoreMissingConditions>

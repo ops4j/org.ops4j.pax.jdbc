@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
+    <repository>
+        mvn:org.ops4j.pax.transx/pax-transx-features/${pax.transx.version}/xml/features
+    </repository>
+    
     <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}">
         <bundle>mvn:org.osgi/org.osgi.service.jdbc/1.0.0</bundle>
     </feature>
@@ -156,6 +160,15 @@
         <bundle dependency="true">mvn:org.jboss.narayana.osgi/narayana-osgi-jta/${narayana.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-narayana/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-jdbc-pool-transx" description="Provides JDBC Pooling DataSourceFactory using Pax TransX JDBC" version="${project.version}">
+        <feature>pax-jdbc-spec</feature>
+        <feature>pax-transx-jdbc</feature>
+        <feature>pax-transx-tm</feature>
+
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-transx/${project.version}</bundle>
     </feature>
 
 </features>
