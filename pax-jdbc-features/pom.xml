@@ -109,7 +109,7 @@
                                     <feature>pax-jdbc-pool-dbcp2</feature>
                                     <feature>pax-jdbc-pool-c3p0</feature>
                                     <feature>pax-jdbc-pool-hikaricp</feature>
-                                    <!--<feature>pax-jdbc-pool-aries</feature>-->
+                                    <feature>pax-jdbc-pool-aries</feature>
                                     <feature>pax-jdbc-pool-narayana</feature>
                                 </features>
                                 <verifyTransitive>false</verifyTransitive>
