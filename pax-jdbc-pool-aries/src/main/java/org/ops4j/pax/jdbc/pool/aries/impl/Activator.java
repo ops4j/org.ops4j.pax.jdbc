@@ -36,7 +36,7 @@ import org.osgi.framework.ServiceRegistration;
 public class Activator implements BundleActivator {
 
     private static final String ARIES = "aries";
-    private AbstractTransactionManagerTracker tmTracker;
+    private AbstractTransactionManagerTracker<AriesTransactionManager> tmTracker;
 
     @Override
     public void start(final BundleContext context) throws Exception {
@@ -46,12 +46,12 @@ public class Activator implements BundleActivator {
         props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
-        tmTracker = new AbstractTransactionManagerTracker(context) {
+        tmTracker = new AbstractTransactionManagerTracker<AriesTransactionManager>(context, AriesTransactionManager.class) {
             
             @Override
             public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
-                                                                              TransactionManager tm) {
-                AriesXaPooledDataSourceFactory dsf = new AriesXaPooledDataSourceFactory((AriesTransactionManager)tm);
+                                                                              AriesTransactionManager tm) {
+                AriesXaPooledDataSourceFactory dsf = new AriesXaPooledDataSourceFactory(tm);
                 Dictionary<String, String> props = new Hashtable<String, String>();
                 props.put(POOL_KEY, ARIES);
                 props.put(XA_KEY, "true");
