@@ -30,15 +30,13 @@ import org.ops4j.pax.jdbc.pool.common.impl.AbstractTransactionManagerTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Manage DataSourceFactory tracker
  */
 public class Activator implements BundleActivator {
 
-    @SuppressWarnings("rawtypes")
-    private ServiceTracker<TransactionManager, ServiceRegistration> tmTracker;
+    private AbstractTransactionManagerTracker<TransactionManager> tmTracker;
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -48,7 +46,7 @@ public class Activator implements BundleActivator {
         props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
-        tmTracker = new AbstractTransactionManagerTracker(context) {
+        tmTracker = new AbstractTransactionManagerTracker<TransactionManager>(context, TransactionManager.class) {
             
             @Override
             public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,

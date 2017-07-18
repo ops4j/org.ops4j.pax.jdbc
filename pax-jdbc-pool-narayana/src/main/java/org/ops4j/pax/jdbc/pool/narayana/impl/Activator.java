@@ -32,7 +32,7 @@ import org.osgi.framework.ServiceRegistration;
 public class Activator implements BundleActivator {
 
     private static final String NARAYANA = "narayana";
-    private AbstractTransactionManagerTracker tmTracker;
+    private AbstractTransactionManagerTracker<TransactionManager> tmTracker;
 
     @Override
     public void start(final BundleContext context) throws Exception {
@@ -42,8 +42,7 @@ public class Activator implements BundleActivator {
         props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
-        tmTracker = new AbstractTransactionManagerTracker(context) {
-            
+        tmTracker = new AbstractTransactionManagerTracker<TransactionManager>(context, TransactionManager.class, "(provider=narayana)") {
             @Override
             public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
                                                                               TransactionManager tm) {
