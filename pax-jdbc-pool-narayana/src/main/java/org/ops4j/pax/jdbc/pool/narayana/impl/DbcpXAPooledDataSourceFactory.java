@@ -51,6 +51,8 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     /**
      * Initialize XA PoolingDataSourceFactory
      * 
+     * @param bundleContext
+     *            bundle context
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */
