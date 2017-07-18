@@ -23,7 +23,17 @@
     </description>
 
     <properties>
+        <karaf.version>4.1.1</karaf.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.karaf.features</groupId>
+            <artifactId>framework</artifactId>
+            <version>${karaf.version}</version>
+            <type>kar</type>
+        </dependency>
+    </dependencies>
 
         <build>
             <resources>
@@ -56,6 +66,55 @@
                             <goals>
                                 <goal>resources</goal>
                             </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${karaf.version}</version>
+                    <executions>
+                        <execution>
+                            <id>verify</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>verify</goal>
+                            </goals>
+                            <configuration>
+                                <descriptors>
+                                    <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
+                                    <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
+                                    <descriptor>file:${project.build.directory}/classes/features.xml</descriptor>
+                                </descriptors>
+                                <distribution>org.apache.karaf.features:framework</distribution>
+                                <javase>1.8</javase>
+                                <framework>
+                                    <feature>framework</feature>
+                                </framework>
+                                <features>
+                                    <feature>pax-jdbc-spec</feature>
+                                    <feature>pax-jdbc-config</feature>
+                                    <!--<feature>pax-jdbc-db2</feature>-->
+                                    <!--<feature>pax-jdbc-teradata</feature>-->
+                                    <feature>pax-jdbc-derby</feature>
+                                    <feature>pax-jdbc-derbyclient</feature>
+                                    <feature>pax-jdbc-h2</feature>
+                                    <feature>pax-jdbc-hsqldb</feature>
+                                    <feature>pax-jdbc-mariadb</feature>
+                                    <feature>pax-jdbc-mysql</feature>
+                                    <!--<feature>pax-jdbc-oracle</feature>-->
+                                    <!--<feature>pax-jdbc-postgresql</feature>-->
+                                    <!--<feature>pax-jdbc-mssql</feature>-->
+                                    <feature>pax-jdbc-jtds</feature>
+                                    <feature>pax-jdbc-pool-dbcp2</feature>
+                                    <feature>pax-jdbc-pool-c3p0</feature>
+                                    <feature>pax-jdbc-pool-hikaricp</feature>
+                                    <!--<feature>pax-jdbc-pool-aries</feature>-->
+                                    <feature>pax-jdbc-pool-narayana</feature>
+                                </features>
+                                <verifyTransitive>false</verifyTransitive>
+                                <ignoreMissingConditions>true</ignoreMissingConditions>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
