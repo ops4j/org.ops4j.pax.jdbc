@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
-    <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}" resolver="(obr)">
+<features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+
+    <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}">
         <bundle>mvn:org.osgi/org.osgi.service.jdbc/1.0.0</bundle>
     </feature>
 
-    <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}" resolver="(obr)">
+    <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
@@ -23,107 +21,91 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-db2" description="Provides JDBC DB2 DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-db2" description="Provides JDBC DB2 DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-db2/${project.version}</bundle>
     </feature>
 
-	<feature name="pax-jdbc-teradata" description="Provides JDBC Teradata DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+	<feature name="pax-jdbc-teradata" description="Provides JDBC Teradata DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-teradata/${project.version}</bundle>
     </feature>
 
 	
-    <feature name="pax-jdbc-derby" description="Provides JDBC Derbi Embedded DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-derby" description="Provides JDBC Derbi Embedded DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.derby/derby/${derby.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
-    </feature>
-     <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+     </feature>
+
+     <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derbyclient/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
     </feature>
     
-    <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         <bundle dependency="true">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-hsqldb/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-mariadb" description="Provides JDBC Mariadb DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-mariadb" description="Provides JDBC Mariadb DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mariadb/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-mysql" description="Provides JDBC MySQL DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-mysql" description="Provides JDBC MySQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mysql/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-oracle" description="Provides JDBC Oracle DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-oracle" description="Provides JDBC Oracle DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-oracle/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory"
-             version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory"
-             version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         <bundle dependency="true">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
     </feature>
 
-   <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
     </feature>
 
-   <feature name="pax-jdbc-jtds" description="Provides JDBC jTDS DataSourceFactory" version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-jtds" description="Provides JDBC jTDS DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle>wrap:mvn:net.sourceforge.jtds/jtds/${jtds.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-jtds/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory"
-             version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${commons.dbcp2.version}</bundle>
@@ -134,8 +116,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
     
-    <feature name="pax-jdbc-pool-c3p0" description="Provides JDBC Pooling using C3P0"
-             version="${project.version}" resolver="(obr)">
+    <feature name="pax-jdbc-pool-c3p0" description="Provides JDBC Pooling using C3P0" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${c3p0.version}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
@@ -144,8 +125,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-c3p0/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-pool-hikaricp" description="Provides JDBC Pooling DataSourceFactory using HikariCP"
-        version="${project.version}" resolver="(obr)">
+    <feature name="pax-jdbc-pool-hikaricp" description="Provides JDBC Pooling DataSourceFactory using HikariCP" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
@@ -154,9 +134,7 @@
         <bundle>mvn:com.zaxxer/HikariCP-java7/${hikaricp.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC"
-             version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
@@ -169,9 +147,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-aries/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-pool-narayana" description="Provides JDBC Pooling DataSourceFactory using Narayana Transaction Manager"
-             version="${project.version}"
-             resolver="(obr)">
+    <feature name="pax-jdbc-pool-narayana" description="Provides JDBC Pooling DataSourceFactory using Narayana Transaction Manager" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${commons.dbcp2.version}</bundle>
