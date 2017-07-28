@@ -13,7 +13,7 @@ public class MyPreHookActivator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<>();
         props.put(PreHook.KEY_NAME, "myprehook");
-        context.registerService(MyPreHook.class, new MyPreHook(), props);
+        context.registerService(PreHook.class, new MyPreHook(), props);
     }
 
     @Override

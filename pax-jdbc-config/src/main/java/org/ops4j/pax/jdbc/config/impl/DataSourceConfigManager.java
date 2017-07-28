@@ -16,26 +16,18 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.osgi.framework.FrameworkUtil.createFilter;
-
-import java.io.Closeable;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jasypt.encryption.StringEncryptor;
-import org.ops4j.pax.jdbc.config.impl.tracker.MultiServiceTracker;
-import org.ops4j.pax.jdbc.config.impl.tracker.TrackerCallback;
 import org.ops4j.pax.jdbc.hook.PreHook;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osgi.util.tracker.ServiceTracker;
+
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
@@ -44,36 +36,16 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({ "rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
-    private final class TrackerCallbackImpl implements TrackerCallback {
-        private final Dictionary<String, Object> config;
-
-        private TrackerCallbackImpl(Dictionary<String, Object> config) {
-            this.config = config;
-        }
-
-        @Override
-        public Closeable activate(MultiServiceTracker tracker) {
-            StringEncryptor decryptor = tracker.getService(StringEncryptor.class);
-            Dictionary<String, Object> decryptedConfig = new Decryptor(decryptor).decrypt(config);
-            PooledDataSourceFactory pdsf = tracker.getService(PooledDataSourceFactory.class);
-            DataSourceFactory dsf = tracker.getService(DataSourceFactory.class);
-            DataSourceFactory actualDsf = pdsf != null ? new PoolingWrapper(pdsf, dsf) : dsf;
-            PreHook preHook = tracker.getService(PreHook.class);
-            return new DataSourceRegistration(context, actualDsf, config, decryptedConfig, preHook);
-        }
-    }
-
-    private Logger LOG = LoggerFactory.getLogger(DataSourceConfigManager.class);
     BundleContext context;
 
     /**
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
-    private Map<String, MultiServiceTracker> trackers;
+    private Map<String, ServiceTracker<?, ?>> trackers;
 
     public DataSourceConfigManager(BundleContext context) {
         this.context = context;
-        this.trackers = new HashMap<String, MultiServiceTracker>();
+        this.trackers = new HashMap<>();
     }
 
     @Override
@@ -81,56 +53,58 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         return "datasource";
     }
 
+
     @Override
     public void updated(final String pid, final Dictionary config) throws ConfigurationException {
         deleted(pid);
-
         if (config == null) {
             return;
         }
 
-        try {
-            Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
-            final MultiServiceTracker tracker = createTracker(new TrackerCallbackImpl(loadedConfig));
-            Filter dsfFilter = getDSFFilter(loadedConfig);
-            Filter pdsfFilter = getPooledDSFFilter(loadedConfig);
-            if (Decryptor.isEncrypted(loadedConfig)) {
-                tracker.track(StringEncryptor.class, getAliasFilter(loadedConfig));
-            }
-            if (pdsfFilter != null) {
-                tracker.track(PooledDataSourceFactory.class, pdsfFilter);
-            }
-            tracker.track(DataSourceFactory.class, dsfFilter);
-            String preHookName = (String)loadedConfig.get(PreHook.CONFIG_KEY_NAME);
-            if (preHookName != null) {
-                tracker.track(PreHook.class, createFilter(eqFilter(PreHook.KEY_NAME, preHookName)));
-            }
-            tracker.open();
-            trackers.put(pid, tracker);
-        }
-        catch (InvalidSyntaxException e) {
-            LOG.warn("Invalid filter for DataSource config from pid " + pid, e);
-        }
+        Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
+
+        String seFilter = getStringEncryptorFilter(loadedConfig);
+        String dsfFilter = getDSFFilter(loadedConfig);
+        String pdsfFilter = getPooledDSFFilter(loadedConfig);
+        String phFilter = getPreHookFilter(loadedConfig);
+
+        ServiceTrackerHelper helper = ServiceTrackerHelper.helper(context);
+        ServiceTracker<?, ?> tracker;
+
+        tracker = helper.track(StringEncryptor.class, seFilter, se ->
+                     helper.track(PooledDataSourceFactory.class, pdsfFilter, pdsf ->
+                        helper.track(PreHook.class, phFilter, ph ->
+                            helper.track(DataSourceFactory.class, dsfFilter,  dsf ->
+                                new DataSourceRegistration(context,
+                                                           dsf,
+                                                           loadedConfig,
+                                                           new Decryptor(se).decrypt(loadedConfig),
+                                                           ph),
+                                DataSourceRegistration::close))));
+
+        trackers.put(pid, tracker);
     }
 
-    private Filter getAliasFilter(Dictionary<String, Object> loadedConfig) throws InvalidSyntaxException {
-        String alias = Decryptor.getAlias(loadedConfig);
-        return andFilter(eqFilter("objectClassName", StringEncryptor.class.getName()),
-                         eqFilter("alias", alias));
+    private String getStringEncryptorFilter(Dictionary<String, Object> config) throws ConfigurationException {
+        if (Decryptor.isEncrypted(config)) {
+            String alias = Decryptor.getAlias(config);
+            return andFilter(eqFilter("objectClass", StringEncryptor.class.getName()),
+                             eqFilter("alias", alias));
+        }
+        return null;
     }
-    
-    /**
-     * Allows to override tracker creation fort tests
-     * @param callback
-     * @return
-     */
-    MultiServiceTracker createTracker(TrackerCallback callback) {
-        return new MultiServiceTracker(context, callback);
-    } 
 
-    private Filter getPooledDSFFilter(Dictionary config)
-        throws ConfigurationException, InvalidSyntaxException {
-        String pool = (String)config.remove(PooledDataSourceFactory.POOL_KEY);
+    private String getPreHookFilter(Dictionary<String, Object> config) throws ConfigurationException {
+        String preHookName = (String) config.get(PreHook.CONFIG_KEY_NAME);
+        if (preHookName != null) {
+            return andFilter(eqFilter("objectClass", PreHook.class.getName()),
+                             eqFilter(PreHook.KEY_NAME, preHookName));
+        }
+        return null;
+    }
+
+    private String getPooledDSFFilter(Dictionary<String, Object> config) throws ConfigurationException {
+        String pool = (String) config.remove(PooledDataSourceFactory.POOL_KEY);
         boolean isXa = isXa(config);
         if (pool == null) {
             if (isXa) {
@@ -139,13 +113,12 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
                 return null;
             }
         }
-        
         return andFilter(eqFilter("objectClass", PooledDataSourceFactory.class.getName()),
                          eqFilter("pool", pool),
                          eqFilter("xa", Boolean.toString(isXa)));
     }
     
-    private boolean isXa(Dictionary config) throws ConfigurationException {
+    private boolean isXa(Dictionary<String, Object> config) throws ConfigurationException {
         String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
         if (xa == null) {
             return false;
@@ -158,10 +131,9 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         		throw new ConfigurationException(null, "Invalid XA configuration provided, XA can only be set to true or false");
         	}
         }
-        
     }
 
-    private Filter getDSFFilter(Dictionary config) throws ConfigurationException, InvalidSyntaxException {
+    private String getDSFFilter(Dictionary<String, Object> config) throws ConfigurationException {
         String driverClass = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS);
         String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (driverClass == null && driverName == null) {
@@ -179,28 +151,27 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         return value != null ? "(" + key + "=" + value + ")" : null;
     }
 
-    private Filter andFilter(String... filterList) throws InvalidSyntaxException {
-        StringBuilder filter = new StringBuilder();
+    private String andFilter(String... filterList) {
+        String last = null;
+        StringBuilder filter = new StringBuilder("(&");
         int count = 0;
         for (String filterPart : filterList) {
             if (filterPart != null) {
+                last = filterPart;
                 filter.append(filterPart);
                 count ++;
             }
         }
-        
-        if (count > 1) {
-            filter.append(")");
-        }
-        return createFilter(((count > 1) ? "(&" : "") + filter.toString());
+        filter.append(")");
+
+        return count > 1 ? filter.toString() : last;
     }
 
     @Override
     public void deleted(String pid) {
-        MultiServiceTracker tracker = trackers.get(pid);
+        ServiceTracker<?, ?> tracker = trackers.remove(pid);
         if (tracker != null) {
             tracker.close();
-            trackers.remove(pid);
         }
     }
 

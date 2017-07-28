@@ -46,7 +46,7 @@ public class Decryptor {
     public static String getAlias(final Dictionary<String, Object> config) {
         String alias = getValue(config, DECRYPTOR_ALIAS);
         for (Enumeration<String> e = config.keys(); e.hasMoreElements();) {
-            final String key = (String) e.nextElement();
+            final String key = e.nextElement();
             String value = getValue(config, key);
             String newAlias = getAlias(value);
             if (newAlias != null) {
@@ -89,7 +89,7 @@ public class Decryptor {
         }
         Dictionary<String, Object> decryptedConfig = new Hashtable<>();
         for (Enumeration<String> e = config.keys(); e.hasMoreElements();) {
-            final String key = (String) e.nextElement();
+            final String key = e.nextElement();
             String value = String.valueOf(config.get(key));
             if (config.get(key) instanceof String && isEncrypted(value)) {
                 final String plainText = decryptValue(value);
