@@ -28,14 +28,16 @@ import javax.sql.DataSource;
 
 import org.easymock.Capture;
 import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.config.impl.tracker.TrackerCallback;
 import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
@@ -51,14 +53,20 @@ public class DataSourceConfigManagerTest {
     private static final String H2_DSF_FILTER = "(&(objectClass=org.osgi.service.jdbc.DataSourceFactory)(osgi.jdbc.driver.class=org.h2.Driver))";
     private static final String TESTPID = "testpid";
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
-    protected TrackerCallback callback;
     private IMocksControl c;
     private BundleContext context;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         c = EasyMock.createControl();
         context = c.createMock(BundleContext.class);
+        Capture<String> capture = newCapture();
+        EasyMock.expect(context.createFilter(EasyMock.capture(capture))).andStubAnswer(new IAnswer<Filter>() {
+            @Override
+            public Filter answer() throws Throwable {
+                return FrameworkUtil.createFilter(capture.getValue());
+            }
+        });
     }
 
     @Test
@@ -99,7 +107,7 @@ public class DataSourceConfigManagerTest {
         DataSourceFactory dsf = expectTracked(c, context, DataSourceFactory.class, H2_DSF_FILTER);
         DataSource ds = expectDataSourceCreated(dsf);
         ServiceRegistration sreg = expectRegistration(ds);
-        PreHook preHook = expectTracked(c, context, PreHook.class, "(name=myhook)");
+        PreHook preHook = expectTracked(c, context, PreHook.class, "(&(objectClass=org.ops4j.pax.jdbc.hook.PreHook)(name=myhook))");
         preHook.prepare(EasyMock.anyObject(DataSource.class));
         EasyMock.expectLastCall().once();
 
@@ -155,7 +163,7 @@ public class DataSourceConfigManagerTest {
         expect(dsf.createDataSource(EasyMock.capture(capturedProps))).andReturn(ds);
         expectRegistration(ds);
         
-        StringEncryptor encryptor = expectTracked(c, context, StringEncryptor.class, "(objectClassName=org.jasypt.encryption.StringEncryptor)");
+        StringEncryptor encryptor = expectTracked(c, context, StringEncryptor.class, "(objectClass=org.jasypt.encryption.StringEncryptor)");
         expect(encryptor.decrypt("ciphertext")).andReturn("password");
         
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
@@ -182,7 +190,7 @@ public class DataSourceConfigManagerTest {
         DataSource ds = expectDataSourceCreated(dsf);
         expectRegistration(ds);
         DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
-        StringEncryptor encryptor = expectTracked(c, context, StringEncryptor.class, "(objectClassName=org.jasypt.encryption.StringEncryptor)");
+        StringEncryptor encryptor = expectTracked(c, context, StringEncryptor.class, "(objectClass=org.jasypt.encryption.StringEncryptor)");
         expect(encryptor.decrypt("ciphertext")).andReturn("password");
 
         // Test config created
