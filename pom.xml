@@ -38,7 +38,7 @@
         <pax.exam.version>4.10.0</pax.exam.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.5.2</pax.url.version>
-        <pax.transx.version>0.2.0-SNAPSHOT</pax.transx.version>
+        <pax.transx.version>0.2.0</pax.transx.version>
         <postgresql.version>9.4.1212.jre7</postgresql.version>
         <slf4j.version>1.6.4</slf4j.version>
         <sqlite.version>3.16.1</sqlite.version>
