@@ -51,8 +51,9 @@ public class TransxXaPooledDataSourceFactory extends TransxPooledDataSourceFacto
     @Override
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
+            String name=props.getProperty(DS_USERNAME);
             XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
-            DataSource mds = ManagedDataSourceBuilder.builder()
+            DataSource mds = ManagedDataSourceBuilder.builder().name(name)
                     .dataSource(ds)
                     .transaction(TransactionSupportLevel.XATransaction)
                     .transactionManager(tm)
