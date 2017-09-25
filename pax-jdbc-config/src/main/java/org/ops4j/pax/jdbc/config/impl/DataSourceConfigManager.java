@@ -28,12 +28,13 @@ import org.osgi.util.tracker.ServiceTracker;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
  * for the DataSourceFactories and pooling support
  */
-@SuppressWarnings({ "rawtypes"})
+@SuppressWarnings({"rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
     BundleContext context;
@@ -71,17 +72,29 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         ServiceTrackerHelper helper = ServiceTrackerHelper.helper(context);
         ServiceTracker<?, ?> tracker;
 
-        tracker = helper.track(StringEncryptor.class, seFilter, se ->
-                     helper.track(PooledDataSourceFactory.class, pdsfFilter, pdsf ->
-                        helper.track(PreHook.class, phFilter, ph ->
-                            helper.track(DataSourceFactory.class, dsfFilter,  dsf ->
-                                new DataSourceRegistration(context,
-                                                           dsf,
-                                                           loadedConfig,
-                                                           new Decryptor(se).decrypt(loadedConfig),
-                                                           ph),
-                                DataSourceRegistration::close))));
-
+        if (Objects.nonNull(pdsfFilter)) {
+            tracker = helper.track(StringEncryptor.class, seFilter, se ->
+                    helper.track(PooledDataSourceFactory.class, pdsfFilter, pdsf ->
+                            helper.track(PreHook.class, phFilter, ph ->
+                                    helper.track(DataSourceFactory.class, dsfFilter, dsf ->
+                                                    new DataSourceRegistration(context,
+                                                            new PoolingWrapper(pdsf, dsf),
+                                                            loadedConfig,
+                                                            new Decryptor(se).decrypt(loadedConfig),
+                                                            ph),
+                                            DataSourceRegistration::close))));
+        } else {
+            tracker = helper.track(StringEncryptor.class, seFilter, se ->
+                    helper.track(PooledDataSourceFactory.class, pdsfFilter, pdsf ->
+                            helper.track(PreHook.class, phFilter, ph ->
+                                    helper.track(DataSourceFactory.class, dsfFilter, dsf ->
+                                                    new DataSourceRegistration(context,
+                                                            dsf,
+                                                            loadedConfig,
+                                                            new Decryptor(se).decrypt(loadedConfig),
+                                                            ph),
+                                            DataSourceRegistration::close))));
+        }
         trackers.put(pid, tracker);
     }
 
@@ -89,7 +102,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         if (Decryptor.isEncrypted(config)) {
             String alias = Decryptor.getAlias(config);
             return andFilter(eqFilter("objectClass", StringEncryptor.class.getName()),
-                             eqFilter("alias", alias));
+                    eqFilter("alias", alias));
         }
         return null;
     }
@@ -98,7 +111,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         String preHookName = (String) config.get(PreHook.CONFIG_KEY_NAME);
         if (preHookName != null) {
             return andFilter(eqFilter("objectClass", PreHook.class.getName()),
-                             eqFilter(PreHook.KEY_NAME, preHookName));
+                    eqFilter(PreHook.KEY_NAME, preHookName));
         }
         return null;
     }
@@ -114,22 +127,22 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             }
         }
         return andFilter(eqFilter("objectClass", PooledDataSourceFactory.class.getName()),
-                         eqFilter("pool", pool),
-                         eqFilter("xa", Boolean.toString(isXa)));
+                eqFilter("pool", pool),
+                eqFilter("xa", Boolean.toString(isXa)));
     }
-    
+
     private boolean isXa(Dictionary<String, Object> config) throws ConfigurationException {
         String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
         if (xa == null) {
             return false;
         } else {
-        	if ("true".equals(xa)) {
-        		return true;
-        	} else if ("false".equals(xa)) {
-        		return false;
-        	} else {
-        		throw new ConfigurationException(null, "Invalid XA configuration provided, XA can only be set to true or false");
-        	}
+            if ("true".equals(xa)) {
+                return true;
+            } else if ("false".equals(xa)) {
+                return false;
+            } else {
+                throw new ConfigurationException(null, "Invalid XA configuration provided, XA can only be set to true or false");
+            }
         }
     }
 
@@ -138,15 +151,15 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         String driverName = (String) config.get(DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         if (driverClass == null && driverName == null) {
             throw new ConfigurationException(null,
-                "Could not determine driver to use. Specify either "
-                    + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + " or "
-                    + DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
+                    "Could not determine driver to use. Specify either "
+                            + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + " or "
+                            + DataSourceFactory.OSGI_JDBC_DRIVER_NAME);
         }
         return andFilter(eqFilter("objectClass", DataSourceFactory.class.getName()),
-                         eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driverClass),
-                         eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, driverName));
+                eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driverClass),
+                eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, driverName));
     }
-    
+
     private String eqFilter(String key, String value) {
         return value != null ? "(" + key + "=" + value + ")" : null;
     }
@@ -159,7 +172,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             if (filterPart != null) {
                 last = filterPart;
                 filter.append(filterPart);
-                count ++;
+                count++;
             }
         }
         filter.append(")");
