@@ -40,11 +40,12 @@ public class TransxPooledDataSourceFactory implements PooledDataSourceFactory {
 
     private  static final Logger LOG = LoggerFactory.getLogger(TransxPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
-
+    protected static final String DS_USERNAME = "user";
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
+            String name=props.getProperty(DS_USERNAME);
             CommonDataSource ds = dsf.createDataSource(getNonPoolProps(props));
-            DataSource mds = ManagedDataSourceBuilder.builder()
+            DataSource mds = ManagedDataSourceBuilder.builder().name(name)
                     .dataSource(ds)
                     .transaction(TransactionSupportLevel.NoTransaction)
                     .build();
