@@ -85,12 +85,6 @@
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-mysql</artifactId>
-            <version>${project.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-oracle</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
@@ -224,7 +218,6 @@
                                     <feature>pax-jdbc-h2</feature>
                                     <feature>pax-jdbc-hsqldb</feature>
                                     <feature>pax-jdbc-mariadb</feature>
-                                    <feature>pax-jdbc-mysql</feature>
                                     <!--<feature>pax-jdbc-oracle</feature>-->
                                     <!--<feature>pax-jdbc-postgresql</feature>-->
                                     <!--<feature>pax-jdbc-mssql</feature>-->
