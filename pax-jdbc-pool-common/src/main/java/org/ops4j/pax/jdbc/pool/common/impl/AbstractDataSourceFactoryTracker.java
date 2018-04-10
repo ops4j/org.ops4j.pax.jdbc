@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractDataSourceFactoryTracker extends
     ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> {
 
-    private Logger LOG = LoggerFactory.getLogger(AbstractDataSourceFactoryTracker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDataSourceFactoryTracker.class);
     protected final TransactionManager tm;
 
     public AbstractDataSourceFactoryTracker(BundleContext context) {

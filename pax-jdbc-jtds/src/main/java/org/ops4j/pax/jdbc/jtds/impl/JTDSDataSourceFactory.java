@@ -31,7 +31,7 @@ import net.sourceforge.jtds.jdbc.Driver;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 
 public class JTDSDataSourceFactory implements DataSourceFactory {
-    private static final List<Method> methods = Arrays.asList(JtdsDataSource.class.getMethods());
+    private static final List<Method> METHODS = Arrays.asList(JtdsDataSource.class.getMethods());
 
     public JTDSDataSourceFactory() {
         super();
@@ -85,7 +85,7 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
 
     Map<String, String> parseUrl(String url) {
         Map<String, String> result = new HashMap<>();
-        if (url==null || url.trim().isEmpty()) {
+        if (url == null || url.trim().isEmpty()) {
             return result;
         }
 
@@ -109,16 +109,16 @@ public class JTDSDataSourceFactory implements DataSourceFactory {
             return;
         }
 
-        for (Method method : methods) {
-            if (method.getParameterTypes().length==1 && method.getName().equalsIgnoreCase("set"+key)) {
+        for (Method method : METHODS) {
+            if (method.getParameterTypes().length == 1 && method.getName().equalsIgnoreCase("set" + key)) {
                 Class<?> type = method.getParameterTypes()[0];
-                if (String.class==type) {
+                if (String.class == type) {
                     method.invoke(dsi, value);
-                } else if (Integer.TYPE==type) {
+                } else if (Integer.TYPE == type) {
                     method.invoke(dsi, Integer.parseInt(value));
-                } else if (Long.TYPE==type) {
+                } else if (Long.TYPE == type) {
                     method.invoke(dsi, Long.parseLong(value));
-                } else if (Boolean.TYPE==type) {
+                } else if (Boolean.TYPE == type) {
                     method.invoke(dsi, Boolean.parseBoolean(value));
                 }
             }

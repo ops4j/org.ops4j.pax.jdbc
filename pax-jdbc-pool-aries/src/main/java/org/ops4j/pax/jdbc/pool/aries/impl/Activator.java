@@ -21,8 +21,6 @@ import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.XA_KEY;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.transaction.TransactionManager;
-
 import org.apache.aries.transaction.AriesTransactionManager;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.pool.common.impl.AbstractTransactionManagerTracker;

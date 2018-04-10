@@ -15,8 +15,6 @@
  */
 package org.ops4j.pax.jdbc.jtds.impl;
 
-import static org.junit.Assert.*;
-
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
@@ -25,6 +23,10 @@ import org.junit.Test;
 
 import net.sourceforge.jtds.jdbc.Driver;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class JTDSDataSourceFactoryTest {
     private static final String DB = "testdb";
@@ -107,8 +109,7 @@ public class JTDSDataSourceFactoryTest {
     }
 
     @Test
-    public void testPropsWithUrl() throws SQLException
-    {
+    public void testPropsWithUrl() throws SQLException {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Properties props = new Properties();
         props.put("databaseName", DB);

@@ -44,9 +44,10 @@ import org.slf4j.LoggerFactory;
  * in persistence.xml as jta-data-source
  */
 public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(DbcpPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
     protected static final String FACTORY_PREFIX = "factory.";
+
+    private static final Logger LOG = LoggerFactory.getLogger(DbcpPooledDataSourceFactory.class);
 
     protected Map<String, String> getPoolProps(Properties props) {
         Map<String, String> poolProps = getPrefixed(props, POOL_PREFIX);

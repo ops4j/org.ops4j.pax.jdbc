@@ -63,7 +63,7 @@ public class DataSourceRegistration implements Closeable {
     // additionally all keys prefixed with "jdbc." will be forwarded (with the prefix stripped).
     private static final String CONFIG_KEY_PREFIX = "jdbc.";
     
-    private static Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataSourceRegistration.class);
 
     private AutoCloseable dataSource;
     private ServiceRegistration serviceReg;

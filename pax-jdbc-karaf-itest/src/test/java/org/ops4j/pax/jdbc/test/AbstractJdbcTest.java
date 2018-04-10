@@ -27,10 +27,12 @@ import org.ops4j.pax.exam.options.MavenUrlReference;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class AbstractJdbcTest {
+
+    protected ConfigurationManager cm = new ConfigurationManager();
+
     @Inject
     FeaturesService featuresService;
 
-    protected ConfigurationManager cm = new ConfigurationManager();
 
     String karafVersion = cm.getProperty("karaf.version");
 

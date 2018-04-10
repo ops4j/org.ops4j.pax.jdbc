@@ -105,7 +105,7 @@ public class DecryptorTest {
         Assert.assertEquals("testAlias", Decryptor.getAlias(dsProps));
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testDecryptWithTwoDifferentAliases() {
         Dictionary dsProps = new Hashtable<>();
         dsProps.put("password", "ENC(something,testAlias)");

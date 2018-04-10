@@ -45,12 +45,12 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Rule
+    public ServerConfiguration dbConfig = new ServerConfiguration("mysql");
+
     @Inject
     @Filter("(osgi.jdbc.driver.name=mysql)")
     private DataSourceFactory dsf;
-
-    @Rule
-    public ServerConfiguration dbConfig = new ServerConfiguration("mysql");
 
     @Configuration
     public Option[] config() {

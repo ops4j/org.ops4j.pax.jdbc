@@ -40,21 +40,22 @@ import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator, BundleTrackerCustomizer<List<ServiceRegistration<DataSourceFactory>>> {
 
-    private static Logger log = LoggerFactory.getLogger(Activator.class);
     public static final String BUNDLE_NAME = "org.ops4j.pax.jdbc";
+
+    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
 
     private BundleTracker<List<ServiceRegistration<DataSourceFactory>>> tracker;
 
     @Override
     public void start(final BundleContext bc) throws Exception {
-        log.debug("starting bundle {}", BUNDLE_NAME);
+        LOG.debug("starting bundle {}", BUNDLE_NAME);
         tracker = new BundleTracker<>(bc, Bundle.ACTIVE, this);
         tracker.open();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        log.debug("stopping bundle {}", BUNDLE_NAME);
+        LOG.debug("stopping bundle {}", BUNDLE_NAME);
         tracker.close();
     }
 
@@ -94,7 +95,7 @@ public class Activator implements BundleActivator, BundleTrackerCustomizer<List<
             }
             return registrations.isEmpty() ? null : registrations;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.error(ex.getMessage(), ex);
             return null;
         }
     }

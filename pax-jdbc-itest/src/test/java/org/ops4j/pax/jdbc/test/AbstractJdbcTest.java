@@ -25,10 +25,11 @@ import org.osgi.framework.BundleException;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractJdbcTest {
-    private static final boolean equinoxConsole = false;
 
     @Inject
     protected BundleContext context;
+
+    private boolean equinoxConsole;
 
     protected void assertAllBundlesResolved() {
         for (Bundle bundle : context.getBundles()) {

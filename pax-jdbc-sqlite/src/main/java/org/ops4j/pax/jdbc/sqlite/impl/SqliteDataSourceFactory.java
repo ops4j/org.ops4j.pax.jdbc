@@ -36,9 +36,11 @@ public class SqliteDataSourceFactory implements DataSourceFactory {
     public DataSource createDataSource(Properties props) throws SQLException {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         String url = props.getProperty(JDBC_URL);
-        if (url == null)
+        if (url == null) {
             dataSource.setUrl("jdbc:sqlite:" + props.getProperty(JDBC_DATABASE_NAME));
-        else dataSource.setUrl(url);
+        } else {
+            dataSource.setUrl(url);
+        }
         return dataSource;
     }
 

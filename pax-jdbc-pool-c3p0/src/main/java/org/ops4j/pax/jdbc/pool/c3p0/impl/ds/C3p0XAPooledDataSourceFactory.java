@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.mchange.v2.c3p0.DataSources;
 
 public class C3p0XAPooledDataSourceFactory extends C3p0PooledDataSourceFactory {
-    private Logger LOG = LoggerFactory.getLogger(C3p0XAPooledDataSourceFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(C3p0XAPooledDataSourceFactory.class);
     protected TransactionManager tm;
 
     /**

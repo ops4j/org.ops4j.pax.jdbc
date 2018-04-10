@@ -23,4 +23,8 @@ package org.ops4j.pax.jdbc.derby.constants;
 public class ConnectionConstant {
     // Set this property to "create" to create the db on the fly
     public static final String CREATE_DATABASE = "createDatabase";
+
+    private ConnectionConstant() {
+    }
+
 }

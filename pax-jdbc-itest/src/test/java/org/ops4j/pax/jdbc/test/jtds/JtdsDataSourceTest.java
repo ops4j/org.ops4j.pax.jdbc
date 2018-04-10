@@ -34,7 +34,7 @@ public class JtdsDataSourceTest extends AbstractJdbcTest {
     }
 
     @Test
-    public void createDataSourceAndConnection() throws SQLException {	
+    public void createDataSourceAndConnection() throws SQLException {
         Properties props = new Properties();
         String url = String.format("jdbc:jtds:sqlserver://%s:%s/%s", config.getServerName(), config.getPortNumberSt(), config.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_URL, url);

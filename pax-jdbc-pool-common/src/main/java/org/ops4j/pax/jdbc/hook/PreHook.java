@@ -14,15 +14,16 @@ import javax.sql.DataSource;
  * of the registered PerHook service.
  */
 public interface PreHook {
+
     /**
      * Service property key to name a PreHook service
      */
-    public static final String KEY_NAME = "name";
+    String KEY_NAME = "name";
     
     /**
      * Config key to refer to a PreHook service
      */
-    public static final String CONFIG_KEY_NAME = "ops4j.preHook";
+    String CONFIG_KEY_NAME = "ops4j.preHook";
     
     /**
      * Will be called before publishing the DataSource
@@ -31,4 +32,5 @@ public interface PreHook {
      * @throws SQLException in case of exception the DataSource will not be published
      */
     void prepare(DataSource ds) throws SQLException;
+
 }

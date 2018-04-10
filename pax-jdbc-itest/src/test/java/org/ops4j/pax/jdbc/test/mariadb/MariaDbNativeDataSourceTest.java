@@ -44,12 +44,12 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Rule
+    public ServerConfiguration dbConfig = new ServerConfiguration("mariadb");
+
     @Inject
     @Filter(value = "(osgi.jdbc.driver.name=mariadb)", timeout = 1000000)
     private DataSourceFactory dsf;
-
-    @Rule
-    public ServerConfiguration dbConfig = new ServerConfiguration("mariadb");
 
     @Configuration
     public Option[] config() {

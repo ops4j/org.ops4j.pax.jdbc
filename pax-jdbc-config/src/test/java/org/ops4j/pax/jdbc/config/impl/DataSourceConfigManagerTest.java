@@ -16,9 +16,6 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
-
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -31,7 +28,6 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
 import org.jasypt.encryption.StringEncryptor;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.hook.PreHook;
@@ -44,6 +40,14 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
+import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings({
                    "rawtypes", "unchecked"
@@ -61,7 +65,7 @@ public class DataSourceConfigManagerTest {
         c = EasyMock.createControl();
         context = c.createMock(BundleContext.class);
         Capture<String> capture = newCapture();
-        EasyMock.expect(context.createFilter(EasyMock.capture(capture))).andStubAnswer(new IAnswer<Filter>() {
+        expect(context.createFilter(EasyMock.capture(capture))).andStubAnswer(new IAnswer<Filter>() {
             @Override
             public Filter answer() throws Throwable {
                 return FrameworkUtil.createFilter(capture.getValue());
@@ -90,11 +94,11 @@ public class DataSourceConfigManagerTest {
 
         c.reset();
 
-        context.removeServiceListener(EasyMock.anyObject(ServiceListener.class));
+        context.removeServiceListener(anyObject(ServiceListener.class));
         expectLastCall().atLeastOnce();
         sreg.unregister();
         expectLastCall();
-        expect(context.ungetService(EasyMock.anyObject(ServiceReference.class))).andReturn(true).atLeastOnce();
+        expect(context.ungetService(anyObject(ServiceReference.class))).andReturn(true).atLeastOnce();
         // Test config removed
         c.replay();
         dsManager.updated(TESTPID, null);
@@ -108,8 +112,8 @@ public class DataSourceConfigManagerTest {
         DataSource ds = expectDataSourceCreated(dsf);
         ServiceRegistration sreg = expectRegistration(ds);
         PreHook preHook = expectTracked(c, context, PreHook.class, "(&(objectClass=org.ops4j.pax.jdbc.hook.PreHook)(name=myhook))");
-        preHook.prepare(EasyMock.anyObject(DataSource.class));
-        EasyMock.expectLastCall().once();
+        preHook.prepare(anyObject(DataSource.class));
+        expectLastCall().once();
 
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
@@ -127,11 +131,11 @@ public class DataSourceConfigManagerTest {
 
         c.reset();
 
-        context.removeServiceListener(EasyMock.anyObject(ServiceListener.class));
+        context.removeServiceListener(anyObject(ServiceListener.class));
         expectLastCall().atLeastOnce();
         sreg.unregister();
         expectLastCall();
-        expect(context.ungetService(EasyMock.anyObject(ServiceReference.class))).andReturn(true).atLeastOnce();
+        expect(context.ungetService(anyObject(ServiceReference.class))).andReturn(true).atLeastOnce();
         // Test config removed
         c.replay();
         dsManager.updated(TESTPID, null);
@@ -159,7 +163,7 @@ public class DataSourceConfigManagerTest {
     public void testEncryptor() throws Exception {
         final DataSourceFactory dsf = expectTracked(c, context, DataSourceFactory.class, H2_DSF_FILTER);
         DataSource ds = c.createMock(DataSource.class);
-        Capture<Properties> capturedProps = EasyMock.newCapture();
+        Capture<Properties> capturedProps = newCapture();
         expect(dsf.createDataSource(EasyMock.capture(capturedProps))).andReturn(ds);
         expectRegistration(ds);
         
@@ -179,9 +183,9 @@ public class DataSourceConfigManagerTest {
         c.verify();
 
         // the encrypted value is still encrypted
-        Assert.assertEquals("ENC(ciphertext)", properties.get(DataSourceFactory.JDBC_PASSWORD));
+        assertEquals("ENC(ciphertext)", properties.get(DataSourceFactory.JDBC_PASSWORD));
         
-        Assert.assertEquals("password", capturedProps.getValue().get(DataSourceFactory.JDBC_PASSWORD));
+        assertEquals("password", capturedProps.getValue().get(DataSourceFactory.JDBC_PASSWORD));
     }
 
     @Test
@@ -207,7 +211,7 @@ public class DataSourceConfigManagerTest {
         c.verify();
 
         // the encrypted/external value is still encrypted/external
-        Assert.assertEquals(externalEncryptedValue, properties.get(DataSourceFactory.JDBC_PASSWORD));
+        assertEquals(externalEncryptedValue, properties.get(DataSourceFactory.JDBC_PASSWORD));
     }
 
     /**
@@ -222,13 +226,13 @@ public class DataSourceConfigManagerTest {
     public void testHiddenAndPropagation() throws Exception {
         final DataSourceFactory dsf = expectTracked(c, context, DataSourceFactory.class, H2_DSF_FILTER);
 
-        final String KEY_HIDDEN_JDBC_PASSWORD = "." + DataSourceFactory.JDBC_PASSWORD;
-        final String KEY_NONLOCAL_PROPERTY = "nonlocal.property";
-        final String KEY_LOCAL_PROPERTY = "localproperty";
-        final String KEY_DATASOURCE_TYPE = "dataSourceType";
-        final String KEY_POOL_PROPERTY = "pool.maxTotal";
-        final String KEY_FACTORY_PROPERTY = "factory.poolStatements";
-        final String VALUE_LOCAL_PROPERTY = "something2";
+        final String keyHiddenJdbcPassword = "." + DataSourceFactory.JDBC_PASSWORD;
+        final String keyNonlocalProperty = "nonlocal.property";
+        final String keyLocalProperty = "localproperty";
+        final String keyDatasourceType = "dataSourceType";
+        final String keyPoolProperty = "pool.maxTotal";
+        final String keyFactoryProperty = "factory.poolStatements";
+        final String valueLocalProperty = "something2";
         final String dbname = "mydbname";
         final String password = "thepassword";
         final String user = "theuser";
@@ -239,31 +243,31 @@ public class DataSourceConfigManagerTest {
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, dbname);
         properties.put(DataSourceFactory.JDBC_USER, user);
-        properties.put(KEY_HIDDEN_JDBC_PASSWORD, password);
-        properties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
-        properties.put(KEY_NONLOCAL_PROPERTY, "something");
-        properties.put(KEY_POOL_PROPERTY, poolMaxTotal);
-        properties.put(KEY_FACTORY_PROPERTY, factoryPoolStatements);
+        properties.put(keyHiddenJdbcPassword, password);
+        properties.put(keyLocalProperty, valueLocalProperty);
+        properties.put(keyNonlocalProperty, "something");
+        properties.put(keyPoolProperty, poolMaxTotal);
+        properties.put(keyFactoryProperty, factoryPoolStatements);
 
         // Exceptions local properties not being forwarded
-        final String VALUE_DATASOURCE_NAME = "myDataSource";
-        properties.put(KEY_DATASOURCE_TYPE, "DataSource");
-        properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, VALUE_DATASOURCE_NAME);
+        final String valueDatasourceName = "myDataSource";
+        properties.put(keyDatasourceType, "DataSource");
+        properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, valueDatasourceName);
 
         Properties expectedDataSourceProperties = new Properties();
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_DATABASE_NAME, dbname);
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_USER, user);
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_PASSWORD, password);
-        expectedDataSourceProperties.put(KEY_LOCAL_PROPERTY, VALUE_LOCAL_PROPERTY);
-        expectedDataSourceProperties.put(KEY_POOL_PROPERTY, poolMaxTotal);
-        expectedDataSourceProperties.put(KEY_FACTORY_PROPERTY, factoryPoolStatements);
+        expectedDataSourceProperties.put(keyLocalProperty, valueLocalProperty);
+        expectedDataSourceProperties.put(keyPoolProperty, poolMaxTotal);
+        expectedDataSourceProperties.put(keyFactoryProperty, factoryPoolStatements);
 
         
         DataSource ds = expectDataSourceCreated(dsf);
 
         Hashtable<String, String> expectedServiceProperties = (Hashtable<String, String>)properties.clone();
-        expectedServiceProperties.remove(KEY_HIDDEN_JDBC_PASSWORD);
-        expectedServiceProperties.put("osgi.jndi.service.name", VALUE_DATASOURCE_NAME);
+        expectedServiceProperties.remove(keyHiddenJdbcPassword);
+        expectedServiceProperties.put("osgi.jndi.service.name", valueDatasourceName);
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), eq(expectedServiceProperties))).andReturn(sreg);
 
@@ -279,7 +283,7 @@ public class DataSourceConfigManagerTest {
         throws InvalidSyntaxException {
         final T serviceMock = c.createMock(iface);
         ServiceReference ref = c.createMock(ServiceReference.class);
-        context.addServiceListener(EasyMock.anyObject(ServiceListener.class), EasyMock.eq(expectedFilter));
+        context.addServiceListener(anyObject(ServiceListener.class), eq(expectedFilter));
         expectLastCall();
         ServiceReference[] refs = new ServiceReference[] {
                                                           ref
@@ -291,7 +295,7 @@ public class DataSourceConfigManagerTest {
     
     private DataSource expectDataSourceCreated(final DataSourceFactory dsf) throws SQLException {
         DataSource ds = c.createMock(DataSource.class);
-        expect(dsf.createDataSource(EasyMock.anyObject(Properties.class))).andReturn(ds);
+        expect(dsf.createDataSource(anyObject(Properties.class))).andReturn(ds);
         return ds;
     }
 

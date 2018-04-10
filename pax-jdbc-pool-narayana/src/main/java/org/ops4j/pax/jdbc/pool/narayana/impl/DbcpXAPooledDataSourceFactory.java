@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
-    private Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
     protected final BundleContext bundleContext;
     protected final TransactionManager tm;
 
@@ -124,7 +124,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
         private final XAConnection xaConnection;
         private final XAResource xaResource;
 
-        public Wrapper(XAConnection xaConnection) throws SQLException {
+        Wrapper(XAConnection xaConnection) throws SQLException {
             this.xaConnection = xaConnection;
             this.xaResource = xaConnection.getXAResource();
         }

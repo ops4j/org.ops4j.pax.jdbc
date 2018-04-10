@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTransactionManagerTracker<T> extends
     ServiceTracker<T, ServiceRegistration<PooledDataSourceFactory>> {
 
-    private Logger LOG = LoggerFactory.getLogger(TransactionManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionManager.class);
     private ServiceReference<T> selectedService;
 
     public AbstractTransactionManagerTracker(BundleContext context, Class<T> clazz) throws InvalidSyntaxException {

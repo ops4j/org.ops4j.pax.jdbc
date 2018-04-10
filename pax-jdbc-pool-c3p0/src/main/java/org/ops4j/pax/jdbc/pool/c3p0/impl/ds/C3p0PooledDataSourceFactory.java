@@ -36,8 +36,8 @@ import com.mchange.v2.c3p0.PooledDataSource;
  * in persistence.xml as jta-data-source
  */
 public class C3p0PooledDataSourceFactory implements PooledDataSourceFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(C3p0PooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "c3p0.";
+    private static final Logger LOG = LoggerFactory.getLogger(C3p0PooledDataSourceFactory.class);
 
     protected Properties getNonPoolProps(Properties props) {
         Properties dsProps = new Properties();
@@ -54,9 +54,9 @@ public class C3p0PooledDataSourceFactory implements PooledDataSourceFactory {
     
     protected final void closeDataSource(Properties props) throws SQLException {
         final String dataSourceName = props.getProperty("c3p0.dataSourceName");
-        if (dataSourceName!=null) {
+        if (dataSourceName != null) {
             final PooledDataSource pds = C3P0Registry.pooledDataSourceByName(dataSourceName);
-            if (pds!=null) {
+            if (pds != null) {
                 LOG.info("Closing C3P0 pooled data source {}.", pds.getDataSourceName());
                 pds.close();
             }

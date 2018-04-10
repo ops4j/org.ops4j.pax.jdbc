@@ -26,20 +26,20 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 public class Activator implements BundleActivator {
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-		TeradataDataSourceFactory dsf = new TeradataDataSourceFactory();
-		Dictionary<String, String> props = new Hashtable<String, String>();
-		props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "com.teradata.jdbc.TeraDriver");
+    @Override
+    public void start(BundleContext context) throws Exception {
+        // TODO Auto-generated method stub
+        TeradataDataSourceFactory dsf = new TeradataDataSourceFactory();
+        Dictionary<String, String> props = new Hashtable<String, String>();
+        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "com.teradata.jdbc.TeraDriver");
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "teradata");
         context.registerService(DataSourceFactory.class.getName(), dsf, props);
-	}
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

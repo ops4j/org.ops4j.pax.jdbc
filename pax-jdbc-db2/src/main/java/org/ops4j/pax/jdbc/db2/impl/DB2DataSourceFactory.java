@@ -30,10 +30,10 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DB2DataSourceFactory implements DataSourceFactory {
 
+    public static final String DB2_DRIVER_CLASS = "com.ibm.db2.jcc.DB2Driver";
     private static final String DB2_DATASOURCE_CLASS = "com.ibm.db2.jcc.DB2SimpleDataSource";
     private static final String DB2_CONNECTIONPOOL_DATASOURCE_CLASS = "com.ibm.db2.jcc.DB2ConnectionPoolDataSource";
     private static final String DB2_XA_DATASOURCE_CLASS = "com.ibm.db2.jcc.DB2XADataSource";
-    public static final String DB2_DRIVER_CLASS = "com.ibm.db2.jcc.DB2Driver";
     private final Class<? extends DataSource> db2DataSourceClass;
     private final Class<? extends ConnectionPoolDataSource> db2ConnectionPoolDataSourceClass;
     private final Class<? extends XADataSource> db2XaDataSourceClass;

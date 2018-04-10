@@ -72,16 +72,16 @@ public class HsqldbDataSourceFactory implements DataSourceFactory {
 
     @Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
-    	JDBCPooledDataSource ds = new JDBCPooledDataSource();
+        JDBCPooledDataSource ds = new JDBCPooledDataSource();
         setProperties(ds, props);
         return ds;
     }
 
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
-    	JDBCXADataSource ds = new JDBCXADataSource();
-    	setProperties(ds, props);
-    	return ds;
+        JDBCXADataSource ds = new JDBCXADataSource();
+        setProperties(ds, props);
+        return ds;
     }
 
     @Override

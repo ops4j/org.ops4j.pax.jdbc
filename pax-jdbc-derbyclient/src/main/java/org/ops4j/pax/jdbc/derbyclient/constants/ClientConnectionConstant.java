@@ -24,4 +24,8 @@ public class ClientConnectionConstant {
 
     // Set this property to "create" to create the db on the fly
     public static final String CREATE_DATABASE = "createDatabase";
+
+    private ClientConnectionConstant() {
+    }
+
 }

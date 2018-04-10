@@ -38,8 +38,8 @@ import java.util.Properties;
  */
 public class TransxPooledDataSourceFactory implements PooledDataSourceFactory {
 
-    private  static final Logger LOG = LoggerFactory.getLogger(TransxPooledDataSourceFactory.class);
     protected static final String POOL_PREFIX = "pool.";
+    private  static final Logger LOG = LoggerFactory.getLogger(TransxPooledDataSourceFactory.class);
 
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
