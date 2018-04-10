@@ -622,18 +622,21 @@
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <header>license-header.txt</header>
                             <includes>
-                                <!--<include>src/main/java/**/*.java</include>-->
-                                <!--<include>src/test/java/**/*.java</include>-->
+                                <include>src/main/java/**/*.java</include>
+                                <include>src/test/java/**/*.java</include>
                                 <!--<include>**/README</include>-->
                                 <include>pom.xml</include>
                                 <include>**/*.xml</include>
-                                <!--<include>**/*.cfg</include>-->
+                                <include>**/*.cfg</include>
                                 <include>**/*.properties</include>
                             </includes>
                             <excludes />
                             <mapping>
                                 <!--<README>SCRIPT_STYLE</README>-->
                             </mapping>
+                            <headerDefinitions>
+                                <headerDefinition>license-headers.xml</headerDefinition>
+                            </headerDefinitions>
                         </configuration>
                         <executions>
                             <execution>
