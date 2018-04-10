@@ -2,7 +2,7 @@ Bundle-Version>:\
   ${pom.version}
 
 Bundle-SymbolicName:\
-  ${bundle.symbolicName}
+  org.ops4j.pax.jdbc.pool.transx
 
 Bundle-Activator:\
   org.ops4j.pax.jdbc.pool.transx.impl.Activator
