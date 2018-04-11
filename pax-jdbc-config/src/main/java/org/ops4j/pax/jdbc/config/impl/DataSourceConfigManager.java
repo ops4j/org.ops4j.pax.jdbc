@@ -87,20 +87,19 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
                                             DataSourceRegistration::close))));
         } else {
             tracker = helper.track(StringEncryptor.class, seFilter, se ->
-                    helper.track(PooledDataSourceFactory.class, pdsfFilter, pdsf ->
-                            helper.track(PreHook.class, phFilter, ph ->
-                                    helper.track(DataSourceFactory.class, dsfFilter, dsf ->
-                                                    new DataSourceRegistration(context,
-                                                            dsf,
-                                                            loadedConfig,
-                                                            new Decryptor(se).decrypt(loadedConfig),
-                                                            ph),
-                                            DataSourceRegistration::close))));
+                    helper.track(PreHook.class, phFilter, ph ->
+                            helper.track(DataSourceFactory.class, dsfFilter, dsf ->
+                                            new DataSourceRegistration(context,
+                                                    dsf,
+                                                    loadedConfig,
+                                                    new Decryptor(se).decrypt(loadedConfig),
+                                                    ph),
+                                    DataSourceRegistration::close)));
         }
         trackers.put(pid, tracker);
     }
 
-    private String getStringEncryptorFilter(Dictionary<String, Object> config) throws ConfigurationException {
+    static String getStringEncryptorFilter(Dictionary<String, Object> config) {
         if (Decryptor.isEncrypted(config)) {
             String alias = Decryptor.getAlias(config);
             return andFilter(eqFilter("objectClass", StringEncryptor.class.getName()),
@@ -109,7 +108,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         return null;
     }
 
-    private String getPreHookFilter(Dictionary<String, Object> config) throws ConfigurationException {
+    static String getPreHookFilter(Dictionary<String, Object> config) {
         String preHookName = (String) config.get(PreHook.CONFIG_KEY_NAME);
         if (preHookName != null) {
             return andFilter(eqFilter("objectClass", PreHook.class.getName()),
@@ -118,7 +117,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         return null;
     }
 
-    private String getPooledDSFFilter(Dictionary<String, Object> config) throws ConfigurationException {
+    static String getPooledDSFFilter(Dictionary<String, Object> config) throws ConfigurationException {
         String pool = (String) config.remove(PooledDataSourceFactory.POOL_KEY);
         boolean isXa = isXa(config);
         if (pool == null) {
@@ -133,7 +132,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
                 eqFilter("xa", Boolean.toString(isXa)));
     }
 
-    private boolean isXa(Dictionary<String, Object> config) throws ConfigurationException {
+    static boolean isXa(Dictionary<String, Object> config) throws ConfigurationException {
         String xa = (String) config.remove(PooledDataSourceFactory.XA_KEY);
         if (xa == null) {
             return false;
@@ -162,11 +161,11 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
                 eqFilter(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, driverName));
     }
 
-    private String eqFilter(String key, String value) {
+    static String eqFilter(String key, String value) {
         return value != null ? "(" + key + "=" + value + ")" : null;
     }
 
-    private String andFilter(String... filterList) {
+    static String andFilter(String... filterList) {
         String last = null;
         StringBuilder filter = new StringBuilder("(&");
         int count = 0;

@@ -20,8 +20,6 @@ package org.ops4j.pax.jdbc.db2.impl;
 
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.CommonDataSource;
