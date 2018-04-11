@@ -9,4 +9,4 @@ Import-Package:\
   *
 
 Provide-Capability:\
-	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory

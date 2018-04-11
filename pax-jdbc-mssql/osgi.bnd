@@ -9,4 +9,8 @@ Import-Package:\
   *
 
 Provide-Capability:\
-	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.microsoft.sqlserver.jdbc.SQLServerDriver;osgi.jdbc.driver.name=mssql
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.microsoft.sqlserver.jdbc.SQLServerDriver;osgi.jdbc.driver.name=mssql
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.mssql.impl

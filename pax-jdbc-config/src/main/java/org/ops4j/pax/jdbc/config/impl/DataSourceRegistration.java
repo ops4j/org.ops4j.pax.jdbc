@@ -54,14 +54,14 @@ public class DataSourceRegistration implements Closeable {
     // (even though they are "local" keys without a dot ".")
     // Exception: for pooling support keys with prefix pool or factory are always
     // forwarded.
-    private static final Set<String> NOT_FORWARDED_KEYS = new HashSet<String>(Arrays.asList(new String []{
+    private static final Set<String> NOT_FORWARDED_KEYS = new HashSet<String>(Arrays.asList(
             DataSourceFactory.JDBC_DATASOURCE_NAME,
             DATASOURCE_TYPE
-    }));
-    private static final Set<String> FORWARDED_KEY_PREFIXES = new HashSet<>(Arrays.asList(new String[]{
+    ));
+    private static final Set<String> FORWARDED_KEY_PREFIXES = new HashSet<>(Arrays.asList(
             "pool.",
             "factory."
-    }));
+    ));
     // additionally all keys prefixed with "jdbc." will be forwarded (with the prefix stripped).
     private static final String CONFIG_KEY_PREFIX = "jdbc.";
     

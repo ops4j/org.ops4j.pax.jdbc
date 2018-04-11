@@ -21,13 +21,12 @@ package org.ops4j.pax.jdbc.pool.aries.impl;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
 import org.apache.aries.transaction.AriesTransactionManager;
 import org.apache.aries.transaction.jdbc.RecoverableDataSource;
-import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
@@ -57,8 +56,8 @@ public class AriesXaPooledDataSourceFactory extends AriesPooledDataSourceFactory
             RecoverableDataSource mds = new RecoverableDataSource();
             mds.setUsername(props.getProperty(DataSourceFactory.JDBC_USER));
             mds.setPassword(props.getProperty(DataSourceFactory.JDBC_PASSWORD));
-            mds.setDataSource((CommonDataSource) ds);
-            mds.setTransactionManager((AriesTransactionManager) tm);
+            mds.setDataSource(ds);
+            mds.setTransactionManager(tm);
             BeanConfig.configure(mds, getPoolProps(props));
             mds.start();
             return mds;

@@ -31,6 +31,7 @@ import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.apache.derby.jdbc.EmbeddedDriver;
 import org.apache.derby.jdbc.EmbeddedXADataSource;
 import org.apache.derby.jdbc.ReferenceableDataSource;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.ops4j.pax.jdbc.derby.constants.ConnectionConstant;
 import org.osgi.service.jdbc.DataSourceFactory;
 
@@ -45,14 +46,13 @@ public class DerbyDataSourceFactory implements DataSourceFactory {
         return ds;
     }
 
-    private void setProperties(ReferenceableDataSource ds, Properties properties)
-        throws SQLException {
+    private void setProperties(ReferenceableDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
         String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
         if (databaseName != null) {
             ds.setDatabaseName(databaseName);
         }
-        
+
         String createDatabase = (String) props.remove(ConnectionConstant.CREATE_DATABASE);
         ds.setCreateDatabase(createDatabase);
 
@@ -66,7 +66,7 @@ public class DerbyDataSourceFactory implements DataSourceFactory {
         applyUrl(ds, url);
 
         if (!props.isEmpty()) {
-            throw new SQLException("cannot set properties " + props.keySet());
+            BeanConfig.configure(ds, props);
         }
     }
 

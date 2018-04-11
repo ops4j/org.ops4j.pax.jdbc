@@ -95,6 +95,7 @@
     <modules>
         <module>pax-jdbc-checkstyle-rules</module>
         <module>pax-jdbc</module>
+        <module>pax-jdbc-common</module>
         <module>pax-jdbc-db2</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
@@ -121,6 +122,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.ops4j.pax.jdbc</groupId>
+                <artifactId>pax-jdbc-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc-pool-common</artifactId>

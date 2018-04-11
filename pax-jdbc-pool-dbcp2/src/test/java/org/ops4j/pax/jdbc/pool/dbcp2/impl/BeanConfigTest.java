@@ -27,7 +27,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 
 public class BeanConfigTest {
 
@@ -41,7 +41,7 @@ public class BeanConfigTest {
         GenericObjectPoolConfig config = new GenericObjectPoolConfig();
         BeanConfig.configure(config, props);
         Assert.assertEquals(2, config.getMaxIdle());
-        Assert.assertEquals(true, config.getTestOnBorrow());
+        Assert.assertTrue(config.getTestOnBorrow());
         Assert.assertEquals(1000, config.getMaxWaitMillis());
         Assert.assertEquals("name", config.getJmxNameBase());
     }

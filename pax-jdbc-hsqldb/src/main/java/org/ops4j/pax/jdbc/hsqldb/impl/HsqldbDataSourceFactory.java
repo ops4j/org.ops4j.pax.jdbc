@@ -31,6 +31,7 @@ import org.hsqldb.jdbc.JDBCDataSource;
 import org.hsqldb.jdbc.JDBCDriver;
 import org.hsqldb.jdbc.pool.JDBCPooledDataSource;
 import org.hsqldb.jdbc.pool.JDBCXADataSource;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class HsqldbDataSourceFactory implements DataSourceFactory {
@@ -67,7 +68,7 @@ public class HsqldbDataSourceFactory implements DataSourceFactory {
         ds.setUser(user);
 
         if (!props.isEmpty()) {
-            throw new SQLException("cannot set properties " + props.keySet());
+            BeanConfig.configure(ds, props);
         }
     }
 

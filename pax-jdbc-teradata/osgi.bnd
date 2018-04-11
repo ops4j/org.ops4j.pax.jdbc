@@ -7,3 +7,7 @@ Bundle-Activator:\
 Import-Package:\
   com.teradata.jdbc,\
   *
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.teradata.impl

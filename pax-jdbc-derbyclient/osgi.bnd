@@ -5,4 +5,11 @@ Bundle-Activator:\
   org.ops4j.pax.jdbc.derbyclient.impl.Activator
   
 Provide-Capability:\
-	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.apache.derby.jdbc.ClientDriver;osgi.jdbc.driver.name=derbyclient
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.apache.derby.jdbc.ClientDriver;osgi.jdbc.driver.name=derbyclient
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.derbyclient.impl
+
+Import-Package:\
+  *

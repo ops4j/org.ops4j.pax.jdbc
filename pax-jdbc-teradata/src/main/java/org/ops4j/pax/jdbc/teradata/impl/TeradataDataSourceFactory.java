@@ -30,6 +30,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class TeradataDataSourceFactory implements DataSourceFactory {
@@ -127,6 +128,9 @@ public class TeradataDataSourceFactory implements DataSourceFactory {
             setProperty(password, dataSourceInstance, "setPassword");
         }
 
+        if (!props.isEmpty()) {
+            BeanConfig.configure(dataSourceInstance, props);
+        }
         return (T) dataSourceInstance;
     }
 

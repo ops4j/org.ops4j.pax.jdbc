@@ -39,7 +39,7 @@ import org.apache.commons.dbcp2.managed.TransactionRegistry;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.jboss.tm.XAResourceRecovery;
-import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -81,7 +81,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
             final XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
-            DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, (XADataSource) ds);
+            DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, getPoolProps(props));

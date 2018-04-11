@@ -26,6 +26,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class MSSQLDataSourceFactory implements DataSourceFactory {
@@ -96,16 +97,28 @@ public class MSSQLDataSourceFactory implements DataSourceFactory {
 
     @SuppressWarnings("unchecked")
     private <T> T setProperties(Object dataSourceInstance, Properties props) throws Exception {
-        setProperty(props.getProperty(DataSourceFactory.JDBC_URL), dataSourceInstance, "setURL");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_DATABASE_NAME), dataSourceInstance,
-            "setDatabaseName");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_SERVER_NAME), dataSourceInstance,
-            "setServerName");
-        setIntProperty(props.getProperty(DataSourceFactory.JDBC_PORT_NUMBER), dataSourceInstance,
-            "setPortNumber");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_USER), dataSourceInstance, "setUser");
-        setProperty(props.getProperty(DataSourceFactory.JDBC_PASSWORD), dataSourceInstance,
-            "setPassword");
+        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
+        setProperty(url, dataSourceInstance, "setURL");
+
+        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
+        setProperty(databaseName, dataSourceInstance, "setDatabaseName");
+
+        String serverName = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
+        setProperty(serverName, dataSourceInstance, "setServerName");
+
+        String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
+        setIntProperty(portNumber, dataSourceInstance, "setPortNumber");
+
+        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
+        setProperty(user, dataSourceInstance, "setUser");
+
+        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        setProperty(password, dataSourceInstance, "setPassword");
+
+        if (!props.isEmpty()) {
+            BeanConfig.configure(dataSourceInstance, props);
+        }
+
         return (T) dataSourceInstance;
     }
 

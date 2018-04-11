@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.ops4j.pax.jdbc.db2.impl;
+package org.ops4j.pax.jdbc.common;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Configure a java bean from a given Map of properties.
@@ -48,6 +49,22 @@ public class BeanConfig {
     }
 
     /**
+     * Configure a java bean from a given {@link Properties}.
+     * 
+     * @param bean
+     *            bean to populate
+     * @param props
+     *            properties to set.
+     */
+    public static void configure(Object bean, Properties props) {
+        final Map<String, String> map = new HashMap<>();
+        for (String key : props.stringPropertyNames()) {
+            map.put(key, props.getProperty(key));
+        }
+        BeanConfig.configure(bean, map);
+    }
+
+    /**
      * Configure a java bean from a given Map of properties.
      *
      * @param bean
@@ -55,23 +72,19 @@ public class BeanConfig {
      * @param props
      *            properties to set. The keys in the Map have to match the bean property names.
      */
-    public static void configure(Object bean, Map<String, Object> props) {
+    public static void configure(Object bean, Map<String, String> props) {
         BeanConfig beanConfig = new BeanConfig(bean);
         for (String key : props.keySet()) {
             beanConfig.trySetProperty(key, props.get(key));
         }
     }
 
-    private void trySetProperty(String key, Object ovalue) {
+    private void trySetProperty(String key, String value) {
         try {
-            if (ovalue != null && !(ovalue instanceof String)) {
-                throw new IllegalArgumentException("Can only populate String values, but is of type " + ovalue.getClass());
-            }
-            final String value = (String)ovalue;
             Method method = setters.get(key);
             if (method == null) {
                 throw new IllegalArgumentException("No setter in " + bean.getClass()
-                        + " for property " + key);
+                    + " for property " + key);
             }
             Class<?> paramClass = method.getParameterTypes()[0];
             if (paramClass == int.class || paramClass == Integer.class) {
@@ -89,7 +102,7 @@ public class BeanConfig {
         }
         catch (Exception e) {
             throw new IllegalArgumentException("Error setting property " + key + ":"
-                    + e.getMessage(), e);
+                + e.getMessage(), e);
         }
     }
 

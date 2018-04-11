@@ -27,8 +27,8 @@ import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 
 import org.apache.aries.transaction.jdbc.RecoverableDataSource;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
-import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 /**

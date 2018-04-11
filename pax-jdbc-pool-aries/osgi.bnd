@@ -5,14 +5,15 @@ Bundle-Activator:\
   org.ops4j.pax.jdbc.pool.aries.impl.Activator
 
 // Embedding aries transaction jdbc. To avoid installing the bundle which actively wraps DataSources
-Private-Package: \
-	org.apache.aries.transaction.jdbc,\
-	org.ops4j.pax.jdbc.pool.aries.impl,\
-	org.apache.aries.transaction.jdbc.internal,\
-	org.tranql.connector*
-	
-Import-Package: \
-	!org.apache.xbean.blueprint.context.impl,\
-	!org.apache.aries.util.tracker,\
-	!org.apache.aries.blueprint,\
-	*
+Private-Package:\
+  org.apache.aries.transaction.jdbc,\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.pool.aries.impl,\
+  org.apache.aries.transaction.jdbc.internal,\
+  org.tranql.connector*
+
+Import-Package:\
+  !org.apache.xbean.blueprint.context.impl,\
+  !org.apache.aries.util.tracker,\
+  !org.apache.aries.blueprint,\
+  *

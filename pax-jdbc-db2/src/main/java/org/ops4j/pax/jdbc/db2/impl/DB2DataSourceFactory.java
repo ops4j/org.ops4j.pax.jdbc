@@ -29,6 +29,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DB2DataSourceFactory implements DataSourceFactory {
@@ -70,22 +71,12 @@ public class DB2DataSourceFactory implements DataSourceFactory {
     private static <T extends CommonDataSource> T create(Class<T> target, Properties props) throws SQLException {
         try {
             T ds = target.cast(target.newInstance());
-            setProperties(ds, target, props);
+            BeanConfig.configure(ds, props);
             return ds;
         }
         catch (Exception ex) {
             throw new SQLException(ex);
         }
-
-    }
-
-    private static void setProperties(CommonDataSource ds, Class<?> clazz, Properties properties)
-            throws Exception {
-        final Map<String, Object> map = new HashMap<>();
-        for (Map.Entry<Object, Object> e: properties.entrySet()) {
-            map.put(e.getKey().toString(), e.getValue());
-        }
-        BeanConfig.configure(ds, new HashMap<String, Object>(map));
     }
 
     @Override

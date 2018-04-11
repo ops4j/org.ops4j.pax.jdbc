@@ -1,7 +1,7 @@
 Bundle-SymbolicName:\
   org.ops4j.pax.jdbc.pool.common
 
-Export-Package: \
-	org.ops4j.pax.jdbc.pool.common.impl,\
-	org.ops4j.pax.jdbc.pool.common,\
-	org.ops4j.pax.jdbc.hook
+Export-Package:\
+  org.ops4j.pax.jdbc.pool.common.impl,\
+  org.ops4j.pax.jdbc.pool.common,\
+  org.ops4j.pax.jdbc.hook

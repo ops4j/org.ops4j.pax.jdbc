@@ -5,4 +5,11 @@ Bundle-Activator:\
   org.ops4j.pax.jdbc.mysql.impl.Activator
 
 Provide-Capability:\
-	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.mysql.jdbc.Driver;osgi.jdbc.driver.name=mysql
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.mysql.jdbc.Driver;osgi.jdbc.driver.name=mysql
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.mysql.impl
+
+Import-Package:\
+  *

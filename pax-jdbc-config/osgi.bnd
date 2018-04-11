@@ -5,4 +5,4 @@ Bundle-Activator:\
   org.ops4j.pax.jdbc.config.impl.Activator
   
 Provide-Capability:\
-	 osgi.service;objectClass=javax.sql.DataSource
+  osgi.service;objectClass=javax.sql.DataSource

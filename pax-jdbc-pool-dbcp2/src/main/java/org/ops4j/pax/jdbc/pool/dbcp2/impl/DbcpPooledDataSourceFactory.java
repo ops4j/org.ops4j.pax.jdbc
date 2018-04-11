@@ -34,8 +34,8 @@ import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.dbcp2.PoolingDataSource;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
-import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
@@ -101,7 +101,7 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
             DataSource ds = dsf.createDataSource(getNonPoolProps(props));
-            DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory((DataSource) ds);
+            DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(ds);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, getPoolProps(props));

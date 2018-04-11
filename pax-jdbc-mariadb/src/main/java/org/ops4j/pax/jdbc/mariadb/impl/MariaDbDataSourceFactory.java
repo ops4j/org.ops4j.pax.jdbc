@@ -26,19 +26,20 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
-import org.mariadb.jdbc.MySQLDataSource;
+import org.mariadb.jdbc.MariaDbDataSource;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class MariaDbDataSourceFactory implements DataSourceFactory {
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
-        MySQLDataSource ds = new MySQLDataSource();
+        MariaDbDataSource ds = new MariaDbDataSource();
         setProperties(ds, props);
         return ds;
     }
 
-    private void setProperties(MySQLDataSource ds, Properties properties) throws SQLException {
+    private void setProperties(MariaDbDataSource ds, Properties properties) throws SQLException {
         Properties props = (Properties) properties.clone();
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);
         if (url != null) {
@@ -68,21 +69,21 @@ public class MariaDbDataSourceFactory implements DataSourceFactory {
         ds.setUser(user);
 
         if (!props.isEmpty()) {
-            throw new SQLException("cannot set properties " + props.keySet());
+            BeanConfig.configure(ds, props);
         }
     }
 
     @Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
         throws SQLException {
-        MySQLDataSource ds = new MySQLDataSource();
+        MariaDbDataSource ds = new MariaDbDataSource();
         setProperties(ds, props);
         return ds;
     }
 
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
-        MySQLDataSource ds = new MySQLDataSource();
+        MariaDbDataSource ds = new MariaDbDataSource();
         setProperties(ds, props);
         return ds;
     }

@@ -50,13 +50,12 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-db2/${project.version}</bundle>
     </feature>
 
-	<feature name="pax-jdbc-teradata" description="Provides JDBC Teradata DataSourceFactory" version="${project.version}">
+    <feature name="pax-jdbc-teradata" description="Provides JDBC Teradata DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-teradata/${project.version}</bundle>
     </feature>
 
-	
     <feature name="pax-jdbc-derby" description="Provides JDBC Derbi Embedded DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
@@ -64,7 +63,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
      </feature>
 
-     <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}">
+    <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
@@ -73,11 +72,13 @@
 
     <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
+
         <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
     </feature>
     
     <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
+
         <bundle dependency="true">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-hsqldb/${project.version}</bundle>
     </feature>
@@ -111,6 +112,7 @@
 
     <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
+
         <bundle dependency="true">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
     </feature>
@@ -141,6 +143,7 @@
     
     <feature name="pax-jdbc-pool-c3p0" description="Provides JDBC Pooling using C3P0" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
+
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${c3p0.version}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
@@ -150,6 +153,7 @@
 
     <feature name="pax-jdbc-pool-hikaricp" description="Provides JDBC Pooling DataSourceFactory using HikariCP" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
+
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>

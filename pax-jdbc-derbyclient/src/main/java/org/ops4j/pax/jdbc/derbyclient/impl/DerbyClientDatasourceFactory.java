@@ -31,12 +31,13 @@ import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.derby.jdbc.ClientDataSource;
 import org.apache.derby.jdbc.ClientDriver;
 import org.apache.derby.jdbc.ClientXADataSource;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.ops4j.pax.jdbc.derbyclient.constants.ClientConnectionConstant;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DerbyClientDatasourceFactory implements DataSourceFactory {
+
     private static final String DERBY_PREFIX = "jdbc:derby:";
-    // private Logger LOG = LoggerFactory.getLogger(DerbyClientDatasourceFactory.class);
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
@@ -52,32 +53,29 @@ public class DerbyClientDatasourceFactory implements DataSourceFactory {
             ds.setDatabaseName(databaseName);
         }
 
+        String createDatabase = (String) props.remove(ClientConnectionConstant.CREATE_DATABASE);
+        ds.setCreateDatabase(createDatabase);
+
         String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
         ds.setPassword(password);
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
         ds.setUser(user);
 
-        String createDatabase = (String) props.remove(ClientConnectionConstant.CREATE_DATABASE);
-        ds.setCreateDatabase(createDatabase);
-        String host = (String) properties.remove(DataSourceFactory.JDBC_SERVER_NAME);
-        if (host == null) {
-            host = "localhost";
-        }
+        String host = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
+        ds.setServerName(host == null ? "localhost" : host);
 
-        ds.setServerName(host);
         String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
-        if (portNumber != null) {
-            ds.setPortNumber(Integer.parseInt(portNumber));
-        }
-        else {
-            ds.setPortNumber(1527);
-        }
-        
+        ds.setPortNumber(portNumber != null ? Integer.parseInt(portNumber) : 1527);
+
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);
         applyUrl(ds, url);
+
+        if (!props.isEmpty()) {
+            BeanConfig.configure(ds, props);
+        }
     }
-    
+
     private void applyUrl(ClientDataSource ds, String url) {
         if (url == null) {
             return;

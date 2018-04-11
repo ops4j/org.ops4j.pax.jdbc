@@ -11,4 +11,8 @@ Import-Package:\
   *
 
 Provide-Capability:\
-	 osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=oracle.jdbc.OracleDriver;osgi.jdbc.driver.name=oracle
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=oracle.jdbc.OracleDriver;osgi.jdbc.driver.name=oracle
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.oracle.impl

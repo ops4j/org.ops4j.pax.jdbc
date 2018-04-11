@@ -36,4 +36,11 @@
 
     <name>OPS4J Pax JDBC Apache DB2 Driver Adapter</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-common</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -3,3 +3,10 @@ Bundle-SymbolicName:\
 
 Bundle-Activator:\
   org.ops4j.pax.jdbc.sqlite.impl.Activator
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.sqlite.impl
+
+Import-Package:\
+  *

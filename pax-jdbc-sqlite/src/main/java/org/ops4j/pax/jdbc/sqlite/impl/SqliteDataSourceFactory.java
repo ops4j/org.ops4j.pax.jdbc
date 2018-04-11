@@ -26,6 +26,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.sqlite.JDBC;
 import org.sqlite.SQLiteDataSource;
@@ -38,8 +39,14 @@ public class SqliteDataSourceFactory implements DataSourceFactory {
         String url = props.getProperty(JDBC_URL);
         if (url == null) {
             dataSource.setUrl("jdbc:sqlite:" + props.getProperty(JDBC_DATABASE_NAME));
+            props.remove(JDBC_DATABASE_NAME);
         } else {
             dataSource.setUrl(url);
+            props.remove(JDBC_URL);
+        }
+
+        if (!props.isEmpty()) {
+            BeanConfig.configure(dataSource, props);
         }
         return dataSource;
     }

@@ -53,7 +53,7 @@ public class PostgresqlNativeDataSourceTest extends AbstractJdbcTest {
     @Test
     public void createDataSourceAndConnection() throws SQLException {
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "PaxJdbc");
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "paxjdbc");
         props.setProperty(DataSourceFactory.JDBC_USER, "pax");
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "pax");
         dsf.createDataSource(props).getConnection().close();

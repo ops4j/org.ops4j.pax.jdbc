@@ -35,7 +35,7 @@ import org.apache.commons.dbcp2.managed.PoolableManagedConnectionFactory;
 import org.apache.commons.dbcp2.managed.TransactionRegistry;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.ops4j.pax.jdbc.pool.common.impl.BeanConfig;
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {

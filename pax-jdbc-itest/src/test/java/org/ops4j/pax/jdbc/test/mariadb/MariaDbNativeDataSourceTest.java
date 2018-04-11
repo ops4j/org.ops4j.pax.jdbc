@@ -56,7 +56,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
     public Option[] config() {
         return options(regressionDefaults(), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mariadb"), //
-            mavenBundle("org.jumpmind.symmetric.jdbc", "mariadb-java-client", "1.1.1"));
+            mavenBundle("org.mariadb.jdbc", "mariadb-java-client", "1.5.9"));
     }
 
     @Test

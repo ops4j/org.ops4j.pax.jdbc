@@ -27,6 +27,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class OracleDataSourceFactory implements DataSourceFactory {
@@ -97,7 +98,7 @@ public class OracleDataSourceFactory implements DataSourceFactory {
         clazz.getMethod("setPassword", String.class).invoke(ds, password);
 
         if (!props.isEmpty()) {
-            throw new SQLException("cannot set properties " + props.keySet());
+            BeanConfig.configure(ds, props);
         }
     }
 
