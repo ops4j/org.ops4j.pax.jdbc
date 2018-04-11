@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 public class DataSourceRegistration implements Closeable {
 
     static final String DATASOURCE_TYPE = "dataSourceType";
+    static final String MANAGED_DATASOURCE = "pax.jdbc.managed";
     static final String JNDI_SERVICE_NAME = "osgi.jndi.service.name";
 
     // By default all local keys (without a dot) are forwarded to the DataSourceFactory.
@@ -88,7 +89,9 @@ public class DataSourceRegistration implements Closeable {
                 preHook.prepare((DataSource)ds);
                 LOG.info("Pre hook finished. Publishing DataSource {}", dsName);
             }
-            serviceReg = context.registerService(type.getName(), ds, filterHidden(config));
+            Dictionary serviceProperties = filterHidden(config);
+            serviceProperties.put(MANAGED_DATASOURCE, "true");
+            serviceReg = context.registerService(type.getName(), ds, serviceProperties);
         } catch (SQLException e) {
             LOG.warn(e.getMessage(), e);
         }

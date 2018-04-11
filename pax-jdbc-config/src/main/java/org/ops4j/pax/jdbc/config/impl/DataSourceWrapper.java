@@ -70,7 +70,6 @@ public class DataSourceWrapper {
 
         Dictionary<String, Object> config = serviceReferenceProperties(reference);
         Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
-        loadedConfig.put("pax.jdbc.managed", "true");
         loadedConfig.put("xa", Boolean.toString(xa));
         loadedConfig.put(Constants.SERVICE_RANKING, getInt(config, Constants.SERVICE_RANKING, 0) + 1000);
 

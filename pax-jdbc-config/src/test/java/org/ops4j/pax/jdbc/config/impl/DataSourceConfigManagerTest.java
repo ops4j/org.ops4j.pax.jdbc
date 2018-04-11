@@ -255,6 +255,7 @@ public class DataSourceConfigManagerTest {
         final String valueDatasourceName = "myDataSource";
         properties.put(keyDatasourceType, "DataSource");
         properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, valueDatasourceName);
+        properties.put(DataSourceRegistration.MANAGED_DATASOURCE, "true");
 
         Properties expectedDataSourceProperties = new Properties();
         expectedDataSourceProperties.put(DataSourceFactory.JDBC_DATABASE_NAME, dbname);
