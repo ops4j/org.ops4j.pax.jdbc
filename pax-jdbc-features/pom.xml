@@ -105,6 +105,12 @@
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-mysql</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-oracle</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
@@ -271,6 +277,11 @@
                                         <file>target/classes/features.xml</file>
                                         <type>xml</type>
                                         <classifier>features</classifier>
+                                    </artifact>
+                                    <artifact>
+                                        <file>target/classes/features-gpl.xml</file>
+                                        <type>xml</type>
+                                        <classifier>features-gpl</classifier>
                                     </artifact>
                                 </artifacts>
                             </configuration>

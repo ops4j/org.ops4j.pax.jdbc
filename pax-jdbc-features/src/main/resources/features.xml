@@ -24,7 +24,7 @@
     <repository>
         mvn:org.ops4j.pax.transx/pax-transx-features/${pax.transx.version}/xml/features
     </repository>
-    
+
     <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}">
         <bundle>mvn:org.osgi/org.osgi.service.jdbc/1.0.0</bundle>
     </feature>
@@ -61,7 +61,7 @@
 
         <bundle dependency="true">mvn:org.apache.derby/derby/${derby.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
-     </feature>
+    </feature>
 
     <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
@@ -75,7 +75,7 @@
 
         <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
     </feature>
-    
+
     <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
@@ -90,13 +90,6 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mariadb/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-mysql" description="Provides JDBC MySQL DataSourceFactory" version="${project.version}">
-        <feature>pax-jdbc-spec</feature>
-
-        <bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql.version}</bundle>
-        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mysql/${project.version}</bundle>
-    </feature>
-
     <feature name="pax-jdbc-oracle" description="Provides JDBC Oracle DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
@@ -105,7 +98,7 @@
 
     <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
-        
+
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
     </feature>
@@ -140,7 +133,7 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
-    
+
     <feature name="pax-jdbc-pool-c3p0" description="Provides JDBC Pooling using C3P0" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 

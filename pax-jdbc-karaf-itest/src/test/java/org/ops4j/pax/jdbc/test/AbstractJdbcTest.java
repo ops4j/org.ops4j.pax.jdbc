@@ -62,6 +62,11 @@ public class AbstractJdbcTest {
             .classifier("features").type("xml").versionAsInProject();
     }
 
+    MavenUrlReference paxJdbcGplRepo() {
+        return maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features")
+            .classifier("features-gpl").type("xml").versionAsInProject();
+    }
+
     protected DataSource createDataSource(DataSourceFactory dsf) throws SQLException {
         assertNotNull(dsf);
         Properties props = new Properties();
