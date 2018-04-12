@@ -72,6 +72,8 @@ public class DataSourceWrapper {
         Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
         loadedConfig.put("xa", Boolean.toString(xa));
         loadedConfig.put(Constants.SERVICE_RANKING, getInt(config, Constants.SERVICE_RANKING, 0) + 1000);
+        // reference to service being wrapped
+        loadedConfig.put("pax.jdbc.service.id.ref", config.get(Constants.SERVICE_ID));
 
         String seFilter = DataSourceConfigManager.getStringEncryptorFilter(loadedConfig);
         String pdsfFilter = null;

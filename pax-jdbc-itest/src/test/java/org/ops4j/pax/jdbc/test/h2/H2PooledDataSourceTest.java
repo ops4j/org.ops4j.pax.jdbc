@@ -19,7 +19,6 @@
 package org.ops4j.pax.jdbc.test.h2;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import javax.inject.Inject;
@@ -32,7 +31,6 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
 
 import static org.hamcrest.CoreMatchers.equalTo;
