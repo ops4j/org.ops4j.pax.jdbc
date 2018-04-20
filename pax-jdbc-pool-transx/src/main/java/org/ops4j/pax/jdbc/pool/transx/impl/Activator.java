@@ -24,7 +24,6 @@ import org.ops4j.pax.transx.tm.TransactionManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -38,14 +37,16 @@ import static org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory.XA_KEY;
 public class Activator implements BundleActivator {
 
     private static final String TRANSX = "transx";
-    private ServiceTracker<TransactionManager, ServiceRegistration<PooledDataSourceFactory>> tmTracker;
+    private AbstractTransactionManagerTracker<TransactionManager> tmTracker;
 
     @Override
     public void start(final BundleContext context) throws Exception {
         TransxPooledDataSourceFactory dsf = new TransxPooledDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<>();
         props.put(POOL_KEY, TRANSX);
+        props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
+
         tmTracker = new AbstractTransactionManagerTracker<TransactionManager>(context, TransactionManager.class) {
             @Override
             public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context, TransactionManager tm) {
@@ -56,6 +57,7 @@ public class Activator implements BundleActivator {
                 return context.registerService(PooledDataSourceFactory.class, dsf, props);
             }
         };
+
         tmTracker.open();
     }
 

@@ -48,8 +48,9 @@ import org.slf4j.LoggerFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     private static final Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
-    protected final BundleContext bundleContext;
+
     protected final TransactionManager tm;
+    protected final BundleContext bundleContext;
 
     /**
      * Initialize XA PoolingDataSourceFactory
@@ -109,7 +110,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             return mds;
         }
         catch (Throwable e) {
-            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
+            LOG.error("Error creating pooled datasource: " + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             }

@@ -37,8 +37,12 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
+
     protected TransactionManager tm;
 
     /**
@@ -68,7 +72,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
             XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
-            DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, (XADataSource) ds);
+            DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, getPoolProps(props));
@@ -79,6 +83,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             return new ManagedDataSource<PoolableConnection>(pool, transactionRegistry);
         }
         catch (Throwable e) {
+            LOG.error("Error creating pooled datasource: " + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             }

@@ -105,7 +105,7 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
             DataSource ds = dsf.createDataSource(getNonPoolProps(props));
-            DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory((DataSource) ds);
+            DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(ds);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
             BeanConfig.configure(conf, getPoolProps(props));
@@ -115,7 +115,7 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
             return new PoolingDataSource<PoolableConnection>(pool);
         }
         catch (Throwable e) {
-            LOG.error("Error creating pooled datasource" + e.getMessage(), e);
+            LOG.error("Error creating pooled datasource: " + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
             }

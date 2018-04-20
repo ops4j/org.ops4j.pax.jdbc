@@ -36,7 +36,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         HikariPooledDataSourceFactory dsf = new HikariPooledDataSourceFactory();
-        Dictionary<String, String> props = new Hashtable<String, String>();
+        Dictionary<String, String> props = new Hashtable<>();
         props.put(POOL_KEY, "hikari");
         props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);

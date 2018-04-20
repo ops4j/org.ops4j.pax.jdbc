@@ -34,29 +34,28 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
+    private static final String DBCP2 = "dbcp2";
     private AbstractTransactionManagerTracker<TransactionManager> tmTracker;
 
     @Override
     public void start(final BundleContext context) throws Exception {
         DbcpPooledDataSourceFactory dsf = new DbcpPooledDataSourceFactory();
-        Dictionary<String, String> props = new Hashtable<String, String>();
-        props.put(POOL_KEY, "dbcp2");
+        Dictionary<String, String> props = new Hashtable<>();
+        props.put(POOL_KEY, DBCP2);
         props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
         tmTracker = new AbstractTransactionManagerTracker<TransactionManager>(context, TransactionManager.class) {
-            
             @Override
-            public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
-                                                                              TransactionManager tm) {
+            public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context, TransactionManager tm) {
                 DbcpXAPooledDataSourceFactory dsf = new DbcpXAPooledDataSourceFactory(tm);
-                Dictionary<String, String> props = new Hashtable<String, String>();
-                props.put(POOL_KEY, "dbcp2");
+                Dictionary<String, String> props = new Hashtable<>();
+                props.put(POOL_KEY, DBCP2);
                 props.put(XA_KEY, "true");
                 return context.registerService(PooledDataSourceFactory.class, dsf, props);
             }
         };
-                
+
         tmTracker.open();
     }
 

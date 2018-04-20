@@ -40,23 +40,22 @@ public class Activator implements BundleActivator {
     @Override
     public void start(final BundleContext context) throws Exception {
         DbcpPooledDataSourceFactory dsf = new DbcpPooledDataSourceFactory();
-        Dictionary<String, String> props = new Hashtable<String, String>();
+        Dictionary<String, String> props = new Hashtable<>();
         props.put(POOL_KEY, NARAYANA);
         props.put(XA_KEY, "false");
         context.registerService(PooledDataSourceFactory.class, dsf, props);
 
         tmTracker = new AbstractTransactionManagerTracker<TransactionManager>(context, TransactionManager.class, "(provider=narayana)") {
             @Override
-            public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context,
-                                                                              TransactionManager tm) {
+            public ServiceRegistration<PooledDataSourceFactory> createService(BundleContext context, TransactionManager tm) {
                 DbcpXAPooledDataSourceFactory dsf = new DbcpXAPooledDataSourceFactory(context, tm);
-                Dictionary<String, String> props = new Hashtable<String, String>();
+                Dictionary<String, String> props = new Hashtable<>();
                 props.put(POOL_KEY, NARAYANA);
                 props.put(XA_KEY, "true");
                 return context.registerService(PooledDataSourceFactory.class, dsf, props);
             }
         };
-                
+
         tmTracker.open();
     }
 
@@ -64,4 +63,5 @@ public class Activator implements BundleActivator {
     public void stop(BundleContext context) throws Exception {
         tmTracker.close();
     }
+
 }

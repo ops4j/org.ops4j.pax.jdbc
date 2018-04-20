@@ -50,6 +50,7 @@ public class TransxPooledDataSourceFactory implements PooledDataSourceFactory {
             DataSource mds = ManagedDataSourceBuilder.builder()
                     .dataSource(ds)
                     .transaction(TransactionSupportLevel.NoTransaction)
+                    .properties(getPoolProps(props))
                     .build();
             return mds;
         }
@@ -67,13 +68,13 @@ public class TransxPooledDataSourceFactory implements PooledDataSourceFactory {
         }
     }
     
-    protected Map<String, String> getPoolProps(Properties props) {
-        Map<String, String> poolProps = new HashMap<String, String>();
+    protected Map<String, Object> getPoolProps(Properties props) {
+        Map<String, Object> poolProps = new HashMap<>();
         for (Object keyO : props.keySet()) {
             String key = (String) keyO;
             if (key.startsWith(POOL_PREFIX)) {
                 String strippedKey = key.substring(POOL_PREFIX.length());
-                poolProps.put(strippedKey, (String) props.get(key));
+                poolProps.put(strippedKey, props.get(key));
             }
         }
         return poolProps;

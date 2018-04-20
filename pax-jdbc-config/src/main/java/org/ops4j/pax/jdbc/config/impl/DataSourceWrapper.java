@@ -20,6 +20,7 @@ package org.ops4j.pax.jdbc.config.impl;
 
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -64,7 +65,13 @@ public class DataSourceWrapper {
         LOG.info("Got service reference {}", ds);
         this.ds = ds;
 
-        boolean xa = ds instanceof XADataSource;
+        boolean xa = false;
+        Object objectClass = reference.getProperty("objectClass");
+        if (objectClass instanceof String) {
+            xa = XADataSource.class.getName().equals(objectClass);
+        } else if (objectClass instanceof String[]) {
+            xa = Arrays.stream((String[]) objectClass).anyMatch(c -> XADataSource.class.getName().equals(c));
+        }
         DataSourceFactory providedDataSourceFactory = xa ? new ProvidedDataSourceFactory((XADataSource) ds)
                 : new ProvidedDataSourceFactory((DataSource) ds);
 
@@ -90,10 +97,10 @@ public class DataSourceWrapper {
             throw new IllegalArgumentException("No pooling configuration available for service " + ds.toString()
                     + ": " + loadedConfig);
         }
-        final String filanPdsfFilter = pdsfFilter;
+        final String finalPdsfFilter = pdsfFilter;
 
         tracker = helper.track(StringEncryptor.class, seFilter, se ->
-                helper.track(PooledDataSourceFactory.class, filanPdsfFilter, pdsf ->
+                helper.track(PooledDataSourceFactory.class, finalPdsfFilter, pdsf ->
                         helper.track(PreHook.class, phFilter, ph ->
                                         new DataSourceRegistration(context,
                                                 new PoolingWrapper(pdsf, providedDataSourceFactory),

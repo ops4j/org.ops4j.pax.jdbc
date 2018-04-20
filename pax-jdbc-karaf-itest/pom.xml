@@ -35,10 +35,6 @@
 
     <name>OPS4J Pax JDBC Karaf Integration Tests</name>
 
-    <properties>
-        <karaf.version>4.1.0</karaf.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.karaf.features</groupId>
@@ -90,9 +86,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

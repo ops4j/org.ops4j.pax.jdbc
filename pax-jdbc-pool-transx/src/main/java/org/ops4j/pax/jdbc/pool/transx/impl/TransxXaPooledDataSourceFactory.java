@@ -59,6 +59,7 @@ public class TransxXaPooledDataSourceFactory extends TransxPooledDataSourceFacto
                     .dataSource(ds)
                     .transaction(TransactionSupportLevel.XATransaction)
                     .transactionManager(tm)
+                    .properties(getPoolProps(props))
                     .build();
             return mds;
         }

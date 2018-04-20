@@ -189,4 +189,10 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         }
     }
 
+    synchronized void destroy() {
+        for (String pid : trackers.keySet()) {
+            deleted(pid);
+        }
+    }
+
 }

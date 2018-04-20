@@ -52,7 +52,7 @@ public class H2PooledDataSourceTest extends AbstractJdbcTest {
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
             mvnBundle("org.apache.commons", "commons-pool2"), //
-            mvnBundle("commons-logging", "commons-logging"), //
+            mvnBundle("org.ops4j.pax.logging", "pax-logging-api"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
             mvnBundle("org.apache.commons", "commons-dbcp2"), //
@@ -90,12 +90,12 @@ public class H2PooledDataSourceTest extends AbstractJdbcTest {
         DataSource ds2 = trackerForPool.waitForService(5000);
         assertNotNull(ds2);
         assertThat(ds2.getClass().getName(), equalTo("org.apache.commons.dbcp2.managed.ManagedDataSource"));
-        Field _poolField = ds2.getClass().getSuperclass().getDeclaredField("_pool");
-        _poolField.setAccessible(true);
-        Object _pool = _poolField.get(ds2);
-        Field maxTotalField = _pool.getClass().getSuperclass().getDeclaredField("maxTotal");
+        Field poolField = ds2.getClass().getSuperclass().getDeclaredField("_pool");
+        poolField.setAccessible(true);
+        Object pool = poolField.get(ds2);
+        Field maxTotalField = pool.getClass().getSuperclass().getDeclaredField("maxTotal");
         maxTotalField.setAccessible(true);
-        Integer maxTotal = (Integer) maxTotalField.get(_pool);
+        Integer maxTotal = (Integer) maxTotalField.get(pool);
         assertThat(maxTotal, equalTo(42));
     }
 

@@ -26,6 +26,7 @@ import javax.sql.CommonDataSource;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -35,17 +36,20 @@ public class Activator implements BundleActivator {
 
     private ServiceTracker<?, ?> dataSourceTracker;
 
+    private DataSourceConfigManager configManager;
+    private ServiceRegistration<ManagedServiceFactory> registration;
+
     @Override
     public void start(BundleContext context) throws Exception {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
-        DataSourceConfigManager configManager = new DataSourceConfigManager(context);
+        configManager = new DataSourceConfigManager(context);
         // this service will track:
         //  - org.ops4j.datasource factory PIDs
         //  - (optionally) org.jasypt.encryption.StringEncryptor services
         //  - (optionally) org.ops4j.pax.jdbc.hook.PreHook services
         //  - org.osgi.service.jdbc.DataSourceFactory services
-        context.registerService(ManagedServiceFactory.class.getName(), configManager, props);
+        registration = context.registerService(ManagedServiceFactory.class, configManager, props);
 
         // this service will track:
         //  - javax.sql.DataSource services
@@ -69,6 +73,8 @@ public class Activator implements BundleActivator {
         if (dataSourceTracker != null) {
             dataSourceTracker.close();
         }
+        registration.unregister();
+        configManager.destroy();
     }
 
 }
