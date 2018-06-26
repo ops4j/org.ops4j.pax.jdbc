@@ -50,6 +50,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.newCapture;
 import static org.junit.Assert.assertEquals;
+import org.ops4j.pax.jdbc.config.ConfigLoader;
+import org.osgi.framework.Constants;
 
 @SuppressWarnings({
                    "rawtypes", "unchecked"
@@ -73,6 +75,12 @@ public class DataSourceConfigManagerTest {
                 return FrameworkUtil.createFilter(capture.getValue());
             }
         });
+        context.addServiceListener(anyObject(ServiceListener.class), anyString());
+        ServiceReference ref = c.createMock(ServiceReference.class);
+        ServiceReference[] refs = new ServiceReference[]{ref};
+        String filter = "(" + Constants.OBJECTCLASS + "=" + ConfigLoader.class.getName() + ")";
+        expect(context.getServiceReferences((String) null, filter)).andReturn(refs);
+        expect(context.getService(ref)).andReturn(new FileConfigLoader());
     }
 
     @Test
@@ -86,10 +94,11 @@ public class DataSourceConfigManagerTest {
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
 
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
-
         // Test config created
         c.replay();
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, new ExternalConfigLoader(context));
+
         dsManager.updated(TESTPID, properties);
 
         c.verify();
@@ -123,10 +132,11 @@ public class DataSourceConfigManagerTest {
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         properties.put(PreHook.CONFIG_KEY_NAME, "myhook");
 
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
-
         // Test config created
         c.replay();
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, new ExternalConfigLoader(context));
+
         dsManager.updated(TESTPID, properties);
 
         c.verify();
@@ -149,9 +159,11 @@ public class DataSourceConfigManagerTest {
     public void testNotEnoughInfoToFindDriver() {
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("other", "value");
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
 
         c.replay();
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, new ExternalConfigLoader(context));
+
         try {
             dsManager.updated(TESTPID, properties);
         } catch (ConfigurationException e) {
@@ -171,11 +183,12 @@ public class DataSourceConfigManagerTest {
         
         StringEncryptor encryptor = expectTracked(c, context, StringEncryptor.class, "(objectClass=org.jasypt.encryption.StringEncryptor)");
         expect(encryptor.decrypt("ciphertext")).andReturn("password");
-        
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
 
         // Test config created
         c.replay();
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, new ExternalConfigLoader(context));
+
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
@@ -195,12 +208,13 @@ public class DataSourceConfigManagerTest {
         final DataSourceFactory dsf = expectTracked(c, context, DataSourceFactory.class, H2_DSF_FILTER);
         DataSource ds = expectDataSourceCreated(dsf);
         expectRegistration(ds);
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
         StringEncryptor encryptor = expectTracked(c, context, StringEncryptor.class, "(objectClass=org.jasypt.encryption.StringEncryptor)");
         expect(encryptor.decrypt("ciphertext")).andReturn("password");
 
         // Test config created
         c.replay();
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, new ExternalConfigLoader(context));
 
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
@@ -274,10 +288,11 @@ public class DataSourceConfigManagerTest {
         ServiceRegistration sreg = c.createMock(ServiceRegistration.class);
         expect(context.registerService(anyString(), eq(ds), eq(expectedServiceProperties))).andReturn(sreg);
 
-        DataSourceConfigManager dsManager = new DataSourceConfigManager(context);
-
         // Test config created
         c.replay();
+
+        DataSourceConfigManager dsManager = new DataSourceConfigManager(context, new ExternalConfigLoader(context));
+
         dsManager.updated(TESTPID, properties);
         c.verify();
     }

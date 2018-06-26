@@ -58,10 +58,11 @@ public class DataSourceWrapper {
      * using properties that are part of original data source registration.
      *
      * @param context {@link BundleContext} of pax-jdbc-config
+     * @param externalConfigLoader loader for external configurations
      * @param ds {@link CommonDataSource} instance - application registered and database-specific (as recommended)
      * @param reference {@link CommonDataSource}'s {@link ServiceReference}
      */
-    public DataSourceWrapper(BundleContext context, CommonDataSource ds, ServiceReference<CommonDataSource> reference) {
+    public DataSourceWrapper(BundleContext context, ExternalConfigLoader externalConfigLoader, CommonDataSource ds, ServiceReference<CommonDataSource> reference) {
         LOG.info("Got service reference {}", ds);
         this.ds = ds;
 
@@ -76,7 +77,7 @@ public class DataSourceWrapper {
                 : new ProvidedDataSourceFactory((DataSource) ds);
 
         Dictionary<String, Object> config = serviceReferenceProperties(reference);
-        Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
+        Dictionary<String, Object> loadedConfig = externalConfigLoader.resolve(config);
         loadedConfig.put("xa", Boolean.toString(xa));
         loadedConfig.put(Constants.SERVICE_RANKING, getInt(config, Constants.SERVICE_RANKING, 0) + 1000);
         // reference to service being wrapped

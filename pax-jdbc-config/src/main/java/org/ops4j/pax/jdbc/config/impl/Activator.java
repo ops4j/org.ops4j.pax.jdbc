@@ -23,6 +23,7 @@ import java.util.Hashtable;
 
 import javax.sql.CommonDataSource;
 
+import org.ops4j.pax.jdbc.config.ConfigLoader;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -36,14 +37,18 @@ public class Activator implements BundleActivator {
 
     private ServiceTracker<?, ?> dataSourceTracker;
 
+    private ExternalConfigLoader externalConfigLoader;
+    private ServiceRegistration<ConfigLoader> configLoaderRegistration;
     private DataSourceConfigManager configManager;
     private ServiceRegistration<ManagedServiceFactory> registration;
 
     @Override
     public void start(BundleContext context) throws Exception {
-        Dictionary<String, String> props = new Hashtable<String, String>();
+        configLoaderRegistration = context.registerService(ConfigLoader.class, new FileConfigLoader(), new Hashtable<>());
+        externalConfigLoader = new ExternalConfigLoader(context);
+        Dictionary<String, String> props = new Hashtable<>();
         props.put(Constants.SERVICE_PID, FACTORY_PID);
-        configManager = new DataSourceConfigManager(context);
+        configManager = new DataSourceConfigManager(context, externalConfigLoader);
         // this service will track:
         //  - org.ops4j.datasource factory PIDs
         //  - (optionally) org.jasypt.encryption.StringEncryptor services
@@ -63,7 +68,7 @@ public class Activator implements BundleActivator {
         String filter = "(&(pool=*)(!(pax.jdbc.managed=true))" +
                 "(|(objectClass=javax.sql.DataSource)(objectClass=javax.sql.XADataSource)))";
         dataSourceTracker = helper.track(CommonDataSource.class, filter,
-                (ds, reference) -> new DataSourceWrapper(context, ds, reference),
+                (ds, reference) -> new DataSourceWrapper(context, externalConfigLoader, ds, reference),
                 DataSourceWrapper::close
         );
     }
@@ -75,6 +80,8 @@ public class Activator implements BundleActivator {
         }
         registration.unregister();
         configManager.destroy();
+        configLoaderRegistration.unregister();
+        externalConfigLoader.destroy();
     }
 
 }

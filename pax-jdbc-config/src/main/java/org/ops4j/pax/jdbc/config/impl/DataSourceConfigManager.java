@@ -39,15 +39,17 @@ import java.util.Objects;
 @SuppressWarnings({"rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
-    BundleContext context;
+    private BundleContext context;
+    private ExternalConfigLoader externalConfigLoader;
 
     /**
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
     private Map<String, ServiceTracker<?, ?>> trackers;
 
-    public DataSourceConfigManager(BundleContext context) {
+    public DataSourceConfigManager(BundleContext context, ExternalConfigLoader externalConfigLoader) {
         this.context = context;
+        this.externalConfigLoader = externalConfigLoader;
         this.trackers = new HashMap<>();
     }
 
@@ -64,7 +66,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
             return;
         }
 
-        Dictionary<String, Object> loadedConfig = new ExternalConfigLoader().resolve(config);
+        Dictionary<String, Object> loadedConfig = externalConfigLoader.resolve(config);
 
         String seFilter = getStringEncryptorFilter(loadedConfig);
         String dsfFilter = getDSFFilter(loadedConfig);
