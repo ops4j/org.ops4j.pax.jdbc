@@ -18,6 +18,7 @@
  */
 package org.ops4j.pax.jdbc.test.config;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -36,6 +37,9 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -81,13 +85,42 @@ public class H2ConfigTest extends AbstractJdbcTest {
         tracker.close();
     }
 
+    @SuppressWarnings({
+     "unchecked", "rawtypes"
+    })
+    @Test
+    public void testMultipleDataSourcesFromConfigCleanup() throws SQLException, IOException,
+            InvalidSyntaxException, InterruptedException, BundleException {
+        org.osgi.service.cm.Configuration config1 = createConfigForDataSource("h2test1");
+        org.osgi.service.cm.Configuration config2 = createConfigForDataSource("h2test2");
+        ServiceTracker tracker1 = new ServiceTracker(context, FrameworkUtil.createFilter("(&(objectClass=" + DataSource.class.toString() + ")("+JNDI_NAME+"=h2test1))"), null);
+        tracker1.open();
+        ServiceTracker tracker2 = new ServiceTracker(context, FrameworkUtil.createFilter("(&(objectClass=" + DataSource.class.toString() + ")("+JNDI_NAME+"=h2test2))"), null);
+        tracker1.open();
+        final Bundle configBundle = getBundle("org.ops4j.pax.jdbc.config");
+        configBundle.stop(Bundle.STOP_TRANSIENT);
+        assertEquals(Bundle.RESOLVED, configBundle.getState());
+        Thread.sleep(200);
+        assertNull(tracker1.getService());
+        assertNull(tracker2.getService());
+        config1.delete();
+        config2.delete();
+        tracker1.close();
+        tracker2.close();
+        configBundle.start();
+    }
+
     private org.osgi.service.cm.Configuration createConfigForDataSource() throws IOException {
+        return createConfigForDataSource("h2test");
+    }
+
+    private org.osgi.service.cm.Configuration createConfigForDataSource(String name) throws IOException {
         org.osgi.service.cm.Configuration config = configAdmin.createFactoryConfiguration(
             "org.ops4j.datasource", null);
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver");
         props.put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax");
-        props.put(JNDI_NAME, "h2test"); // jndi name for aries jndi
+        props.put(JNDI_NAME, name); // jndi name for aries jndi
         config.update(props);
         return config;
     }
