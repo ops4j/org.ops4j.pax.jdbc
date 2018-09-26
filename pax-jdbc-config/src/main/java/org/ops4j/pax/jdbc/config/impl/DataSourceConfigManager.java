@@ -29,8 +29,10 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
@@ -184,7 +186,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
     }
 
     @Override
-    public void deleted(String pid) {
+    public synchronized void deleted(String pid) {
         ServiceTracker<?, ?> tracker = trackers.remove(pid);
         if (tracker != null) {
             tracker.close();
@@ -192,7 +194,8 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
     }
 
     synchronized void destroy() {
-        for (String pid : trackers.keySet()) {
+        Set<String> pidsToDestroy = new HashSet<>(trackers.keySet());
+        for (String pid : pidsToDestroy) {
             deleted(pid);
         }
     }

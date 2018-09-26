@@ -35,7 +35,9 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.jdbc.config.ConfigLoader;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -65,9 +67,7 @@ public class H2ConfigTest extends AbstractJdbcTest {
         };
     }
 
-    @SuppressWarnings({
-     "unchecked", "rawtypes"
-    })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testDataSourceFromConfig() throws SQLException, IOException,
         InvalidSyntaxException, InterruptedException {
@@ -81,13 +81,39 @@ public class H2ConfigTest extends AbstractJdbcTest {
         tracker.close();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testTwoDataSourcesFromConfig() throws Exception {
+        org.osgi.service.cm.Configuration config1 = createConfigForDataSource("d1");
+        org.osgi.service.cm.Configuration config2 = createConfigForDataSource("d2");
+        ServiceTracker tracker1 = new ServiceTracker(context, context.createFilter("(&(objectClass=" + DataSource.class.getName() + ")(osgi.jndi.service.name=d1))"), null);
+        ServiceTracker tracker2 = new ServiceTracker(context, context.createFilter("(&(objectClass=" + DataSource.class.getName() + ")(osgi.jndi.service.name=d2))"), null);
+        tracker1.open();
+        tracker2.open();
+        DataSource dataSource1 = (DataSource)tracker1.waitForService(2000);
+        DataSource dataSource2 = (DataSource)tracker2.waitForService(2000);
+        assertDataSourceWorks(dataSource1);
+        assertDataSourceWorks(dataSource2);
+        assertServicePropertiesPresent(tracker1.getServiceReference(), "d1");
+        assertServicePropertiesPresent(tracker2.getServiceReference(), "d2");
+
+        FrameworkUtil.getBundle(ConfigLoader.class).stop();
+
+        tracker1.close();
+        tracker2.close();
+    }
+
     private org.osgi.service.cm.Configuration createConfigForDataSource() throws IOException {
+        return createConfigForDataSource("h2test");
+    }
+
+    private org.osgi.service.cm.Configuration createConfigForDataSource(String jndiName) throws IOException {
         org.osgi.service.cm.Configuration config = configAdmin.createFactoryConfiguration(
             "org.ops4j.datasource", null);
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver");
         props.put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax");
-        props.put(JNDI_NAME, "h2test"); // jndi name for aries jndi
+        props.put(JNDI_NAME, jndiName); // jndi name for aries jndi
         config.update(props);
         return config;
     }
@@ -97,11 +123,14 @@ public class H2ConfigTest extends AbstractJdbcTest {
         dataSource.getConnection().close();
     }
 
-    @SuppressWarnings("rawtypes")
     private void assertServicePropertiesPresent(ServiceReference ref) {
+        assertServicePropertiesPresent(ref, "h2test");
+    }
+
+    private void assertServicePropertiesPresent(ServiceReference ref, String jndiName) {
         Assert.assertEquals("org.h2.Driver", ref.getProperty(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS));
         Assert.assertEquals("jdbc:h2:mem:pax", ref.getProperty(DataSourceFactory.JDBC_URL));
-        Assert.assertEquals("h2test", ref.getProperty(JNDI_NAME));
+        Assert.assertEquals(jndiName, ref.getProperty(JNDI_NAME));
     }
 
     private void checkDataSourceIsDeletedWhenConfigIsDeleted(
@@ -109,6 +138,6 @@ public class H2ConfigTest extends AbstractJdbcTest {
         throws IOException, InterruptedException {
         config.delete();
         Thread.sleep(200);
-        assertNull((DataSource) tracker.getService());
+        assertNull(tracker.getService());
     }
 }
