@@ -1,0 +1,28 @@
+Hi,
+
+There is no possibility for me to create a ticket in jira. So i do it the hard way.
+
+The mariadb jdbc driver password is not recognized when using c3p0.
+Steps to reproduce:
+
+Use a org.ops4j.datasource-test.cfg:
+osgi.jdbc.driver.name=mariadb
+osgi.jdbc.driver.class=org.mariadb.jdbc.Driver
+databaseName=dbtest
+user=root
+password=root
+serverName=192.168.5.123
+portNumber=3306
+dataSourceName=test
+
+pool=c3p0
+xa=false
+
+jdbc.c3p0.dataSourceName=test
+jdbc.c3p0.acquireIncrement=10
+jdbc.c3p0.initialPoolSize=50
+jdbc.c3p0.minPoolSize=20
+jdbc.c3p0.maxPoolSize=30
+jdbc.c3p0.maxIdleTime=0
+jdbc.c3p0.acquireRetryAttempts=3
+
