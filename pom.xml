@@ -88,7 +88,7 @@
         <pax.exam.version>4.10.0</pax.exam.version>
         <pax.logging.version>1.10.1</pax.logging.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
-        <pax.url.version>2.5.4</pax.url.version>
+        <pax.url.version>2.6.1</pax.url.version>
         <pax.transx.version>0.3.0</pax.transx.version>
         <postgresql.version>9.4.1212.jre7</postgresql.version>
         <servicemix.bundles.javax-inject.version>1_2</servicemix.bundles.javax-inject.version>
