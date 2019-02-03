@@ -66,7 +66,7 @@
         <commons.dbcp2.version>2.1.1</commons.dbcp2.version>
         <commons.pool2.version>2.5.0</commons.pool2.version>
         <c3p0.version>0.9.5.2_1</c3p0.version>
-        <derby.version>10.13.1.1</derby.version>
+        <derby.version>10.14.2.0</derby.version>
         <easymock.version>3.4</easymock.version>
         <!-- 3.13.0.v20171204-1916 exports org.osgi.framework package with version 1.9 -->
         <eclipse.osgi.version>3.11.2.v20161107-1947</eclipse.osgi.version>
@@ -109,7 +109,6 @@
         <module>pax-jdbc</module>
         <module>pax-jdbc-common</module>
         <module>pax-jdbc-db2</module>
-        <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
         <module>pax-jdbc-hsqldb</module>
         <module>pax-jdbc-mysql</module>

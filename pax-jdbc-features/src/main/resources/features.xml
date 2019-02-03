@@ -56,14 +56,13 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-teradata/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-derby" description="Provides JDBC Derbi Embedded DataSourceFactory" version="${project.version}">
+    <feature name="pax-jdbc-derby" description="Provides JDBC Derby Embedded DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.derby/derby/${derby.version}</bundle>
-        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
+        <bundle>mvn:org.apache.derby/derby/${derby.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derbi Client DataSourceFactory" version="${project.version}">
+    <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derby Client DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
