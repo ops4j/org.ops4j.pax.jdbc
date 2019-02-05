@@ -109,6 +109,7 @@
         <module>pax-jdbc</module>
         <module>pax-jdbc-common</module>
         <module>pax-jdbc-db2</module>
+        <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
         <module>pax-jdbc-hsqldb</module>
         <module>pax-jdbc-mysql</module>

@@ -41,7 +41,7 @@ public class DerbyNativeDataSourceTest extends AbstractJdbcTest {
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"), //
             mvnBundle("org.apache.derby", "derby") //
         );
     }
@@ -49,7 +49,7 @@ public class DerbyNativeDataSourceTest extends AbstractJdbcTest {
     @Test
     public void createDataSourceAndConnection() throws SQLException {
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:test;create=true");
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "memory:pax;create=true");
         props.setProperty(DataSourceFactory.JDBC_USER, "pax");
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "pax");
         dsf.createDataSource(props).getConnection().close();

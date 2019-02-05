@@ -75,6 +75,12 @@
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-derby</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-hsqldb</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
