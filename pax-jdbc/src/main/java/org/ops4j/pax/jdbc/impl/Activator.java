@@ -43,6 +43,8 @@ public class Activator implements BundleActivator, BundleTrackerCustomizer<List<
 
     public static final String BUNDLE_NAME = "org.ops4j.pax.jdbc";
 
+    public static final String DRIVER_NAME_NATIVE_SUFFIX = "-native";
+
     private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
 
     private BundleTracker<List<ServiceRegistration<DataSourceFactory>>> tracker;
@@ -85,7 +87,7 @@ public class Activator implements BundleActivator, BundleTrackerCustomizer<List<
                     Dictionary<String, String> props = new Hashtable<>();
                     props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, driver.getClass().getName());
                     if (bundle.getSymbolicName() != null) {
-                        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, bundle.getSymbolicName());
+                        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, bundle.getSymbolicName() + DRIVER_NAME_NATIVE_SUFFIX);
                     }
                     if (bundle.getVersion() != null) {
                         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_VERSION, bundle.getVersion().toString());
