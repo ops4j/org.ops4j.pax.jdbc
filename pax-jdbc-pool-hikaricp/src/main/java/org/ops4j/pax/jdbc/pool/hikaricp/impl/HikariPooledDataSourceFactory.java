@@ -36,6 +36,7 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
     protected static final String POOL_PREFIX = "hikari.";
+    protected static final String POOL_PREFIX2 = "pool.";
 
     public HikariPooledDataSourceFactory() {
     }
@@ -44,7 +45,7 @@ public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
         Properties dsProps = new Properties();
         for (Object keyO : props.keySet()) {
             String key = (String) keyO;
-            if (!key.startsWith(POOL_PREFIX)) {
+            if (!key.startsWith(POOL_PREFIX) && !key.startsWith(POOL_PREFIX2)) {
                 dsProps.put(key, props.get(key));
             }
         }
@@ -58,7 +59,10 @@ public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
             String key = (String) keyO;
             if (key.startsWith(POOL_PREFIX)) {
                 String strippedKey = key.substring(POOL_PREFIX.length());
-                prefixedProps.put(strippedKey, (String) props.get(key));
+                prefixedProps.put(strippedKey, props.get(key));
+            } else if (key.startsWith(POOL_PREFIX2)) {
+                String strippedKey = key.substring(POOL_PREFIX2.length());
+                prefixedProps.put(strippedKey, props.get(key));
             }
         }
         return prefixedProps;

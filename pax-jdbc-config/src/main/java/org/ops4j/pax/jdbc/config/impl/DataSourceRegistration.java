@@ -61,7 +61,8 @@ public class DataSourceRegistration implements Closeable {
     ));
     private static final Set<String> FORWARDED_KEY_PREFIXES = new HashSet<>(Arrays.asList(
             "pool.",
-            "factory."
+            "factory.",
+            "hikari."
     ));
     // additionally all keys prefixed with "jdbc." will be forwarded (with the prefix stripped).
     private static final String CONFIG_KEY_PREFIX = "jdbc.";
