@@ -26,8 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
 import javax.sql.DataSource;
-import javax.sql.XADataSource;
+import javax.sql.CommonDataSource;
+
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -54,12 +56,22 @@ public class TransxXaPooledDataSourceFactory extends TransxPooledDataSourceFacto
     @Override
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {
         try {
-            XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
+            Map<String, Object> poolProps = getPoolProps(props);
+            Object local = poolProps.remove("local");
+            CommonDataSource ds;
+            TransactionSupportLevel tsl;
+            if (local != null && "true".equals(local)) {
+                ds = dsf.createDataSource(getNonPoolProps(props));
+                tsl = TransactionSupportLevel.LocalTransaction;
+            } else {
+                ds = dsf.createXADataSource(getNonPoolProps(props));
+                tsl = TransactionSupportLevel.XATransaction;
+            }
             DataSource mds = ManagedDataSourceBuilder.builder()
                     .dataSource(ds)
-                    .transaction(TransactionSupportLevel.XATransaction)
+                    .transaction(tsl)
                     .transactionManager(tm)
-                    .properties(getPoolProps(props))
+                    .properties(poolProps)
                     .build();
             return mds;
         }
