@@ -82,7 +82,8 @@
         <karaf.version>4.1.1</karaf.version>
         <logback.version>1.0.9</logback.version>
         <mariadb.version>2.4.1</mariadb.version>
-        <mysql.version>5.1.34</mysql.version>
+        <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
+        <mysql.version>8.0.16</mysql.version>
         <narayana.version>5.8.2.Final</narayana.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.10.0</pax.exam.version>

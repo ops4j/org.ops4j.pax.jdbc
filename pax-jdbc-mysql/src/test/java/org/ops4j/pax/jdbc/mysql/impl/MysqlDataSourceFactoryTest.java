@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -37,10 +37,10 @@ public class MysqlDataSourceFactoryTest {
         // osgi.jdbc specific property
         properties.setProperty("url", "jdbc:mysql://localhost:3306/test");
         // mysql specific property
-        properties.setProperty("callableStatementCacheSize", "42");
+        properties.setProperty("callableStmtCacheSize", "42");
         DataSource ds = new MysqlDataSourceFactory().createDataSource(properties);
         MysqlDataSource mds = (MysqlDataSource) ds;
-        assertThat(mds.getCallableStatementCacheSize(), equalTo(42));
+        assertThat(mds.getCallableStmtCacheSize(), equalTo(42));
     }
 
 }

@@ -40,7 +40,7 @@ public class MysqlDataSourceTest extends AbstractJdbcTest {
     public ServerConfiguration config = new ServerConfiguration("mysql");
 
     @Inject
-    @Filter("(osgi.jdbc.driver.class=com.mysql.jdbc.Driver)")
+    @Filter("(osgi.jdbc.driver.class=com.mysql.cj.jdbc.Driver)")
     private DataSourceFactory dsf;
 
     @Configuration
