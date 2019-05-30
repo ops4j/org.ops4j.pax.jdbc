@@ -81,7 +81,7 @@
         <junit.version>4.12</junit.version>
         <karaf.version>4.1.1</karaf.version>
         <logback.version>1.0.9</logback.version>
-        <mariadb.version>1.5.9</mariadb.version>
+        <mariadb.version>2.4.1</mariadb.version>
         <mysql.version>5.1.34</mysql.version>
         <narayana.version>5.8.2.Final</narayana.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
