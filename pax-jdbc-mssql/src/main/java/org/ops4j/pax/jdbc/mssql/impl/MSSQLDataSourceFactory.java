@@ -29,110 +29,62 @@ import javax.sql.XADataSource;
 import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerDriver;
+import com.microsoft.sqlserver.jdbc.SQLServerXADataSource;
+
 public class MSSQLDataSourceFactory implements DataSourceFactory {
-
-    private static final String MSSQL_DRIVER_FQCN = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String MSSQL_DATASOURCE_FQCN = "com.microsoft.sqlserver.jdbc.SQLServerDataSource";
-    private static final String MSSQL_CONNECTIONPOOL_DATASOURCE_FQCN = "com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource";
-    private static final String MSSQL_XA_DATASOURCE_FQCN = "com.microsoft.sqlserver.jdbc.SQLServerXADataSource";
-
-    private final Class<?> mssqlDriverClass;
-    private final Class<?> mssqlDataSourceClass;
-    private final Class<?> mssqlConnectionPoolDataSourceClass;
-    private final Class<?> mssqlXADataSourceClass;
-
-    public MSSQLDataSourceFactory() throws ClassNotFoundException {
-        super();
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        this.mssqlDriverClass = classLoader.loadClass(MSSQL_DRIVER_FQCN);
-        this.mssqlDataSourceClass = classLoader.loadClass(MSSQL_DATASOURCE_FQCN);
-        this.mssqlConnectionPoolDataSourceClass = classLoader
-            .loadClass(MSSQL_CONNECTIONPOOL_DATASOURCE_FQCN);
-        this.mssqlXADataSourceClass = classLoader.loadClass(MSSQL_XA_DATASOURCE_FQCN);
-    }
 
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
-        try {
-            return setProperties(mssqlDataSourceClass.newInstance(), props);
-        }
-        catch (Exception ex) {
-            throw new SQLException(ex);
-        }
+        SQLServerDataSource ds = new SQLServerDataSource();
+        return setProperties(ds, props);
     }
 
     @Override
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
-        throws SQLException {
-        try {
-            return setProperties(mssqlConnectionPoolDataSourceClass.newInstance(), props);
-        }
-        catch (Exception ex) {
-            throw new SQLException(ex);
-        }
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
+        SQLServerConnectionPoolDataSource ds = new SQLServerConnectionPoolDataSource();
+        return setProperties(ds, props);
     }
 
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
-        try {
-            return setProperties(mssqlXADataSourceClass.newInstance(), props);
-        }
-        catch (Exception ex) {
-            throw new SQLException(ex);
-        }
+        SQLServerXADataSource ds = new SQLServerXADataSource();
+        return setProperties(ds, props);
     }
 
     @Override
     public Driver createDriver(Properties props) throws SQLException {
-        try {
-            return Driver.class.cast(mssqlDriverClass.newInstance());
-        }
-        catch (InstantiationException ex) {
-            throw new SQLException(ex);
-        }
-        catch (IllegalAccessException ex) {
-            throw new SQLException(ex);
-        }
+        return new SQLServerDriver();
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T setProperties(Object dataSourceInstance, Properties props) throws Exception {
+    private <T> T setProperties(SQLServerDataSource ds, Properties props) {
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);
-        setProperty(url, dataSourceInstance, "setURL");
+        ds.setURL(url);
 
         String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        setProperty(databaseName, dataSourceInstance, "setDatabaseName");
+        ds.setDatabaseName(databaseName);
 
         String serverName = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
-        setProperty(serverName, dataSourceInstance, "setServerName");
+        ds.setServerName(serverName);
 
         String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
-        setIntProperty(portNumber, dataSourceInstance, "setPortNumber");
+        if (portNumber != null) {
+            ds.setPortNumber(Integer.parseInt(portNumber));
+        }
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
-        setProperty(user, dataSourceInstance, "setUser");
+        ds.setUser(user);
 
         String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
-        setProperty(password, dataSourceInstance, "setPassword");
+        ds.setPassword(password);
 
         if (!props.isEmpty()) {
-            BeanConfig.configure(dataSourceInstance, props);
+            BeanConfig.configure(ds, props);
         }
 
-        return (T) dataSourceInstance;
+        return (T) ds;
     }
-
-    private void setProperty(String value, Object instance, String methodName) throws Exception {
-        if (value != null) {
-            instance.getClass().getMethod(methodName, String.class).invoke(instance, value);
-        }
-    }
-    
-    private void setIntProperty(String value, Object instance, String methodName) throws Exception {
-        if (value != null) {
-            int iValue = new Integer(value);
-            instance.getClass().getMethod(methodName, int.class).invoke(instance, iValue);
-        }
-    }
-
 }

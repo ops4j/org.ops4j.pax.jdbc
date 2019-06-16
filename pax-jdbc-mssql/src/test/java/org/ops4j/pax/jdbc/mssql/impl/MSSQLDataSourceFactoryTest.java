@@ -30,6 +30,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 import com.microsoft.sqlserver.jdbc.SQLServerXADataSource;
 
 public class MSSQLDataSourceFactoryTest {
+
     private static final String URL = "testurl";
     private static final String DB = "testdb";
     private static final String SERVER = "testhost";
@@ -41,49 +42,48 @@ public class MSSQLDataSourceFactoryTest {
     public void testDS() throws SQLException, ClassNotFoundException {
         MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
         Properties props = testProps();
-        SQLServerDataSource ds = (SQLServerDataSource)dsf.createDataSource(props);
+        SQLServerDataSource ds = (SQLServerDataSource) dsf.createDataSource(props);
         validateDS(ds);
     }
-    
+
     @Test
     public void testConnectionPoolDS() throws SQLException, ClassNotFoundException {
         MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
         Properties props = testProps();
-        SQLServerConnectionPoolDataSource ds = (SQLServerConnectionPoolDataSource)dsf.createConnectionPoolDataSource(props);
+        SQLServerConnectionPoolDataSource ds = (SQLServerConnectionPoolDataSource) dsf.createConnectionPoolDataSource(props);
         validateDS(ds);
     }
-    
+
     @Test
     public void testXADS() throws SQLException, ClassNotFoundException {
         MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
         Properties props = testProps();
-        SQLServerXADataSource ds = (SQLServerXADataSource)dsf.createXADataSource(props);
+        SQLServerXADataSource ds = (SQLServerXADataSource) dsf.createXADataSource(props);
         validateDS(ds);
     }
-    
+
     @Test
     public void testDriver() throws SQLException, ClassNotFoundException {
         MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
         Properties props = testProps();
-        SQLServerDriver driver = (SQLServerDriver)dsf.createDriver(props);
+        SQLServerDriver driver = (SQLServerDriver) dsf.createDriver(props);
         Assert.assertNotNull(driver);
     }
-    
+
     @Test
     public void testEmptyProps() throws SQLException, ClassNotFoundException {
         MSSQLDataSourceFactory dsf = new MSSQLDataSourceFactory();
         Properties props = new Properties();
-        SQLServerDataSource ds = (SQLServerDataSource)dsf.createDataSource(props);
+        SQLServerDataSource ds = (SQLServerDataSource) dsf.createDataSource(props);
         Assert.assertNotNull(ds);
     }
 
     private void validateDS(SQLServerDataSource ds) {
-        Assert.assertEquals(URL, ds.url);
-        Assert.assertEquals(DB, ds.dbName);
-        Assert.assertEquals(SERVER, ds.serverName);
-        Assert.assertEquals(1433, ds.portNumber);
-        Assert.assertEquals(USER, ds.user);
-        Assert.assertEquals(PASSWORD, ds.password);
+        Assert.assertEquals(URL, ds.getURL());
+        Assert.assertEquals(DB, ds.getDatabaseName());
+        Assert.assertEquals(SERVER, ds.getServerName());
+        Assert.assertEquals(1433, ds.getPortNumber());
+        Assert.assertEquals(USER, ds.getUser());
     }
 
     private Properties testProps() {

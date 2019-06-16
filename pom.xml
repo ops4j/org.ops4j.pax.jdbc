@@ -83,6 +83,7 @@
         <logback.version>1.0.9</logback.version>
         <mariadb.version>2.4.1</mariadb.version>
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
+        <mssql.version>7.2.2.jre8</mssql.version>
         <mysql.version>8.0.16</mysql.version>
         <narayana.version>5.8.2.Final</narayana.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
@@ -425,6 +426,11 @@
                 <artifactId>mariadb-java-client</artifactId>
                 <version>${mariadb.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>${mssql.version}</version>
+            </dependency>
 
             <!-- Other dependencies -->
 
@@ -502,13 +508,13 @@
             <scope>test</scope>
         </dependency>
         <!-- 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.21</version>
-            <scope>test</scope>
-        </dependency>
-         -->
+       <dependency>
+           <groupId>org.slf4j</groupId>
+           <artifactId>slf4j-jdk14</artifactId>
+           <version>1.7.21</version>
+           <scope>test</scope>
+       </dependency>
+        -->
     </dependencies>
 
     <build>
