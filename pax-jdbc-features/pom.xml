@@ -246,7 +246,7 @@
                                     <feature>pax-jdbc-mariadb</feature>
                                     <!--<feature>pax-jdbc-oracle</feature>-->
                                     <!--<feature>pax-jdbc-postgresql</feature>-->
-                                    <!--<feature>pax-jdbc-mssql</feature>-->
+                                    <feature>pax-jdbc-mssql</feature>
                                     <feature>pax-jdbc-jtds</feature>
                                     <feature>pax-jdbc-pool-dbcp2</feature>
                                     <feature>pax-jdbc-pool-c3p0</feature>

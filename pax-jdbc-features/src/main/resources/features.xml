@@ -113,6 +113,7 @@
     <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
         <bundle dependency="true">mvn:com.microsoft.sqlserver/mssql-jdbc/${mssql.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
     </feature>
