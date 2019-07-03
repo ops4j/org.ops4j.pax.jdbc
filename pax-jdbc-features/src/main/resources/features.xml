@@ -39,7 +39,7 @@
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/1.9.2_1</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
     </feature>
