@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
     protected static final String POOL_PREFIX = "pool.";
     protected static final String FACTORY_PREFIX = "factory.";
+    protected static final String INITIAL_SIZE = "initialSize";
 
     private static final Logger LOG = LoggerFactory.getLogger(DbcpPooledDataSourceFactory.class);
 
@@ -108,11 +109,23 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
             DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(ds);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
+
+            Map<String, String> poolProps = getPoolProps(props);
+            String initialSize = poolProps.get(INITIAL_SIZE);
+            poolProps.remove(INITIAL_SIZE);
+
             BeanConfig.configure(conf, getPoolProps(props));
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
             pcf.setPool(pool);
-            return new PoolingDataSource<PoolableConnection>(pool);
+
+            PoolingDataSource<PoolableConnection> pds = new PoolingDataSource<PoolableConnection>(pool);
+
+            int size = initialSize == null ? 0 : Integer.parseInt(initialSize);
+            for (int i = 0; i < size; i++) {
+                pool.addObject();
+            }
+            return pds;
         }
         catch (Throwable e) {
             LOG.error("Error creating pooled datasource: " + e.getMessage(), e);
