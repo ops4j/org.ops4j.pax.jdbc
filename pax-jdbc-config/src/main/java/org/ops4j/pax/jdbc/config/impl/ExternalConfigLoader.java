@@ -71,7 +71,17 @@ public class ExternalConfigLoader {
             if (config.get(key) instanceof String && isExternal(value)) {
                 Matcher matcher = CONFIG_LOADER_PATTERN.matcher(value);
                 matcher.matches();
-                String loadedValue = "ENC".equals(matcher.group(1)) ? value : configLoaders.get(matcher.group(1)).resolve(matcher.group(2));
+                String loadedValue = null;
+                if ("ENC".equals(matcher.group(1))) {
+                    loadedValue = value;
+                } else {
+                    ConfigLoader configLoader = configLoaders.get(matcher.group(1));
+                    if (configLoader != null) {
+                        loadedValue = configLoader.resolve(matcher.group(2));
+                    } else {
+                        loadedValue = value;
+                    }
+                }
                 if (loadedValue != null) {
                     loadedConfig.put(key, loadedValue);
                 }

@@ -119,6 +119,21 @@ public class ExternalConfigLoaderTest {
         assertEquals(2000, loaded.get("timeout"));
     }
 
+    @Test
+    public void testCrazyExternalConfig() {
+        Dictionary<String, Object> cfProps = new Hashtable<>();
+        cfProps.put("name", "testCF");
+        cfProps.put("url", "jdbc:oracle:thin:@(DESCRIPTION_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=dummy)(PORT=1521)))(CONNECT_DATA=(INSTANCE_NAME=XE))))");
+        cfProps.put("timeout", 2000);
+
+        final ExternalConfigLoader externalConfigLoader = new ExternalConfigLoader(context);
+        Dictionary<String, Object> loaded = externalConfigLoader.resolve(cfProps);
+
+        assertEquals("testCF", loaded.get("name"));
+        assertEquals("jdbc:oracle:thin:@(DESCRIPTION_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=dummy)(PORT=1521)))(CONNECT_DATA=(INSTANCE_NAME=XE))))", loaded.get("url"));
+        assertEquals(2000, loaded.get("timeout"));
+    }
+
     public static String createExternalSecret(final String value) {
         try {
             final File file = File.createTempFile("externalPaxJdbcConfig-", ".secret");
