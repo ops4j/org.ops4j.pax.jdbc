@@ -61,7 +61,6 @@
         <aries.transaction.manager.version>1.3.3</aries.transaction.manager.version>
         <aries.util.version>1.1.3</aries.util.version>
         <cglib.version>3.2.4_1</cglib.version>
-        <common-logging_common-logging.version>1.1.3</common-logging_common-logging.version>
         <!-- DBCP2 2.2.0 has bad import for javax.transaction.xa package -->
         <commons.dbcp2.version>2.1.1</commons.dbcp2.version>
         <commons.pool2.version>2.5.0</commons.pool2.version>
@@ -80,7 +79,7 @@
         <jtds.version>1.3.1</jtds.version>
         <junit.version>4.12</junit.version>
         <karaf.version>4.1.1</karaf.version>
-        <logback.version>1.0.9</logback.version>
+        <logback.version>1.2.3</logback.version>
         <mariadb.version>2.4.1</mariadb.version>
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
         <mssql.version>7.2.2.jre8</mssql.version>
@@ -88,13 +87,13 @@
         <narayana.version>5.8.2.Final</narayana.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.10.0</pax.exam.version>
-        <pax.logging.version>1.10.1</pax.logging.version>
+        <pax.logging.version>1.11.2</pax.logging.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.6.1</pax.url.version>
         <pax.transx.version>0.4.4</pax.transx.version>
         <postgresql.version>9.4.1212.jre7</postgresql.version>
         <servicemix.bundles.javax-inject.version>1_2</servicemix.bundles.javax-inject.version>
-        <slf4j.version>1.6.4</slf4j.version>
+        <slf4j.version>1.7.28</slf4j.version>
         <sqlite.version>3.16.1</sqlite.version>
         <hikaricp.version>2.4.11</hikaricp.version>
     </properties>
