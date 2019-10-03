@@ -74,7 +74,7 @@
         <h2.version>1.3.172</h2.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <jasypt.version>1.9.3_1</jasypt.version>
-        <jboss.transaction.spi.version>7.5.2.Final</jboss.transaction.spi.version>
+        <jboss.transaction.spi.version>7.6.0.Final</jboss.transaction.spi.version>
         <jta.bundle.version>1.1.1</jta.bundle.version>
         <jtds.version>1.3.1</jtds.version>
         <junit.version>4.12</junit.version>
@@ -84,7 +84,7 @@
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
         <mssql.version>7.2.2.jre8</mssql.version>
         <mysql.version>8.0.16</mysql.version>
-        <narayana.version>5.8.2.Final</narayana.version>
+        <narayana.version>5.9.8.Final</narayana.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.10.0</pax.exam.version>
         <pax.logging.version>1.11.2</pax.logging.version>
