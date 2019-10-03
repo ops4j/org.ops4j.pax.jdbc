@@ -40,7 +40,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class PaxJdbcFeaturesTest extends AbstractJdbcTest {
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=H2)")
+    @Filter("(osgi.jdbc.driver.class=org.h2.Driver)")
     DataSourceFactory h2DataSourceFactory;
 
     @Configuration

@@ -37,18 +37,28 @@
     <name>OPS4J Pax JDBC Pooling HikariCP</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
-        </dependency>
+
+        <!-- pax-jdbc own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-pool-common</artifactId>
         </dependency>
+
+        <!-- APIs -->
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+        </dependency>
+
+        <!-- Other dependencies -->
+
         <dependency>
             <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP-java7</artifactId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

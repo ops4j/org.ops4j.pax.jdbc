@@ -35,13 +35,13 @@ import org.osgi.service.jdbc.DataSourceFactory;
 public class H2NativeDataSourceTest extends AbstractJdbcTest {
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=H2)")
+    @Filter("(osgi.jdbc.driver.class=org.h2.Driver)")
     private DataSourceFactory dsf;
 
     @Configuration
     public Option[] config() {
         return options(regressionDefaults(), //
-            mvnBundle("com.h2database", "h2") //
+            mvnBundle("com.h2database", "h2").versionAsInProject()
         );
     }
 

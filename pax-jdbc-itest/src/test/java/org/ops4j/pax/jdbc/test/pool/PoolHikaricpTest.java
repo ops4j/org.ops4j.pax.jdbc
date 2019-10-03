@@ -40,9 +40,8 @@ public class PoolHikaricpTest extends AbstractJdbcTest {
         return new Option[] { //
                 regressionDefaults(), //
                 poolDefaults(), //
-                mvnBundle("org.ops4j.pax.logging", "pax-logging-api"),
                 mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"),
-                mvnBundle("com.zaxxer", "HikariCP-java7"),
+                mvnBundle("com.zaxxer", "HikariCP"),
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-hikaricp"),
                 };
     }

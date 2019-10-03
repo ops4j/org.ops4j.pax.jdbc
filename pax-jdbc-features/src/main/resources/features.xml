@@ -22,11 +22,11 @@
 <features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
     <repository>
-        mvn:org.ops4j.pax.transx/pax-transx-features/${pax.transx.version}/xml/features
+        mvn:org.ops4j.pax.transx/pax-transx-features/${version.org.ops4j.pax.transx}/xml/features
     </repository>
 
     <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}">
-        <bundle>mvn:org.osgi/org.osgi.service.jdbc/1.0.0</bundle>
+        <bundle>mvn:org.osgi/org.osgi.service.jdbc/${version.org.osgi.service.jdbc}</bundle>
     </feature>
 
     <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}">
@@ -38,8 +38,8 @@
     <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${jasypt.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${version.org.apache.servicemix.bundles.jasypt}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
     </feature>
@@ -59,34 +59,34 @@
     <feature name="pax-jdbc-derby" description="Provides JDBC Derby Embedded DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.derby/derby/${derby.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.derby/derby/${version.org.apache.derby}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derby/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-derbyclient" description="Provides JDBC Derby Client DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.derby/derbyclient/${version.org.apache.derby}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-derbyclient/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-h2" description="Provides JDBC H2 DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
+        <bundle>mvn:com.h2database/h2/${version.com.h2database}</bundle>
     </feature>
 
     <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
+        <bundle dependency="true">mvn:org.hsqldb/hsqldb/${version.org.hsqldb}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-hsqldb/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-mariadb" description="Provides JDBC Mariadb DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.version}</bundle>
+        <bundle dependency="true">mvn:org.mariadb.jdbc/mariadb-java-client/${version.org.mariadb.jdbc}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mariadb/${project.version}</bundle>
     </feature>
 
@@ -99,39 +99,39 @@
     <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
-        <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle>mvn:org.postgresql/postgresql/${version.org.postgresql}</bundle>
     </feature>
 
     <feature name="pax-jdbc-sqlite" description="Provides JDBC SQLite DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
+        <bundle dependency="true">mvn:org.xerial/sqlite-jdbc/${version.org.xerial.sqlite}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
-        <bundle dependency="true">mvn:com.microsoft.sqlserver/mssql-jdbc/${mssql.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:com.microsoft.sqlserver/mssql-jdbc/${version.com.microsoft.sqlserver.jdbc}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-jtds" description="Provides JDBC jTDS DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle>wrap:mvn:net.sourceforge.jtds/jtds/${jtds.version}</bundle>
+        <bundle>wrap:mvn:net.sourceforge.jtds/jtds/${version.net.sourceforge.jtds}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-jtds/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${commons.dbcp2.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${commons.pool2.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${version.org.apache.commons.pool2}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
@@ -139,9 +139,9 @@
     <feature name="pax-jdbc-pool-c3p0" description="Provides JDBC Pooling using C3P0" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${c3p0.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${version.org.apache.servicemix.bundles.c3p0}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-c3p0/${project.version}</bundle>
     </feature>
@@ -149,23 +149,23 @@
     <feature name="pax-jdbc-pool-hikaricp" description="Provides JDBC Pooling DataSourceFactory using HikariCP" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-hikaricp/${project.version}</bundle>
-        <bundle>mvn:com.zaxxer/HikariCP-java7/${hikaricp.version}</bundle>
+        <bundle>mvn:com.zaxxer/HikariCP/${version.com.zaxxer.HikariCP}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${jta.bundle.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.6_spec/1.0</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/3.1.1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.6_spec/${version.org.apache.geronimo.specs.j2ee-connector_1.6}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/${version.org.apache.geronimo.specs.validation_1.0}</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/${version.org.apache.geronimo.connector}</bundle>
 
-        <bundle dependency="true">mvn:org.apache.aries/org.apache.aries.util/${aries.util.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${aries.transaction.manager.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.aries/org.apache.aries.util/${version.org.apache.aries.util}</bundle>
+        <bundle dependency="true">mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${version.org.apache.aries.transaction.manager}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-aries/${project.version}</bundle>
     </feature>
@@ -173,10 +173,10 @@
     <feature name="pax-jdbc-pool-narayana" description="Provides JDBC Pooling DataSourceFactory using Narayana Transaction Manager" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${commons.dbcp2.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${commons.pool2.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
-        <bundle dependency="true">mvn:org.jboss.narayana.osgi/narayana-osgi-jta/${narayana.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${version.org.apache.commons.pool2}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
+        <bundle dependency="true">mvn:org.jboss.narayana.osgi/narayana-osgi-jta/${version.org.jboss.narayana}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-narayana/${project.version}</bundle>
     </feature>

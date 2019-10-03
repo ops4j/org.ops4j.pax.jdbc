@@ -37,6 +37,9 @@
     <name>OPS4J Pax JDBC Generic Driver Extender</name>
 
     <dependencies>
+
+        <!-- OPS4J dependencies -->
+
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-core</artifactId>
@@ -45,6 +48,7 @@
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-extender</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

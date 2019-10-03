@@ -52,7 +52,6 @@ public class H2PooledDataSourceTest extends AbstractJdbcTest {
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
             mvnBundle("org.apache.commons", "commons-pool2"), //
-            mvnBundle("org.ops4j.pax.logging", "pax-logging-api"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
             mvnBundle("org.apache.commons", "commons-dbcp2"), //

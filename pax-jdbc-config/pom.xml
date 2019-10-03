@@ -37,14 +37,21 @@
     <name>OPS4J Pax JDBC Config</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.jasypt</artifactId>
-        </dependency>
+
+        <!-- pax-jdbc own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-pool-common</artifactId>
         </dependency>
+
+        <!-- Other dependencies -->
+
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.jasypt</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

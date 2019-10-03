@@ -18,17 +18,13 @@
  */
 package org.ops4j.pax.jdbc.test;
 
-import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
-import static org.ops4j.pax.exam.CoreOptions.composite;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.systemPackage;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.when;
-
 import javax.inject.Inject;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -39,15 +35,44 @@ import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
+import static org.ops4j.pax.exam.CoreOptions.composite;
+import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.linkBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemPackage;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
+import static org.ops4j.pax.exam.CoreOptions.url;
+
+/**
+ * Base class for all integration tests - manually sets up pax-exam configuration (without implicit configuration).
+ */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractJdbcTest {
 
+    public static Logger LOG = LoggerFactory.getLogger(AbstractJdbcTest.class);
+
+    @Rule
+    public TestName testName = new TestName();
+
     @Inject
     protected BundleContext context;
 
-    private boolean equinoxConsole;
+    @Before
+    public void beforeEach() {
+        LOG.info("========== Running {}.{}() ==========", getClass().getName(), testName.getMethodName());
+    }
+
+    @After
+    public void afterEach() {
+        LOG.info("========== Finished {}.{}() ==========", getClass().getName(), testName.getMethodName());
+    }
 
     protected void assertAllBundlesResolved() {
         for (Bundle bundle : context.getBundles()) {
@@ -76,34 +101,51 @@ public abstract class AbstractJdbcTest {
     }
 
     public Option regressionDefaults() {
-        return composite //
-        (
-         // add SLF4J and logback bundles .. 1.7.0 is needed for aries transaction
-         mavenBundle("org.slf4j", "slf4j-api").version("1.7.0").startLevel(START_LEVEL_SYSTEM_BUNDLES),
-         mavenBundle("ch.qos.logback", "logback-core").versionAsInProject()
-             .startLevel(START_LEVEL_SYSTEM_BUNDLES),
-         mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject()
-             .startLevel(START_LEVEL_SYSTEM_BUNDLES),
-         systemProperty("pax.exam.osgi.unresolved.fail").value("true"),
-         // Set logback configuration via system property.
-         // This way, both the driver and the container use the same configuration
-         systemProperty("logback.configurationFile")
-             .value("file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-         when(equinoxConsole).useOptions(systemProperty("osgi.console").value("6666")), junitBundles(),
-         mvnBundle("org.osgi", "org.osgi.service.jdbc"), //
-         mvnBundle("org.apache.felix", "org.apache.felix.configadmin")
+        return composite(
+                systemTimeout(60 * 60 * 1000),
+
+                // set to "4" to see Felix wiring information
+                frameworkProperty("felix.log.level").value("1"),
+
+                // added implicitly by pax-exam, if pax.exam.system=test
+                // these resources are provided inside org.ops4j.pax.exam:pax-exam-link-mvn jar
+                // for example, "link:classpath:META-INF/links/org.ops4j.base.link" = "mvn:org.ops4j.base/ops4j-base/1.5.0"
+                url("link:classpath:META-INF/links/org.ops4j.base.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.core.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.framework.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.lifecycle.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.tracker.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.exam.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.exam.inject.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                url("link:classpath:META-INF/links/org.ops4j.pax.extender.service.link").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+
+                linkBundle("org.apache.servicemix.bundles.javax-inject").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                linkBundle("org.ops4j.pax.logging.pax-logging-api").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                linkBundle("org.ops4j.pax.logging.pax-logging-log4j2").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+
+                junitBundles(),
+
+                // org.ops4j.pax.exam.nat.internal.NativeTestContainer.start() adds this explicitly
+                systemProperty("java.protocol.handler.pkgs").value("org.ops4j.pax.url"),
+
+                systemProperty("pax.exam.osgi.unresolved.fail").value("true"),
+
+//                systemProperty("osgi.console").value("6666"),
+
+                mvnBundle("org.osgi", "org.osgi.service.jdbc").versionAsInProject(),
+                mvnBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject()
         );
     }
 
     public Option poolDefaults() {
-        return composite //
-        (//
-         systemPackage("javax.transaction;version=1.1.0"),
-         systemPackage("javax.transaction.xa;version=1.1.0"),
-         mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common"),
-         mvnBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec"),
-         mvnBundle("org.apache.aries", "org.apache.aries.util"),
-         mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager") //
+        return composite(
+                systemPackage("javax.transaction;version=1.1.0"),
+                systemPackage("javax.transaction.xa;version=1.1.0"),
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common").versionAsInProject(),
+                mvnBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec").versionAsInProject(),
+                mvnBundle("org.apache.aries", "org.apache.aries.util").versionAsInProject(),
+                mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").versionAsInProject()
         );
     }
 

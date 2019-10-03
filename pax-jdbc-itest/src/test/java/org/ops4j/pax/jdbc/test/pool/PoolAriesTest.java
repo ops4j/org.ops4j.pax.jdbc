@@ -37,7 +37,6 @@ public class PoolAriesTest extends AbstractJdbcTest {
         return new Option[] { //
                 regressionDefaults(), //
                 poolDefaults(), //
-                mvnBundle("org.ops4j.pax.logging", "pax-logging-api"),
                 mvnBundle("org.apache.geronimo.components", "geronimo-connector"),
                 mvnBundle("org.apache.geronimo.specs", "geronimo-j2ee-connector_1.6_spec"),
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-aries"),

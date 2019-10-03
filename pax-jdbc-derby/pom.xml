@@ -37,14 +37,21 @@
     <name>OPS4J Pax JDBC Apache Derby Driver Adapter</name>
 
     <dependencies>
+
+        <!-- pax-jdbc own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-common</artifactId>
         </dependency>
+
+        <!-- JDBC drivers -->
+
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

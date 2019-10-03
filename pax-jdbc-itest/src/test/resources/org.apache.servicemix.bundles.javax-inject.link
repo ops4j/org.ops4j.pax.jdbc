@@ -17,10 +17,8 @@
 # under the License.
 #
 
-osgi.jndi.service.name = withpool
-osgi.jdbc.driver.class = org.h2.Driver
-pool = dbcp2
-databaseName = testdb
-user = sa
-password =
-networkProtocol = mem
+# Using mvn: will work with org.ops4j.pax.exam.nat.internal.NativeTestContainer,
+# because we have test-scoped dependency to pax-url-aether
+# when running with org.ops4j.pax.exam.karaf.container.internal.KarafTestContainer, pax-url-aether
+# would need to be installed separately
+mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/${version.org.apache.servicemix.bundles.javax-inject}

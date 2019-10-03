@@ -37,10 +37,14 @@
     <name>OPS4J Pax JDBC jTDS Driver Adapter</name>
 
     <dependencies>
+
+        <!-- pax-jdbc own artifacts -->
+
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

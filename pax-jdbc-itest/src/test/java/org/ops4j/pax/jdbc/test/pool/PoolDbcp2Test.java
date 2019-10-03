@@ -41,7 +41,6 @@ public class PoolDbcp2Test extends AbstractJdbcTest {
             poolDefaults(), //
             mvnBundle("com.h2database", "h2"), //
             mvnBundle("org.apache.commons", "commons-pool2"), //
-            mvnBundle("org.ops4j.pax.logging", "pax-logging-api"),
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
             mvnBundle("org.apache.commons", "commons-dbcp2"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //

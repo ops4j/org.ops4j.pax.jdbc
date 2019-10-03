@@ -51,16 +51,22 @@ public class HikariPooledDataSourceFactoryTest {
 
         connection.setAutoCommit(true);
         EasyMock.expectLastCall().anyTimes();
-        
+        EasyMock.expect(connection.getAutoCommit()).andReturn(true).anyTimes();
+
         connection.setReadOnly(false);
         EasyMock.expectLastCall().anyTimes();
-        
+        EasyMock.expect(connection.isReadOnly()).andReturn(false).anyTimes();
+
         EasyMock.expect(connection.getTransactionIsolation()).andReturn(Connection.TRANSACTION_NONE).anyTimes();
-        
+
         connection.clearWarnings();
         EasyMock.expectLastCall().anyTimes();
-      
-        
+
+        connection.setNetworkTimeout(EasyMock.anyObject(), EasyMock.anyInt());
+        EasyMock.expectLastCall().anyTimes();
+
+        EasyMock.expect(connection.getNetworkTimeout()).andReturn(0).anyTimes();
+
         EasyMock.expect(dataSource.getConnection()).andReturn(connection).anyTimes();
 
         EasyMock.expect(dataSourceFactory.createDataSource(EasyMock.anyObject(Properties.class)))

@@ -44,7 +44,6 @@ public class PoolC3p0Test extends AbstractJdbcTest {
             regressionDefaults(), //
             poolDefaults(), //
             mvnBundle("com.h2database", "h2"),
-            mvnBundle("org.ops4j.pax.logging", "pax-logging-api"),
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"),
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.c3p0"),
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-c3p0"),

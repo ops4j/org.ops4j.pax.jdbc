@@ -37,15 +37,21 @@
     <name>OPS4J Pax JDBC SQLite Driver Adapter</name>
 
     <dependencies>
+
+        <!-- pax-jdbc own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-common</artifactId>
         </dependency>
+
+        <!-- JDBC drivers -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
 </project>

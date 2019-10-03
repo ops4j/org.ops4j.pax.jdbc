@@ -31,20 +31,30 @@
     </parent>
 
     <groupId>org.ops4j.pax.jdbc</groupId>
-    <artifactId>pax-jdbc-pool-common</artifactId>
-    <packaging>bundle</packaging>
+    <artifactId>pax-jdbc-report</artifactId>
+    <packaging>pom</packaging>
 
-    <name>OPS4J Pax JDBC Pooling Support Base</name>
+    <name>OPS4J Pax JDBC - Bundle Report</name>
 
-    <dependencies>
-
-        <!-- APIs -->
-
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
-        </dependency>
-
-    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.ops4j.tools.maven</groupId>
+                <artifactId>osgi-report-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-manifest-summary</id>
+                        <goals>
+                            <goal>manifest-summary</goal>
+                        </goals>
+                        <configuration>
+                            <separateReports>${project.build.directory}/reports</separateReports>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
