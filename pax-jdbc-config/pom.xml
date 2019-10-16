@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.ops4j.pax</groupId>
         <artifactId>jdbc</artifactId>
-        <version>1.4.1-SNAPSHOT</version>
+        <version>1.4.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
