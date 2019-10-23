@@ -120,7 +120,7 @@ public class DB2DataSourceFactory implements DataSourceFactory {
 
         props.put(DB2_JDBC_SERVER_NAME, uri.getHost());
         props.put(DB2_JDBC_DATABASE_NAME, database);
-        props.put(DB2_JDBC_PORT_NUMBER, uri.getPort());
+        props.put(DB2_JDBC_PORT_NUMBER, Integer.toString(uri.getPort()));
         props.put(DB2_JDBC_DRIVER_TYPE, "4");
     }
 
