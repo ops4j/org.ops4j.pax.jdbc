@@ -31,7 +31,7 @@
 
     <groupId>org.ops4j.pax</groupId>
     <artifactId>jdbc</artifactId>
-    <version>1.4.3-SNAPSHOT</version>
+    <version>1.4.3</version>
     <packaging>pom</packaging>
 
     <name>OPS4J Pax JDBC (Reactor POM)</name>
@@ -49,7 +49,7 @@
         <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.jdbc.git</connection>
         <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.jdbc.git</developerConnection>
         <url>https://github.com/ops4j/org.ops4j.pax.jdbc/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>jdbc-1.4.3</tag>
     </scm>
 
     <developers>
