@@ -114,7 +114,7 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
             String initialSize = poolProps.get(INITIAL_SIZE);
             poolProps.remove(INITIAL_SIZE);
 
-            BeanConfig.configure(conf, getPoolProps(props));
+            BeanConfig.configure(conf, poolProps);
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
             pcf.setPool(pool);
