@@ -797,6 +797,12 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.narayana.osgi</groupId>
+                <artifactId>narayana-osgi-jta</artifactId>
+                <version>${version.org.jboss.narayana}</version>
+            </dependency>
+
             <!-- Test dependencies -->
 
             <dependency>

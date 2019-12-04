@@ -200,6 +200,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--JBoss components -->
+        <dependency>
+            <groupId>org.jboss.narayana.osgi</groupId>
+            <artifactId>narayana-osgi-jta</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- JDBC drivers -->
 
         <dependency>

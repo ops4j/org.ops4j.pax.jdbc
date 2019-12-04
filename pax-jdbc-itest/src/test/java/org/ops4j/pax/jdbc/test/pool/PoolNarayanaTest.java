@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
@@ -39,11 +40,12 @@ public class PoolNarayanaTest extends AbstractJdbcTest {
         return new Option[] {
             regressionDefaults(), //
             poolDefaults(), //
+            CoreOptions.bootDelegationPackage("sun.*"), //
             mvnBundle("com.h2database", "h2"), //
-            mvnBundle("org.jboss", "jboss-transaction-spi"), //
+            mvnBundle("org.apache.commons", "commons-dbcp2"), //
             mvnBundle("org.apache.commons", "commons-pool2"), //
             mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
-            mvnBundle("org.apache.commons", "commons-dbcp2"), //
+            mvnBundle("org.jboss.narayana.osgi", "narayana-osgi-jta"), //
             mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-narayana"), //
         };
     }
