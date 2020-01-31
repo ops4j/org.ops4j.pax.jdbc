@@ -177,7 +177,7 @@
 
         <!-- Maven plugins from org.apache.maven.plugins (and their dependencies) -->
         <plugin.maven-checkstyle-plugin>3.1.0</plugin.maven-checkstyle-plugin>
-        <plugin.dependency.com.puppycrawl.tools.checkstyle>8.25</plugin.dependency.com.puppycrawl.tools.checkstyle>
+        <plugin.dependency.com.puppycrawl.tools.checkstyle>8.29</plugin.dependency.com.puppycrawl.tools.checkstyle>
         <plugin.maven-clean-plugin>3.1.0</plugin.maven-clean-plugin>
         <plugin.maven-compiler-plugin>3.8.0</plugin.maven-compiler-plugin>
         <plugin.maven-dependency-plugin>3.1.1</plugin.maven-dependency-plugin>
