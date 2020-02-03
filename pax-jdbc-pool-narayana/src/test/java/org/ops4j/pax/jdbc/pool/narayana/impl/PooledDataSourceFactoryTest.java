@@ -22,15 +22,19 @@ import org.apache.commons.dbcp2.PoolingDataSource;
 import org.apache.commons.dbcp2.managed.ManagedDataSource;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.jboss.tm.XAResourceRecovery;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import javax.sql.ConnectionEventListener;
 import javax.sql.DataSource;
+import javax.sql.XAConnection;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
+import javax.transaction.xa.XAResource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -38,19 +42,37 @@ import java.util.Properties;
 public class PooledDataSourceFactoryTest {
 
     @Test
-    @Ignore
     public void testcreateDataSourceWithXA() throws SQLException {
         IMocksControl c = EasyMock.createControl();
         DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
         XADataSource xads = c.createMock(XADataSource.class);
         EasyMock.expect(dsf.createXADataSource(EasyMock.anyObject(Properties.class))).andReturn(xads).atLeastOnce();
         BundleContext context = c.createMock(BundleContext.class);
+        ServiceRegistration<XAResourceRecovery> registration = c.createMock(ServiceRegistration.class);
+        EasyMock.expect(context.registerService(EasyMock.eq(XAResourceRecovery.class), EasyMock.anyObject(XAResourceRecovery.class), EasyMock.eq(null))).andReturn(registration);
+        XAConnection xaConnection = c.createMock(XAConnection.class);
+        EasyMock.expect(xads.getXAConnection()).andReturn(xaConnection).anyTimes();
+        Connection connection = c.createMock(Connection.class);
+        EasyMock.expect(xaConnection.getConnection()).andReturn(connection).anyTimes();
+        XAResource xaResource = c.createMock(XAResource.class);
+        EasyMock.expect(xaConnection.getXAResource()).andReturn(xaResource).anyTimes();
+        EasyMock.expect(connection.isClosed()).andReturn(false).anyTimes();
+        EasyMock.expect(connection.isReadOnly()).andReturn(false).anyTimes();
+        EasyMock.expect(connection.getAutoCommit()).andReturn(false).anyTimes();
+
+        for (int i = 0; i < Integer.valueOf(createValidProps().getProperty("pool.initialSize")); i++) {
+            xaConnection.addConnectionEventListener(EasyMock.anyObject(ConnectionEventListener.class));
+            connection.rollback();
+            connection.clearWarnings();
+            connection.setAutoCommit(true);
+        }
+
         TransactionManager tm = c.createMock(TransactionManager.class);
         DbcpXAPooledDataSourceFactory pdsf = new DbcpXAPooledDataSourceFactory(context, tm);
         c.replay();
         DataSource ds = pdsf.create(dsf, createValidProps());
         c.verify();
-        Assert.assertEquals(ManagedDataSource.class, ds.getClass());
+        Assert.assertTrue(ds instanceof ManagedDataSource);
 
         try {
             pdsf.create(dsf, createInvalidPoolConfig());
