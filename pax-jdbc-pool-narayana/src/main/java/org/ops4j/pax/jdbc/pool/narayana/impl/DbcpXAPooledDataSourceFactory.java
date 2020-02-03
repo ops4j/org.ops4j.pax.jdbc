@@ -28,6 +28,7 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -85,7 +86,12 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
             GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
-            BeanConfig.configure(conf, getPoolProps(props));
+
+            Map<String, String> poolProps = getPoolProps(props);
+            String initialSize = poolProps.get(INITIAL_SIZE);
+            poolProps.remove(INITIAL_SIZE);
+
+            BeanConfig.configure(conf, poolProps);
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);
             pcf.setPool(pool);
@@ -107,6 +113,12 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
                     super.close();
                 }
             };
+
+            int size = initialSize == null ? 0 : Integer.parseInt(initialSize);
+            for (int i = 0; i < size; i++) {
+                pool.addObject();
+            }
+
             return mds;
         }
         catch (Throwable e) {
