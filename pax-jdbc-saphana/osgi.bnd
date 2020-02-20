@@ -1,0 +1,15 @@
+Bundle-SymbolicName:\
+  org.ops4j.pax.jdbc.saphana
+
+Bundle-Activator:\
+  Activator
+
+Provide-Capability:\
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.sap.db.jdbc.Driver;osgi.jdbc.driver.name=saphana
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.saphana.impl
+
+Import-Package:\
+  *
