@@ -1,0 +1,15 @@
+Bundle-SymbolicName:\
+  org.ops4j.pax.jdbc.iotdb
+
+Bundle-Activator:\
+  org.ops4j.pax.jdbc.iotdb.impl.Activator
+
+Provide-Capability:\
+  osgi.service;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.apache.iotdb.jdbc.IoTDBDriver;osgi.jdbc.driver.name=iotdb
+
+Private-Package:\
+  org.ops4j.pax.jdbc.common,\
+  org.ops4j.pax.jdbc.iotdb.impl
+
+Import-Package:\
+  *
