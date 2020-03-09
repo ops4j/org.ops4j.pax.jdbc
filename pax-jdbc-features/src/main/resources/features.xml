@@ -110,14 +110,6 @@
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-sqlite/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}">
-        <feature>pax-jdbc-spec</feature>
-
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
-        <bundle dependency="true">mvn:com.microsoft.sqlserver/mssql-jdbc/${version.com.microsoft.sqlserver.jdbc}</bundle>
-        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mssql/${project.version}</bundle>
-    </feature>
-
     <feature name="pax-jdbc-jtds" description="Provides JDBC jTDS DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 

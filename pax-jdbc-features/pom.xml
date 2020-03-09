@@ -98,11 +98,6 @@
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-mssql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-mysql</artifactId>
             <scope>runtime</scope>
         </dependency>

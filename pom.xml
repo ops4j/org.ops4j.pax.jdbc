@@ -163,7 +163,6 @@
         <!-- versions of JDBC drivers -->
 
         <version.com.h2database>1.4.199</version.com.h2database>
-        <version.com.microsoft.sqlserver.jdbc>7.4.1.jre8</version.com.microsoft.sqlserver.jdbc>
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
         <version.mysql>8.0.17</version.mysql>
         <version.net.sourceforge.jtds>1.3.1</version.net.sourceforge.jtds>
@@ -503,11 +502,6 @@
             <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc-mariadb</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.jdbc</groupId>
-                <artifactId>pax-jdbc-mssql</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -897,11 +891,6 @@
                 <artifactId>mariadb-java-client</artifactId>
                 <version>${version.org.mariadb.jdbc}</version>
             </dependency>
-            <dependency>
-                <groupId>com.microsoft.sqlserver</groupId>
-                <artifactId>mssql-jdbc</artifactId>
-                <version>${version.com.microsoft.sqlserver.jdbc}</version>
-            </dependency>
 
             <!-- Other dependencies -->
 
@@ -960,7 +949,6 @@
         <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-mariadb</module>
         <module>pax-jdbc-oracle</module>
-        <module>pax-jdbc-mssql</module>
         <module>pax-jdbc-jtds</module>
         <module>pax-jdbc-config</module>
         <module>pax-jdbc-pool-common</module>
