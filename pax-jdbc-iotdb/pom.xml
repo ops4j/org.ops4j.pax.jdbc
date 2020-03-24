@@ -23,10 +23,10 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
+   <parent>
         <groupId>org.ops4j.pax</groupId>
         <artifactId>jdbc</artifactId>
-        <version>1.4.5-SNAPSHOT</version>
+        <version>1.4.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
