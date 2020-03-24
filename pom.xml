@@ -952,6 +952,7 @@
         <module>pax-jdbc-checkstyle-rules</module>
         <module>pax-jdbc</module>
         <module>pax-jdbc-common</module>
+        <module>pax-jdbc-iotdb</module>
         <module>pax-jdbc-db2</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
