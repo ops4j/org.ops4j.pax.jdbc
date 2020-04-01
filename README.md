@@ -1,6 +1,9 @@
 Pax JDBC
 ========
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ops4j.pax/jdbc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ops4j.pax/jdbc)
+[![License](https://img.shields.io/hexpm/l/plug.svg)](https://ops4j1.jira.com/wiki/display/ops4j/Licensing)
+
 Thanks for looking into Pax JDBC - an OSGi JDBC Service implementation. 
 
 This is the official source repository of the OPS4J Pax JDBC project.
@@ -21,13 +24,6 @@ Checkout:
 Run Build:
 
     mvn clean install
-
-
-## Releases
-
-Releases go to Maven Central.
-
-The current release is **Pax JDBC 1.3.0**.
 
 ## Issue Tracking
 
