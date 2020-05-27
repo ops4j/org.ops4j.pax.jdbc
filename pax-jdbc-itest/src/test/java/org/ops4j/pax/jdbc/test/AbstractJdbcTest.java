@@ -18,8 +18,6 @@
  */
 package org.ops4j.pax.jdbc.test;
 
-import javax.inject.Inject;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,12 +29,13 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.options.MavenArtifactProvisionOption;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.composite;
@@ -56,7 +55,7 @@ import static org.ops4j.pax.exam.CoreOptions.url;
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractJdbcTest {
 
-    public static Logger LOG = LoggerFactory.getLogger(AbstractJdbcTest.class);
+    private static Logger logger = LoggerFactory.getLogger(AbstractJdbcTest.class);
 
     @Rule
     public TestName testName = new TestName();
@@ -66,12 +65,12 @@ public abstract class AbstractJdbcTest {
 
     @Before
     public void beforeEach() {
-        LOG.info("========== Running {}.{}() ==========", getClass().getName(), testName.getMethodName());
+        logger.info("========== Running {}.{}() ==========", getClass().getName(), testName.getMethodName());
     }
 
     @After
     public void afterEach() {
-        LOG.info("========== Finished {}.{}() ==========", getClass().getName(), testName.getMethodName());
+        logger.info("========== Finished {}.{}() ==========", getClass().getName(), testName.getMethodName());
     }
 
     protected void assertAllBundlesResolved() {

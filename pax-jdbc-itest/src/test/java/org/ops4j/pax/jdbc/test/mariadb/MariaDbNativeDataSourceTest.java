@@ -18,18 +18,6 @@
  */
 package org.ops4j.pax.jdbc.test.mariadb;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeThat;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -39,6 +27,16 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeThat;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 

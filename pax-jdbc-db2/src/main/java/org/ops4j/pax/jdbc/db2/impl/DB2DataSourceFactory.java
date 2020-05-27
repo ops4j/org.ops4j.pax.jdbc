@@ -18,19 +18,18 @@
  */
 package org.ops4j.pax.jdbc.db2.impl;
 
-import java.net.URI;
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Properties;
+import org.ops4j.pax.jdbc.common.BeanConfig;
+import org.osgi.service.jdbc.DataSourceFactory;
 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-
-import org.ops4j.pax.jdbc.common.BeanConfig;
-import org.osgi.service.jdbc.DataSourceFactory;
+import java.net.URI;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Properties;
 
 public class DB2DataSourceFactory implements DataSourceFactory {
 
@@ -79,10 +78,10 @@ public class DB2DataSourceFactory implements DataSourceFactory {
 
             //property 'url'  has to be handled differently
             String url = (String)props.remove(DataSourceFactory.JDBC_URL);
-            if(url != null) {
+            if (url != null) {
                 try {
                     BeanConfig.configure(ds, Collections.singletonMap(DataSourceFactory.JDBC_URL, url));
-                } catch(IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     //if url can not be configured, it has to be parsed and configured by settings other properties
                     parseUrl(url, props);
                 }
@@ -114,7 +113,7 @@ public class DB2DataSourceFactory implements DataSourceFactory {
         String database = parts[0];
 
         //if path is null, it means that url for db2 of type 2, which can not be used - host and port value will be unknown
-        if("".equals(uri.getPath())) {
+        if ("".equals(uri.getPath())) {
             throw new IllegalArgumentException("The supplied URL is no db2 (type 4) url: " + url);
         }
 
