@@ -119,7 +119,7 @@
 
         <version.biz.aQute.bnd>4.2.0</version.biz.aQute.bnd>
         <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
-        <version.com.zaxxer.HikariCP>3.4.1</version.com.zaxxer.HikariCP>
+        <version.com.zaxxer.HikariCP>3.4.5</version.com.zaxxer.HikariCP>
         <version.junit>4.12</version.junit>
 
         <version.org.apache.aries.util>1.1.3</version.org.apache.aries.util>
