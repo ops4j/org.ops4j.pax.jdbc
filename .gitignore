@@ -17,6 +17,7 @@ atlassian-ide-plugin.xml
 felix-cache
 fwdir
 moviedb-json
+HornetqJournalStore/
 
 # ignore while experimental
 pax-exam-container-geronimo
