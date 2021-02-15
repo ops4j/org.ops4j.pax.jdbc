@@ -28,7 +28,6 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.options.MavenArtifactProvisionOption;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -53,7 +52,7 @@ import static org.ops4j.pax.exam.CoreOptions.url;
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractJdbcTest {
 
-    public static Logger LOG = LoggerFactory.getLogger(AbstractJdbcTest.class);
+    public static final Logger LOG = LoggerFactory.getLogger(AbstractJdbcTest.class);
 
     @Rule
     public TestName testName = new TestName();

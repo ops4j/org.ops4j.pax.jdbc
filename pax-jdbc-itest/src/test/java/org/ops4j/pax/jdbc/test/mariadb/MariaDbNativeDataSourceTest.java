@@ -18,7 +18,6 @@ package org.ops4j.pax.jdbc.test.mariadb;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeThat;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.sql.SQLException;
