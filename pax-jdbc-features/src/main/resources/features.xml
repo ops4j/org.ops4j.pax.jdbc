@@ -147,7 +147,7 @@
         <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-hikaricp/${project.version}</bundle>
-        <bundle>mvn:com.zaxxer/HikariCP/${version.com.zaxxer.HikariCP}</bundle>
+        <bundle>mvn:com.zaxxer/HikariCP/${version.com.zaxxer.hikari}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC" version="${project.version}">
