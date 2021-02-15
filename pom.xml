@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+    Copyright 2021 OPS4J.
 
-      http://www.apache.org/licenses/LICENSE-2.0
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,9 +37,31 @@
 
     <inceptionYear>2012</inceptionYear>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <comments>
+                Licensed under the Apache License, Version 2.0 (the "License");
+                you may not use this file except in compliance with the License.
+                You may obtain a copy of the License at
+
+                http://www.apache.org/licenses/LICENSE-2.0
+
+                Unless required by applicable law or agreed to in writing, software
+                distributed under the License is distributed on an "AS IS" BASIS,
+                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+                implied.
+
+                See the License for the specific language governing permissions and
+                limitations under the License.
+            </comments>
+        </license>
+    </licenses>
+
     <issueManagement>
-        <system>jira</system>
-        <url>https://ops4j1.jira.com/projects/PAXJDBC/summary/statistics</url>
+        <system>GitHub</system>
+        <url>https://github.com/ops4j/org.ops4j.pax.jdbc/issues</url>
     </issueManagement>
 
     <scm>
@@ -89,48 +108,52 @@
         </developer>
     </developers>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <comments>
-                Licensed under the Apache License, Version 2.0 (the "License");
-                you may not use this file except in compliance with the License.
-                You may obtain a copy of the License at
-
-                http://www.apache.org/licenses/LICENSE-2.0
-
-                Unless required by applicable law or agreed to in writing, software
-                distributed under the License is distributed on an "AS IS" BASIS,
-                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-                implied.
-
-                See the License for the specific language governing permissions and
-                limitations under the License.
-            </comments>
-        </license>
-    </licenses>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- versions of Maven dependencies (sorted and groupped)  -->
+        <!-- versions of Maven plugins -->
 
-        <version.biz.aQute.bnd>4.2.0</version.biz.aQute.bnd>
+        <!-- Maven plugins from org.apache.maven.plugins (and their dependencies) -->
+        <plugin.maven-checkstyle-plugin>3.1.2</plugin.maven-checkstyle-plugin>
+        <plugin.dependency.com.puppycrawl.tools.checkstyle>8.40</plugin.dependency.com.puppycrawl.tools.checkstyle>
+        <plugin.maven-clean-plugin>3.1.0</plugin.maven-clean-plugin>
+        <plugin.maven-compiler-plugin>3.8.1</plugin.maven-compiler-plugin>
+        <plugin.maven-dependency-plugin>3.1.1</plugin.maven-dependency-plugin>
+        <plugin.maven-deploy-plugin>2.8.2</plugin.maven-deploy-plugin>
+        <plugin.maven-enforcer-plugin>3.0.0-M1</plugin.maven-enforcer-plugin>
+        <plugin.dependency.org.commonjava.maven.enforcer>1.3</plugin.dependency.org.commonjava.maven.enforcer>
+        <plugin.maven-failsafe-plugin>2.22.1</plugin.maven-failsafe-plugin>
+        <plugin.maven-gpg-plugin>1.6</plugin.maven-gpg-plugin>
+        <plugin.maven-install-plugin>2.5.2</plugin.maven-install-plugin>
+        <plugin.maven-jar-plugin>3.1.2</plugin.maven-jar-plugin>
+        <plugin.maven-javadoc-plugin>3.1.0</plugin.maven-javadoc-plugin>
+        <plugin.maven-release-plugin>2.5.3</plugin.maven-release-plugin>
+        <plugin.maven-remote-resources-plugin>1.6.0</plugin.maven-remote-resources-plugin>
+        <plugin.maven-resources-plugin>3.1.0</plugin.maven-resources-plugin>
+        <plugin.dependency.maven-filtering>3.1.1</plugin.dependency.maven-filtering>
+        <plugin.maven-shade-plugin>3.2.1</plugin.maven-shade-plugin>
+        <plugin.maven-site-plugin>3.7.1</plugin.maven-site-plugin>
+        <plugin.maven-source-plugin>3.1.0</plugin.maven-source-plugin>
+        <plugin.maven-surefire-plugin>2.22.2</plugin.maven-surefire-plugin>
+
+        <!-- Other Maven plugins (and their dependencies) -->
+        <plugin.felix.maven-bundle-plugin>5.1.1</plugin.felix.maven-bundle-plugin>
+        <plugin.mojo.build-helper-maven-plugin>3.2.0</plugin.mojo.build-helper-maven-plugin>
+        <plugin.mycila.license-maven-plugin>3.0</plugin.mycila.license-maven-plugin>
+        <plugin.ops4j.osgi-report-maven-plugin>0.1.1</plugin.ops4j.osgi-report-maven-plugin>
+        <plugin.servicemix.depends-maven-plugin>1.4.0</plugin.servicemix.depends-maven-plugin>
+
+        <!-- versions of Maven dependencies (sorted and groupped) -->
+
+        <version.biz.aQute.bnd>5.1.1</version.biz.aQute.bnd>
         <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
-        <version.com.zaxxer.HikariCP>3.4.5</version.com.zaxxer.HikariCP>
+        <version.com.zaxxer.hikari>3.4.5</version.com.zaxxer.hikari>
         <version.junit>4.12</version.junit>
 
-        <version.org.apache.aries.util>1.1.3</version.org.apache.aries.util>
         <version.org.apache.aries.transaction.jdbc>2.1.3</version.org.apache.aries.transaction.jdbc>
         <version.org.apache.aries.transaction.manager>1.3.3</version.org.apache.aries.transaction.manager>
-        <!-- DBCP2 2.2.0 has bad import for javax.transaction.xa package -->
-        <!--
-            But javax.transaction.xa package should be exported with such attributes:
-            javax.transaction; javax.transaction.xa; partial=true; mandatory:=partial
-            See: https://issues.apache.org/jira/browse/KARAF-6715
-        -->
+        <version.org.apache.aries.util>1.1.3</version.org.apache.aries.util>
         <version.org.apache.commons.dbcp2>2.8.0</version.org.apache.commons.dbcp2>
         <version.org.apache.commons.pool2>2.9.0</version.org.apache.commons.pool2>
         <version.org.apache.felix.configadmin>1.9.16</version.org.apache.felix.configadmin>
@@ -139,7 +162,7 @@
         <version.org.apache.geronimo.specs.j2ee-connector_1.6>1.0</version.org.apache.geronimo.specs.j2ee-connector_1.6>
         <version.org.apache.geronimo.specs.jta_1.1>1.1.1</version.org.apache.geronimo.specs.jta_1.1>
         <version.org.apache.geronimo.specs.validation_1.0>1.1</version.org.apache.geronimo.specs.validation_1.0>
-        <version.org.apache.karaf>4.2.10</version.org.apache.karaf>
+        <version.org.apache.karaf>4.2.11-SNAPSHOT</version.org.apache.karaf>
         <version.org.apache.logging.log4j>2.12.1</version.org.apache.logging.log4j>
         <version.org.apache.servicemix.bundles.c3p0>0.9.5.4_1</version.org.apache.servicemix.bundles.c3p0>
         <version.org.apache.servicemix.bundles.cglib>3.3.0_1</version.org.apache.servicemix.bundles.cglib>
@@ -176,39 +199,46 @@
         <version.org.mariadb.jdbc>2.4.4</version.org.mariadb.jdbc>
         <version.org.postgresql>42.2.8</version.org.postgresql>
         <version.org.xerial.sqlite>3.28.0</version.org.xerial.sqlite>
-
-        <!-- versions of Maven plugins -->
-
-        <!-- Maven plugins from org.apache.maven.plugins (and their dependencies) -->
-        <plugin.maven-checkstyle-plugin>3.1.0</plugin.maven-checkstyle-plugin>
-        <plugin.dependency.com.puppycrawl.tools.checkstyle>8.29</plugin.dependency.com.puppycrawl.tools.checkstyle>
-        <plugin.maven-clean-plugin>3.1.0</plugin.maven-clean-plugin>
-        <plugin.maven-compiler-plugin>3.8.0</plugin.maven-compiler-plugin>
-        <plugin.maven-dependency-plugin>3.1.1</plugin.maven-dependency-plugin>
-        <plugin.maven-deploy-plugin>2.8.2</plugin.maven-deploy-plugin>
-        <plugin.maven-enforcer-plugin>3.0.0-M1</plugin.maven-enforcer-plugin>
-        <plugin.dependency.org.commonjava.maven.enforcer>1.3</plugin.dependency.org.commonjava.maven.enforcer>
-        <plugin.maven-failsafe-plugin>2.22.1</plugin.maven-failsafe-plugin>
-        <plugin.maven-gpg-plugin>1.6</plugin.maven-gpg-plugin>
-        <plugin.maven-install-plugin>2.5.2</plugin.maven-install-plugin>
-        <plugin.maven-jar-plugin>3.1.2</plugin.maven-jar-plugin>
-        <plugin.maven-javadoc-plugin>3.1.0</plugin.maven-javadoc-plugin>
-        <plugin.maven-release-plugin>2.5.3</plugin.maven-release-plugin>
-        <plugin.maven-remote-resources-plugin>1.6.0</plugin.maven-remote-resources-plugin>
-        <plugin.maven-resources-plugin>3.1.0</plugin.maven-resources-plugin>
-        <plugin.dependency.maven-filtering>3.1.1</plugin.dependency.maven-filtering>
-        <plugin.maven-shade-plugin>3.2.1</plugin.maven-shade-plugin>
-        <plugin.maven-site-plugin>3.7.1</plugin.maven-site-plugin>
-        <plugin.maven-source-plugin>3.1.0</plugin.maven-source-plugin>
-        <plugin.maven-surefire-plugin>2.22.2</plugin.maven-surefire-plugin>
-
-        <!-- Other Maven plugins (and their dependencies) -->
-        <plugin.felix.maven-bundle-plugin>4.2.1</plugin.felix.maven-bundle-plugin>
-        <plugin.mojo.build-helper-maven-plugin>3.0.0</plugin.mojo.build-helper-maven-plugin>
-        <plugin.mycila.license-maven-plugin>3.0</plugin.mycila.license-maven-plugin>
-        <plugin.ops4j.osgi-report-maven-plugin>0.1.1</plugin.ops4j.osgi-report-maven-plugin>
-        <plugin.servicemix.depends-maven-plugin>1.4.0</plugin.servicemix.depends-maven-plugin>
     </properties>
+
+    <modules>
+        <module>pax-jdbc</module>
+        <module>pax-jdbc-common</module>
+        <module>pax-jdbc-db2</module>
+        <module>pax-jdbc-derby</module>
+        <module>pax-jdbc-derbyclient</module>
+        <module>pax-jdbc-hsqldb</module>
+        <module>pax-jdbc-mysql</module>
+        <module>pax-jdbc-sqlite</module>
+        <module>pax-jdbc-mariadb</module>
+        <module>pax-jdbc-oracle</module>
+        <module>pax-jdbc-jtds</module>
+        <module>pax-jdbc-config</module>
+        <module>pax-jdbc-pool-common</module>
+        <module>pax-jdbc-pool-aries</module>
+        <module>pax-jdbc-pool-c3p0</module>
+        <module>pax-jdbc-pool-dbcp2</module>
+        <module>pax-jdbc-pool-hikaricp</module>
+        <module>pax-jdbc-pool-narayana</module>
+        <module>pax-jdbc-pool-transx</module>
+        <module>pax-jdbc-features</module>
+        <module>pax-jdbc-itest</module>
+        <module>pax-jdbc-karaf-itest</module>
+        <module>pax-jdbc-teradata</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>
@@ -330,7 +360,6 @@
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>${plugin.felix.maven-bundle-plugin}</version>
-                    <extensions>true</extensions>
                     <dependencies>
                         <dependency>
                             <groupId>biz.aQute.bnd</groupId>
@@ -447,13 +476,14 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                    <configuration>
-                        <obrRepository>NONE</obrRepository>
-                        <instructions>
-                            <Bundle-DocURL>${project.url}</Bundle-DocURL>
-                            <_include>-osgi.bnd</_include>
-                        </instructions>
-                    </configuration>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Bundle-DocURL>${project.url}</Bundle-DocURL>
+                        <_include>-osgi.bnd</_include>
+                    </instructions>
+                </configuration>
             </plugin>
 
         </plugins>
@@ -689,6 +719,11 @@
                 <artifactId>org.apache.felix.configadmin</artifactId>
                 <version>${version.org.apache.felix.configadmin}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.metatype</artifactId>
+                <version>${version.org.apache.felix.metatype}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.eclipse.tycho</groupId>
@@ -923,51 +958,11 @@
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
-                <version>${version.com.zaxxer.HikariCP}</version>
+                <version>${version.com.zaxxer.hikari}</version>
             </dependency>
 
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>apache-snapshots</id>
-            <url>https://repository.apache.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <modules>
-        <module>pax-jdbc-checkstyle-rules</module>
-        <module>pax-jdbc</module>
-        <module>pax-jdbc-common</module>
-        <module>pax-jdbc-db2</module>
-        <module>pax-jdbc-derby</module>
-        <module>pax-jdbc-derbyclient</module>
-        <module>pax-jdbc-hsqldb</module>
-        <module>pax-jdbc-mysql</module>
-        <module>pax-jdbc-sqlite</module>
-        <module>pax-jdbc-mariadb</module>
-        <module>pax-jdbc-oracle</module>
-        <module>pax-jdbc-jtds</module>
-        <module>pax-jdbc-config</module>
-        <module>pax-jdbc-pool-common</module>
-        <module>pax-jdbc-pool-aries</module>
-        <module>pax-jdbc-pool-c3p0</module>
-        <module>pax-jdbc-pool-dbcp2</module>
-        <module>pax-jdbc-pool-hikaricp</module>
-        <module>pax-jdbc-pool-narayana</module>
-        <module>pax-jdbc-pool-transx</module>
-        <module>pax-jdbc-features</module>
-        <module>pax-jdbc-itest</module>
-        <module>pax-jdbc-karaf-itest</module>
-        <module>pax-jdbc-teradata</module>
-    </modules>
 
     <dependencies>
 
@@ -1032,16 +1027,16 @@
                                     <goal>check</goal>
                                 </goals>
                                 <configuration>
-                                    <configLocation>checkstyle/pax-jdbc-checks.xml</configLocation>
-                                    <suppressionsLocation>checkstyle/pax-jdbc-checks-suppressions.xml</suppressionsLocation>
-                                    <includes>org/ops4j/pax/jdbc/**/*.java</includes>
+                                    <configLocation>pax-jdbc-checks.xml</configLocation>
+                                    <suppressionsLocation>pax-jdbc-checks-suppressions.xml</suppressionsLocation>
+                                    <includes>**/*.java</includes>
                                     <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failsOnError>true</failsOnError>
                                     <failOnViolation>true</failOnViolation>
                                     <logViolationsToConsole>true</logViolationsToConsole>
                                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                                    <violationSeverity>warning</violationSeverity>
+<!--                                    <violationSeverity>warning</violationSeverity>-->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1050,11 +1045,6 @@
                                 <groupId>com.puppycrawl.tools</groupId>
                                 <artifactId>checkstyle</artifactId>
                                 <version>${plugin.dependency.com.puppycrawl.tools.checkstyle}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.ops4j.pax.jdbc</groupId>
-                                <artifactId>pax-jdbc-checkstyle-rules</artifactId>
-                                <version>${project.version}</version>
                             </dependency>
                         </dependencies>
                     </plugin>
@@ -1086,6 +1076,7 @@
                             <excludes />
                             <mapping>
                                 <!--<README>SCRIPT_STYLE</README>-->
+                                <cfg>SCRIPT_STYLE</cfg>
                             </mapping>
                             <headerDefinitions>
                                 <headerDefinition>license-headers.xml</headerDefinition>
@@ -1119,7 +1110,6 @@
                 <module>pax-jdbc-report</module>
             </modules>
         </profile>
-
     </profiles>
 
 </project>

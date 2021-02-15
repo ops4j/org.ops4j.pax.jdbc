@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <!--
 
     Copyright 2021 OPS4J.
@@ -16,16 +16,15 @@
     limitations under the License.
 
 -->
-<additionalHeaders>
-    <javadoc_style>
-        <firstLine>/*</firstLine>
-        <beforeEachLine> * </beforeEachLine>
-        <endLine> */</endLine>
-        <!--skipLine></skipLine-->
-        <firstLineDetectionPattern>(\s|\t)*/\*.*$</firstLineDetectionPattern>
-        <lastLineDetectionPattern>.*\*/(\s|\t)*$</lastLineDetectionPattern>
-        <allowBlankLines>false</allowBlankLines>
-        <isMultiline>true</isMultiline>
-        <padLines>false</padLines>
-    </javadoc_style>
-</additionalHeaders>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+
+    <suppress checks=".*" files=".+[\\\/]generated[\\\/].+\.java" />
+    <suppress checks=".*" files=".+[\\\/]build[\\\/]src[\\\/].+\.java" />
+    <suppress checks=".*" files=".+[\\\/]target[\\\/].+\.java" />
+    <suppress checks=".*" files=".+[\\\/]target[\\\/].+\.properties" />
+    <suppress checks=".*" files=".+[\\\/]contrib[\\\/].+\.java" />
+
+</suppressions>

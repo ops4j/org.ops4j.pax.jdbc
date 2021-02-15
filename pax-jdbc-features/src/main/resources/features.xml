@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+    Copyright 2021 OPS4J.
 
-      http://www.apache.org/licenses/LICENSE-2.0
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
 <features name="org.ops4j.pax.jdbc-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
@@ -27,6 +24,11 @@
 
     <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}">
         <bundle>mvn:org.osgi/org.osgi.service.jdbc/${version.org.osgi.service.jdbc}</bundle>
+        <bundle>mvn:javax.transaction/javax.transaction-api/1.2</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
+        <bundle dependency="true">mvn:javax.el/javax.el-api/3.0.0</bundle>
+        <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.2</bundle>
     </feature>
 
     <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}">
@@ -38,7 +40,7 @@
     <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${version.org.apache.servicemix.bundles.jasypt}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
@@ -99,7 +101,7 @@
     <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.postgresql/postgresql/${version.org.postgresql}</bundle>
     </feature>
 
@@ -123,7 +125,7 @@
         <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
         <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${version.org.apache.commons.pool2}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
@@ -133,7 +135,7 @@
 
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${version.org.apache.servicemix.bundles.c3p0}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-c3p0/${project.version}</bundle>
     </feature>
@@ -142,7 +144,7 @@
         <feature>pax-jdbc-spec</feature>
 
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-hikaricp/${project.version}</bundle>
         <bundle>mvn:com.zaxxer/HikariCP/${version.com.zaxxer.HikariCP}</bundle>
@@ -151,7 +153,7 @@
     <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.6_spec/${version.org.apache.geronimo.specs.j2ee-connector_1.6}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/${version.org.apache.geronimo.specs.validation_1.0}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/${version.org.apache.geronimo.connector}</bundle>
