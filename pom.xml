@@ -149,7 +149,7 @@
         <version.biz.aQute.bnd>5.1.1</version.biz.aQute.bnd>
         <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
         <version.com.zaxxer.hikari>3.4.5</version.com.zaxxer.hikari>
-        <version.junit>4.12</version.junit>
+        <version.junit>4.13.1</version.junit>
 
         <version.org.apache.aries.transaction.jdbc>2.1.3</version.org.apache.aries.transaction.jdbc>
         <version.org.apache.aries.transaction.manager>1.3.3</version.org.apache.aries.transaction.manager>
