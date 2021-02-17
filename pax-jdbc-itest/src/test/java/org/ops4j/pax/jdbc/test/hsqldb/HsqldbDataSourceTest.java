@@ -15,11 +15,8 @@
  */
 package org.ops4j.pax.jdbc.test.hsqldb;
 
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -32,6 +29,8 @@ import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 public class HsqldbDataSourceTest extends AbstractJdbcTest {
 
@@ -41,10 +40,10 @@ public class HsqldbDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-hsqldb"), //
-            mvnBundle("org.hsqldb", "hsqldb") //
+        return combine(regressionDefaults(), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-hsqldb"), //
+                mvnBundle("org.hsqldb", "hsqldb") //
         );
     }
 

@@ -69,13 +69,13 @@ public class MariaDbDataSourceFactoryTest {
         properties.setProperty(DataSourceFactory.JDBC_USER, "root");
         properties.setProperty(DataSourceFactory.JDBC_PASSWORD, "paxjdbc");
         DataSource ds = new MariaDbDataSourceFactory().createDataSource(properties);
-        MariaDbDataSource  mds = (MariaDbDataSource ) ds;
+        MariaDbDataSource mds = (MariaDbDataSource) ds;
         try (Connection con = ds.getConnection()) {
             DatabaseMetaData md = con.getMetaData();
             LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
 
             try (Statement st = con.createStatement()) {
-                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, CATALOG_NAME from INFORMATION_SCHEMA.SCHEMATA t")) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, CATALOG_NAME from INFORMATION_SCHEMA.SCHEMATA")) {
                     while (rs.next()) {
                         LOG.info("Schema: {}, catalog: {}", rs.getString(1), rs.getString(2));
                     }

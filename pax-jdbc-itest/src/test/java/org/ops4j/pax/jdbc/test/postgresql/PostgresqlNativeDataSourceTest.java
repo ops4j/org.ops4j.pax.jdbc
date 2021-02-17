@@ -15,11 +15,12 @@
  */
 package org.ops4j.pax.jdbc.test.postgresql;
 
-import static org.ops4j.pax.exam.CoreOptions.options;
-
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.junit.Rule;
@@ -30,6 +31,8 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
+
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 public class PostgresqlNativeDataSourceTest extends AbstractJdbcTest {
 
@@ -42,17 +45,29 @@ public class PostgresqlNativeDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            mvnBundle("org.postgresql", "postgresql") //
+        return combine(regressionDefaults(), //
+                mvnBundle("org.postgresql", "postgresql") //
         );
     }
 
     @Test
     public void createDataSourceAndConnection() throws SQLException {
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "paxjdbc");
-        props.setProperty(DataSourceFactory.JDBC_USER, "pax");
-        props.setProperty(DataSourceFactory.JDBC_PASSWORD, "pax");
-        dsf.createDataSource(props).getConnection().close();
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "postgres");
+        props.setProperty(DataSourceFactory.JDBC_USER, "paxjdbc");
+        props.setProperty(DataSourceFactory.JDBC_PASSWORD, "paxjdbc");
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, SCHEMA_OWNER from INFORMATION_SCHEMA.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, owner: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
     }
+
 }

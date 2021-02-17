@@ -15,12 +15,8 @@
  */
 package org.ops4j.pax.jdbc.test.sqlite;
 
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
-
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -30,6 +26,9 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 public class SqliteNativeDataSourceTest extends AbstractJdbcTest {
 
     @Inject
@@ -38,10 +37,10 @@ public class SqliteNativeDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            //systemProperty("osgi.console").value("6666"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite"), //
-            wrappedBundle(mvnBundle("org.xerial", "sqlite-jdbc")) //
+        return combine(regressionDefaults(), //
+                //systemProperty("osgi.console").value("6666"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-sqlite"), //
+                wrappedBundle(mvnBundle("org.xerial", "sqlite-jdbc")) //
         );
     }
 

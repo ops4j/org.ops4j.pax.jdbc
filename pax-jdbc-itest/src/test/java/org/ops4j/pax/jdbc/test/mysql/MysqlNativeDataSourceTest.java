@@ -15,19 +15,16 @@
  */
 package org.ops4j.pax.jdbc.test.mysql;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeThat;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -37,11 +34,13 @@ import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Rule
     public ServerConfiguration dbConfig = new ServerConfiguration("mysql");
@@ -52,9 +51,9 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mysql"), //
-            mvnBundle("mysql", "mysql-connector-java") //
+        return combine(regressionDefaults(), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mysql"), //
+                mvnBundle("mysql", "mysql-connector-java") //
         );
     }
 
@@ -66,32 +65,18 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        dsf.createDataSource(props).getConnection().close();
-    }
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
 
-    @Test
-    public void connectWithDefaultPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is(3306));
-
-        assertNotNull(dsf);
-        Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
-        props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        dsf.createDataSource(props).getConnection().close();
-    }
-
-    @Test
-    public void connectWithDefaultHostAndPort() throws SQLException {
-        assumeThat(dbConfig.getPortNumber(), is(3306));
-        assumeThat(dbConfig.getServerName(), is("localhost"));
-
-        Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
-        props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        dsf.createDataSource(props).getConnection().close();
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, CATALOG_NAME from INFORMATION_SCHEMA.SCHEMATA t")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, catalog: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
     }
 
     @Test
@@ -102,11 +87,13 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
-        
-        thrown.expect(SQLException.class);
-        thrown.expectMessage("Access denied");
-        thrown.expectMessage("using password: NO");
-        dsf.createDataSource(props).getConnection().close();
+
+        try {
+            dsf.createDataSource(props).getConnection();
+            fail();
+        } catch (SQLException e) {
+            assertTrue(e.getMessage().contains("Access denied") && e.getMessage().contains("using password: NO"));
+        }
     }
 
     @Test
@@ -119,9 +106,12 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
 
-        thrown.expect(SQLException.class);
-        thrown.expectMessage("Access denied");
-        thrown.expectMessage("using password: YES");
-        dsf.createDataSource(props).getConnection().close();
+        try {
+            dsf.createDataSource(props).getConnection();
+            fail();
+        } catch (SQLException e) {
+            assertTrue(e.getMessage().contains("Access denied") && e.getMessage().contains("using password: YES"));
+        }
     }
+
 }

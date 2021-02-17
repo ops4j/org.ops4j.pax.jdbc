@@ -15,6 +15,8 @@
  */
 package org.ops4j.pax.jdbc.test;
 
+import java.io.File;
+import java.io.IOException;
 import javax.inject.Inject;
 
 import org.junit.After;
@@ -35,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
+import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
@@ -44,6 +47,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 import static org.ops4j.pax.exam.CoreOptions.url;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 /**
  * Base class for all integration tests - manually sets up pax-exam configuration (without implicit configuration).
@@ -53,6 +57,11 @@ import static org.ops4j.pax.exam.CoreOptions.url;
 public abstract class AbstractJdbcTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractJdbcTest.class);
+
+    // location of where pax-logging-api will have output file written according to
+    // "org.ops4j.pax.logging.useFileLogFallback" system/context property
+    // filename will match test class name with ".log" extension
+    protected static final File LOG_DIR = new File("target/logs-default");
 
     @Rule
     public TestName testName = new TestName();
@@ -96,12 +105,19 @@ public abstract class AbstractJdbcTest {
         return null;
     }
 
-    public Option regressionDefaults() {
-        return composite(
+    public Option[] regressionDefaults() {
+        LOG_DIR.mkdirs();
+
+        Option[] baseOptions = new Option[] {
                 systemTimeout(60 * 60 * 1000),
 
                 // set to "4" to see Felix wiring information
                 frameworkProperty("felix.log.level").value("1"),
+
+                // needed by MariaDB
+                bootDelegationPackage("javax.sql.*"),
+                // needed by MySQL
+                bootDelegationPackage("javax.security.auth.*"),
 
                 // added implicitly by pax-exam, if pax.exam.system=test
                 // these resources are provided inside org.ops4j.pax.exam:pax-exam-link-mvn jar
@@ -127,19 +143,47 @@ public abstract class AbstractJdbcTest {
 
                 systemProperty("pax.exam.osgi.unresolved.fail").value("true"),
 
-//                systemProperty("osgi.console").value("6666"),
-
                 mvnBundle("org.osgi", "org.osgi.service.jdbc").versionAsInProject(),
-                mvnBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject()
-        );
+                mvnBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject(),
+
+                systemProperty("org.ops4j.pax.logging.property.file").value("src/test/resources/log4j2-osgi.properties")
+        };
+
+        return combine(defaultLoggingConfig(), baseOptions);
+    }
+
+    /**
+     * Reasonable defaults for default logging level (actually a threshold), framework logger level and usage
+     * of file-based default/fallback logger.
+     * @return
+     */
+    protected Option[] defaultLoggingConfig() {
+        String fileName = null;
+        try {
+            fileName = new File(LOG_DIR, getClass().getSimpleName() + ".log").getCanonicalPath();
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+
+        return new Option[] {
+                // every log with level higher or equal to DEBUG (i.e., not TRACE) will be logged
+                frameworkProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("DEBUG"),
+                // threshold for R7 Compendium 101.8 logging statements (from framework/bundle/service events)
+                frameworkProperty("org.ops4j.pax.logging.service.frameworkEventsLogLevel").value("ERROR"),
+                // default log will be written to file
+                frameworkProperty("org.ops4j.pax.logging.useFileLogFallback").value(fileName)
+        };
     }
 
     public Option poolDefaults() {
         return composite(
                 systemPackage("javax.transaction;version=1.1.0"),
                 systemPackage("javax.transaction.xa;version=1.1.0"),
+                // just for DBCP2
+                systemPackage("javax.transaction.xa;version=1.1.0;partial=true;mandatory:=partial"),
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-common").versionAsInProject(),
-                mvnBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec").versionAsInProject(),
+                mvnBundle("javax.validation", "validation-api").versionAsInProject(),
                 mvnBundle("org.apache.aries", "org.apache.aries.util").versionAsInProject(),
                 mvnBundle("org.apache.aries.transaction", "org.apache.aries.transaction.manager").versionAsInProject()
         );

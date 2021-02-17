@@ -15,15 +15,11 @@
  */
 package org.ops4j.pax.jdbc.test.config;
 
-import static org.ops4j.pax.exam.CoreOptions.provision;
-import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.factoryConfiguration;
-
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
@@ -39,6 +35,10 @@ import org.ops4j.pax.tinybundles.core.TinyBundles;
 import org.osgi.framework.Constants;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.ops4j.pax.exam.CoreOptions.provision;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.factoryConfiguration;
+
 /**
  * Uses the pax-jdbc-config module to create an H2 DataSource from a configuration and validates the
  * DataSource is present as a service
@@ -50,35 +50,35 @@ public class H2ConfigPreHookTest extends AbstractJdbcTest {
 
     @Inject
     DataSource ds;
-    
+
     @Configuration
     public Option[] config() {
         InputStream preHookBundle = TinyBundles.bundle() //
-            .add(MyPreHook.class) //
-            .add(MyPreHookActivator.class) //
-            .set(Constants.BUNDLE_ACTIVATOR, MyPreHookActivator.class.getName())
-            .build(TinyBundles.withBnd());
-        return new Option[] { //
-            regressionDefaults(), //
-            poolDefaults(), //
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
-            mvnBundle("com.h2database", "h2"), //
-            provision(preHookBundle), //
-            factoryConfiguration("org.ops4j.datasource")
-                .put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver")
-                .put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax;DB_CLOSE_DELAY=-1")
-                .put(PreHook.CONFIG_KEY_NAME, "myprehook")
-                .put(JNDI_NAME, "h2test").asOption()
-            
-        };
+                .add(MyPreHook.class) //
+                .add(MyPreHookActivator.class) //
+                .set(Constants.BUNDLE_ACTIVATOR, MyPreHookActivator.class.getName())
+                .build(TinyBundles.withBnd());
+        return combine( //
+                regressionDefaults(), //
+                poolDefaults(), //
+                mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
+                mvnBundle("com.h2database", "h2"), //
+                provision(preHookBundle), //
+                factoryConfiguration("org.ops4j.datasource")
+                        .put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver")
+                        .put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax;DB_CLOSE_DELAY=-1")
+                        .put(PreHook.CONFIG_KEY_NAME, "myprehook")
+                        .put(JNDI_NAME, "h2test").asOption()
+
+        );
     }
 
     @Test
     public void testDataSourceFromConfig() throws SQLException {
         try (Connection con = ds.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from PERSON")) {
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("select * from PERSON")) {
             rs.next();
             Assert.assertEquals(1, rs.getInt(1));
             Assert.assertEquals("Chris", rs.getString(2));

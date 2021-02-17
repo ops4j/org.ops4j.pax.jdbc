@@ -15,20 +15,17 @@
  */
 package org.ops4j.pax.jdbc.test.mariadb;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeThat;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
-
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.Filter;
@@ -36,10 +33,15 @@ import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeThat;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
     @Rule
     public ServerConfiguration dbConfig = new ServerConfiguration("mariadb");
@@ -50,9 +52,9 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mariadb"), //
-            mvnBundle("org.mariadb.jdbc", "mariadb-java-client"));
+        return combine(regressionDefaults(), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mariadb"), //
+                mvnBundle("org.mariadb.jdbc", "mariadb-java-client"));
     }
 
     @Test
@@ -63,7 +65,18 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, CATALOG_NAME from INFORMATION_SCHEMA.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, catalog: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
     }
 
     @Test
@@ -76,7 +89,18 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, CATALOG_NAME from INFORMATION_SCHEMA.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, catalog: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
     }
 
     @Test
@@ -89,7 +113,18 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, CATALOG_NAME from INFORMATION_SCHEMA.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, catalog: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
     }
 
     @Test
@@ -101,10 +136,12 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         DataSource dataSource = dsf.createDataSource(props);
-        thrown.expect(SQLException.class);
-        thrown.expectMessage("Access denied");
-        thrown.expectMessage("using password: NO");
-        dataSource.getConnection();
+        try {
+            dataSource.getConnection();
+            fail();
+        } catch (SQLException e) {
+            assertTrue(e.getMessage().contains("Access denied") && e.getMessage().contains("using password: NO"));
+        }
     }
 
     @Test
@@ -116,9 +153,12 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
         DataSource dataSource = dsf.createDataSource(props);
-        thrown.expect(SQLException.class);
-        thrown.expectMessage("Access denied");
-        thrown.expectMessage("using password: YES");
-        dataSource.getConnection();
+        try {
+            dataSource.getConnection();
+            fail();
+        } catch (SQLException e) {
+            assertTrue(e.getMessage().contains("Access denied") && e.getMessage().contains("using password: YES"));
+        }
     }
+
 }

@@ -18,6 +18,7 @@ package org.ops4j.pax.jdbc.test;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -39,24 +40,23 @@ import org.slf4j.LoggerFactory;
  * {@code pax.exam.system = default}.
  */
 public class ServerConfiguration extends ExternalResource {
+
     private static final Logger LOG = LoggerFactory.getLogger(ServerConfiguration.class);
 
-    private String subprotocol;
-
+    private final String subprotocol;
+    private final Map<String, Integer> defaultPorts = new HashMap<>();
     private String serverName;
     private int portNumber;
     private String databaseName;
     private String user;
     private String password;
-    private Map<String, Integer> defaultPorts;
 
     public ServerConfiguration(String subprotocol) {
         this.subprotocol = subprotocol;
         load();
-        this.defaultPorts = new java.util.HashMap<String, Integer>();
-        this.defaultPorts.put("mysql", 3306);
         this.defaultPorts.put("mariadb", 3306);
-        this.defaultPorts.put("postgresql", 3306);
+        this.defaultPorts.put("mysql", 3307); // to not conflict with MariaDB
+        this.defaultPorts.put("postgresql", 5432);
     }
 
     private void load() {
@@ -70,8 +70,7 @@ public class ServerConfiguration extends ExternalResource {
             user = props.getProperty(key("user"));
             password = props.getProperty(key("password"));
 
-        }
-        catch (IOException exc) {
+        } catch (IOException exc) {
             throw new Ops4jException(exc);
         }
     }
@@ -100,12 +99,12 @@ public class ServerConfiguration extends ExternalResource {
     public int getPortNumber() {
         return portNumber;
     }
-    
+
     /**
      * @return the portNumber
      */
     public String getPortNumberSt() {
-        return new Integer(portNumber).toString();
+        return Integer.toString(portNumber);
     }
 
     /**
@@ -136,28 +135,16 @@ public class ServerConfiguration extends ExternalResource {
         String optPort = (portNumber == 0) ? "" : (":" + portNumber);
         return String.format("jdbc:%s://%s%s/%s", subprotocol, serverName, optPort, databaseName);
     }
-    
+
     public boolean isAvailable() {
-        Socket socket = new Socket();
-        try {
+        try (Socket socket = new Socket()) {
             InetSocketAddress endpoint = new InetSocketAddress(serverName, portNumber);
             socket.connect(endpoint, (int) TimeUnit.SECONDS.toMillis(5));
             return true;
-        }
-        catch (Exception ex) {
-            LOG.warn(String.format("cannot connect to %s at %s:%d, ignoring test", subprotocol, 
-                                   serverName, portNumber));
+        } catch (Exception ex) {
+            LOG.warn(String.format("cannot connect to %s at %s:%d, ignoring test", subprotocol,
+                    serverName, portNumber));
             return false;
-        }
-        finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                }
-                catch (IOException e) {
-
-                }
-            }
         }
     }
 
@@ -165,4 +152,5 @@ public class ServerConfiguration extends ExternalResource {
     protected void before() throws Throwable {
         Assume.assumeTrue(isAvailable());
     }
+
 }

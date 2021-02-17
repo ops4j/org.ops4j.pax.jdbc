@@ -15,21 +15,19 @@
  */
 package org.ops4j.pax.jdbc.test.derbyclient;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.apache.derby.drda.NetworkServerControl;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -40,21 +38,23 @@ import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assume.assumeThat;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
 
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public final ServerConfiguration dbConfig = new ServerConfiguration("derbyclient");
 
     @Inject
     @Filter(value = "(osgi.jdbc.driver.name=derbyclient)")
     private DataSourceFactory dsf;
-    
-    private ServerConfiguration dbConfig = new ServerConfiguration("derbyclient");
 
     public void startDerbyServer() throws Exception {
         InetAddress addr = Inet4Address.getByName(dbConfig.getServerName());
-        Integer port = new Integer(dbConfig.getPortNumber());
+        int port = dbConfig.getPortNumber();
         NetworkServerControl server = new NetworkServerControl(addr, port);
         server.start(null);
     }
@@ -62,9 +62,9 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
     @Configuration
     public Option[] config() throws Exception {
         startDerbyServer();
-        return options(regressionDefaults(), //
-            mvnBundle("org.apache.derby", "derbyclient"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derbyclient") //
+        return combine(regressionDefaults(), //
+                mvnBundle("org.apache.derby", "derbyclient"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-derbyclient") //
         );
     }
 
@@ -77,7 +77,18 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMAID, SCHEMANAME, AUTHORIZATIONID from SYS.SYSSCHEMAS")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}/{}, owner: {}", rs.getString(1), rs.getString(2), rs.getString(3));
+                    }
+                }
+            }
+        }
     }
 
     @Test
@@ -89,7 +100,18 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMAID, SCHEMANAME, AUTHORIZATIONID from SYS.SYSSCHEMAS")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}/{}, owner: {}", rs.getString(1), rs.getString(2), rs.getString(3));
+                    }
+                }
+            }
+        }
     }
 
     @Test
@@ -101,7 +123,18 @@ public class DerbyClientNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         props.setProperty(ClientConnectionConstant.CREATE_DATABASE, "create");
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMAID, SCHEMANAME, AUTHORIZATIONID from SYS.SYSSCHEMAS")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}/{}, owner: {}", rs.getString(1), rs.getString(2), rs.getString(3));
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -24,29 +24,33 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 public class PoolNarayanaTest extends AbstractJdbcTest {
 
-    @Inject @org.ops4j.pax.exam.util.Filter("(pool=narayana)(xa=true)")
+    @Inject
+    @org.ops4j.pax.exam.util.Filter("(pool=narayana)(xa=true)")
     PooledDataSourceFactory xaPool;
-    
-    @Inject @org.ops4j.pax.exam.util.Filter("(pool=narayana)(xa=false)")
+
+    @Inject
+    @org.ops4j.pax.exam.util.Filter("(pool=narayana)(xa=false)")
     PooledDataSourceFactory pool;
-    
+
     @Configuration
     public Option[] config() {
-        return new Option[] {
-            regressionDefaults(), //
-            poolDefaults(), //
-            CoreOptions.bootDelegationPackage("sun.*"), //
-            mvnBundle("com.h2database", "h2"), //
-            mvnBundle("org.apache.commons", "commons-dbcp2"), //
-            mvnBundle("org.apache.commons", "commons-pool2"), //
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
-            mvnBundle("org.jboss.narayana.osgi", "narayana-osgi-jta"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-narayana"), //
-        };
+        return combine(
+                regressionDefaults(), //
+                poolDefaults(), //
+                CoreOptions.bootDelegationPackage("sun.*"), //
+                mvnBundle("com.h2database", "h2"), //
+                mvnBundle("org.apache.commons", "commons-dbcp2"), //
+                mvnBundle("org.apache.commons", "commons-pool2"), //
+                mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
+                mvnBundle("org.jboss.narayana.osgi", "narayana-osgi-jta"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-narayana") //
+        );
     }
-    
+
     @Test
     public void testPooledDataSourceFactoryServicesPresent() {
     }

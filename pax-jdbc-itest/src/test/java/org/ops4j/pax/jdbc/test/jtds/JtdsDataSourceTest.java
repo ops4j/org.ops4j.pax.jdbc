@@ -15,13 +15,14 @@
  */
 package org.ops4j.pax.jdbc.test.jtds;
 
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
-
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
-
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +33,11 @@ import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 public class JtdsDataSourceTest extends AbstractJdbcTest {
+
     @Rule
     public ServerConfiguration config = new ServerConfiguration("jtds");
 
@@ -42,9 +47,9 @@ public class JtdsDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
-            wrappedBundle("mvn:net.sourceforge.jtds/jtds/") //
+        return combine(regressionDefaults(), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+                wrappedBundle("mvn:net.sourceforge.jtds/jtds/") //
         );
     }
 
@@ -55,7 +60,18 @@ public class JtdsDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_URL, url);
         props.setProperty(DataSourceFactory.JDBC_USER, config.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, config.getPassword());
-        dsf.createDataSource(props).getConnection().close();
+        try (Connection con = dsf.createDataSource(props).getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, SCHEMA_OWNER from INFORMATION_SCHEMA.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, owner: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
     }
 
 }

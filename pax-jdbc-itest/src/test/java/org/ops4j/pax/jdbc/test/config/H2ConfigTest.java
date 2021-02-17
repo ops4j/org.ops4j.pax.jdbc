@@ -15,14 +15,10 @@
  */
 package org.ops4j.pax.jdbc.test.config;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
@@ -41,6 +37,10 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 /**
  * Uses the pax-jdbc-config module to create an H2 DataSource from a configuration and validates the
  * DataSource is present as a service
@@ -52,26 +52,26 @@ public class H2ConfigTest extends AbstractJdbcTest {
 
     @Inject
     ConfigurationAdmin configAdmin;
-    
+
     @Configuration
     public Option[] config() {
-        return new Option[] { //
-            regressionDefaults(), //
-            poolDefaults(), //
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
-            mvnBundle("com.h2database", "h2") //
-        };
+        return combine( //
+                regressionDefaults(), //
+                poolDefaults(), //
+                mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
+                mvnBundle("com.h2database", "h2") //
+        );
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testDataSourceFromConfig() throws SQLException, IOException,
-        InvalidSyntaxException, InterruptedException {
+            InvalidSyntaxException, InterruptedException {
         org.osgi.service.cm.Configuration config = createConfigForDataSource();
         ServiceTracker tracker = new ServiceTracker(context, DataSource.class, null);
         tracker.open();
-        DataSource dataSource = (DataSource)tracker.waitForService(2000);
+        DataSource dataSource = (DataSource) tracker.waitForService(2000);
         assertDataSourceWorks(dataSource);
         assertServicePropertiesPresent(tracker.getServiceReference());
         checkDataSourceIsDeletedWhenConfigIsDeleted(config, tracker);
@@ -87,8 +87,8 @@ public class H2ConfigTest extends AbstractJdbcTest {
         ServiceTracker tracker2 = new ServiceTracker(context, context.createFilter("(&(objectClass=" + DataSource.class.getName() + ")(osgi.jndi.service.name=d2))"), null);
         tracker1.open();
         tracker2.open();
-        DataSource dataSource1 = (DataSource)tracker1.waitForService(2000);
-        DataSource dataSource2 = (DataSource)tracker2.waitForService(2000);
+        DataSource dataSource1 = (DataSource) tracker1.waitForService(2000);
+        DataSource dataSource2 = (DataSource) tracker2.waitForService(2000);
         assertDataSourceWorks(dataSource1);
         assertDataSourceWorks(dataSource2);
         assertServicePropertiesPresent(tracker1.getServiceReference(), "d1");
@@ -106,7 +106,7 @@ public class H2ConfigTest extends AbstractJdbcTest {
 
     private org.osgi.service.cm.Configuration createConfigForDataSource(String jndiName) throws IOException {
         org.osgi.service.cm.Configuration config = configAdmin.createFactoryConfiguration(
-            "org.ops4j.datasource", null);
+                "org.ops4j.datasource", null);
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "org.h2.Driver");
         props.put(DataSourceFactory.JDBC_URL, "jdbc:h2:mem:pax");
@@ -131,8 +131,8 @@ public class H2ConfigTest extends AbstractJdbcTest {
     }
 
     private void checkDataSourceIsDeletedWhenConfigIsDeleted(
-        org.osgi.service.cm.Configuration config, ServiceTracker<DataSource, DataSource> tracker)
-        throws IOException, InterruptedException {
+            org.osgi.service.cm.Configuration config, ServiceTracker<DataSource, DataSource> tracker)
+            throws IOException, InterruptedException {
         config.delete();
         Thread.sleep(200);
         assertNull(tracker.getService());

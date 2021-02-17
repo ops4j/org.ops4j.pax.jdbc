@@ -31,10 +31,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 public class H2PooledDataSourceTest extends AbstractJdbcTest {
 
@@ -43,16 +43,16 @@ public class H2PooledDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            poolDefaults(),
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
-            mvnBundle("org.apache.commons", "commons-pool2"), //
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
-            mvnBundle("org.apache.commons", "commons-dbcp2"), //
-            mvnBundle("com.h2database", "h2") //
+        return combine(regressionDefaults(), //
+                poolDefaults(),
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-config"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
+                mvnBundle("org.apache.commons", "commons-pool2"), //
+                mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
+                mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jasypt"), //
+                mvnBundle("org.apache.commons", "commons-dbcp2"), //
+                mvnBundle("com.h2database", "h2") //
         );
     }
 
@@ -86,7 +86,7 @@ public class H2PooledDataSourceTest extends AbstractJdbcTest {
         DataSource ds2 = trackerForPool.waitForService(5000);
         assertNotNull(ds2);
         assertThat(ds2.getClass().getName(), equalTo("org.apache.commons.dbcp2.managed.ManagedDataSource"));
-        Field poolField = ds2.getClass().getSuperclass().getDeclaredField("_pool");
+        Field poolField = ds2.getClass().getSuperclass().getDeclaredField("pool");
         poolField.setAccessible(true);
         Object pool = poolField.get(ds2);
         Field maxTotalField = pool.getClass().getSuperclass().getDeclaredField("maxTotal");

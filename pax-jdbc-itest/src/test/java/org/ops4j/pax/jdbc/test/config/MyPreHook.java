@@ -18,7 +18,6 @@ package org.ops4j.pax.jdbc.test.config;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.hook.PreHook;

@@ -23,27 +23,31 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 public class PoolDbcp2Test extends AbstractJdbcTest {
 
-    @Inject @org.ops4j.pax.exam.util.Filter("(pool=dbcp2)(xa=true)")
+    @Inject
+    @org.ops4j.pax.exam.util.Filter("(pool=dbcp2)(xa=true)")
     PooledDataSourceFactory xaPool;
-    
-    @Inject @org.ops4j.pax.exam.util.Filter("(pool=dbcp2)(xa=false)")
+
+    @Inject
+    @org.ops4j.pax.exam.util.Filter("(pool=dbcp2)(xa=false)")
     PooledDataSourceFactory pool;
-    
+
     @Configuration
     public Option[] config() {
-        return new Option[] {
-            regressionDefaults(), //
-            poolDefaults(), //
-            mvnBundle("com.h2database", "h2"), //
-            mvnBundle("org.apache.commons", "commons-pool2"), //
-            mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
-            mvnBundle("org.apache.commons", "commons-dbcp2"), //
-            mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2"), //
-        };
+        return combine(
+                regressionDefaults(), //
+                poolDefaults(), //
+                mvnBundle("com.h2database", "h2"), //
+                mvnBundle("org.apache.commons", "commons-pool2"), //
+                mvnBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.cglib"), //
+                mvnBundle("org.apache.commons", "commons-dbcp2"), //
+                mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-pool-dbcp2") //
+        );
     }
-    
+
     @Test
     public void testPooledDataSourceFactoryServicesPresent() {
     }

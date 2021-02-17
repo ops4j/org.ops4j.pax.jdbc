@@ -32,6 +32,24 @@
 
     <name>OPS4J Pax JDBC Integration Tests</name>
 
+    <description>
+        To run all integration tests, you need to set up all the databases:
+        1) Derby:
+            $ export DERBY_HOME=/path/to/db-derby-10.14.2.0-bin
+            $ cd $DERBY_HOME
+            $ mkdir databases; cd databases
+            $ java -jar $DERBY_HOME/lib/derbyrun.jar server start
+        2) MS SQL Server:
+            $ podman run -itd --name pax.jdbc.sqlserver -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=PaxJdbc!(*67' -e 'MSSQL_PID=Express' \
+                        -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+        3) MariaDB:
+            $ podman run --name pax.jdbc.mariadb -p 3306:3306 -e MYSQL_ROOT_PASSWORD=paxjdbc -d mariadb
+        4) MySQL:
+            $ podman run --name pax.jdbc.mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=paxjdbc -d mysql
+        5) PostgreSQL:
+            $ podman run --name pax.jdbc.postgresql -e POSTGRES_USER=paxjdbc -e POSTGRES_PASSWORD=paxjdbc -p 5432:5432 -d postgres:latest
+    </description>
+
     <dependencies>
 
         <!-- pax-jdbc own artifacts -->
@@ -157,6 +175,11 @@
             <artifactId>org.eclipse.osgi</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -175,12 +198,13 @@
         <!-- APIs -->
 
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-validation_1.0_spec</artifactId>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -198,6 +222,7 @@
         </dependency>
 
         <!--JBoss components -->
+
         <dependency>
             <groupId>org.jboss.narayana.osgi</groupId>
             <artifactId>narayana-osgi-jta</artifactId>
@@ -313,8 +338,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <!-- to configure pax-exam with pax.exam.system=default which gives us more control over installed bundles -->
-                        <pax.exam.configuration>file:./src/test/resources/controlled-exam.properties</pax.exam.configuration>
+                        <!--
+                            to configure pax-exam with pax.exam.system=default which gives us more control over installed bundles
+                            see: org.ops4j.pax.exam.ConfigurationManager.ConfigurationManager()
+                        -->
+                        <pax.exam.configuration>file:src/test/resources/controlled-exam.properties</pax.exam.configuration>
                     </systemPropertyVariables>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <runOrder>alphabetical</runOrder>

@@ -15,11 +15,8 @@
  */
 package org.ops4j.pax.jdbc.test.h2;
 
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -29,6 +26,8 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 public class H2NativeDataSourceTest extends AbstractJdbcTest {
 
     @Inject
@@ -37,8 +36,8 @@ public class H2NativeDataSourceTest extends AbstractJdbcTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(), //
-            mvnBundle("com.h2database", "h2").versionAsInProject()
+        return combine(regressionDefaults(), //
+                mvnBundle("com.h2database", "h2").versionAsInProject()
         );
     }
 
