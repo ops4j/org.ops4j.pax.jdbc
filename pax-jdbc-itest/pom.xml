@@ -39,7 +39,7 @@
             $ cd $DERBY_HOME
             $ mkdir databases; cd databases
             $ java -jar $DERBY_HOME/lib/derbyrun.jar server start
-        2) MS SQL Server:
+        2) MS SQL Server (for official and jtds drivers):
             $ podman run -itd --name pax.jdbc.sqlserver -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=PaxJdbc!(*67' -e 'MSSQL_PID=Express' \
                         -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
         3) MariaDB:
@@ -283,6 +283,12 @@
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
             <scope>provided</scope>
         </dependency>
 

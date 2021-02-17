@@ -57,6 +57,7 @@ public class ServerConfiguration extends ExternalResource {
         this.defaultPorts.put("mariadb", 3306);
         this.defaultPorts.put("mysql", 3307); // to not conflict with MariaDB
         this.defaultPorts.put("postgresql", 5432);
+        this.defaultPorts.put("sqlserver", 1433);
     }
 
     private void load() {
