@@ -15,12 +15,13 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.sql.SQLException;
 import java.util.Dictionary;
@@ -31,144 +32,113 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
-import org.easymock.Capture;
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataSourceRegistrationTest {
 
     private static final String H2_DRIVER_CLASS = "org.h2.Driver";
 
     @Test
-    public void testPublishedAndUnpublished() throws ConfigurationException,
-        InvalidSyntaxException, SQLException {
-        Capture<Properties> capturedDsProps = EasyMock.newCapture();
-        Capture<Dictionary> capturedServiceProps = EasyMock.newCapture();
+    @SuppressWarnings("unchecked")
+    public void testPublishedAndUnpublished() throws ConfigurationException, InvalidSyntaxException, SQLException {
+        ArgumentCaptor<Properties> capturedDsProps = ArgumentCaptor.forClass(Properties.class);
+        @SuppressWarnings("rawtypes")
+        ArgumentCaptor<Dictionary> capturedServiceProps = ArgumentCaptor.forClass(Dictionary.class);
 
-        IMocksControl c = EasyMock.createControl();
-        BundleContext context = c.createMock(BundleContext.class);
-        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+        BundleContext context = mock(BundleContext.class);
+        final DataSourceFactory dsf = mock(DataSourceFactory.class);
 
         // Expect that a DataSource is created using the DataSourceFactory
-        DataSource ds = c.createMock(DataSource.class);
-        expect(dsf.createDataSource(capture(capturedDsProps))).andReturn(ds);
+        DataSource ds = mock(DataSource.class);
+        when(dsf.createDataSource(capturedDsProps.capture())).thenReturn(ds);
 
         // Expect DataSource is registered as a service
-        ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
-        expect(
-            context.registerService(eq(DataSource.class.getName()), eq(ds),
-                capture(capturedServiceProps))).andReturn(dsSreg);
+        ServiceRegistration<?> dsSreg = mock(ServiceRegistration.class);
+        when(context.registerService(eq(DataSource.class.getName()), eq(ds), capturedServiceProps.capture()))
+                .thenReturn(dsSreg);
 
-        // create and publish the datasource
-        c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, H2_DRIVER_CLASS);
         properties.put(DataSourceFactory.JDBC_DATABASE_NAME, "mydbname");
         properties.put(DataSourceFactory.JDBC_DATASOURCE_NAME, "myDsName");
         DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties, properties, null);
-        c.verify();
 
         // Check that correct properties were sent to DataSourceFactory
         Properties dsProps = capturedDsProps.getValue();
         assertEquals("mydbname", dsProps.get(DataSourceFactory.JDBC_DATABASE_NAME));
 
         // Check that correct properties were set on the DataSource service
-        Dictionary serviceProps = capturedServiceProps.getValue();
+        Dictionary<?, ?> serviceProps = capturedServiceProps.getValue();
         assertEquals("myDsName", serviceProps.get(DataSourceFactory.JDBC_DATASOURCE_NAME));
         assertEquals("myDsName", serviceProps.get("osgi.jndi.service.name"));
 
-        c.reset();
+        reset(context);
 
-        // Check unpublish unregisters the services
-        dsSreg.unregister();
-        expectLastCall();
-
-        c.replay();
         publisher.close();
-        c.verify();
+        verify(dsSreg).unregister();
     }
 
     @Test
-    public void testPublishedConnectionPoolDS() throws ConfigurationException,
-        InvalidSyntaxException, SQLException {
-
-        IMocksControl c = EasyMock.createControl();
-        BundleContext context = c.createMock(BundleContext.class);
-        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+    @SuppressWarnings("unchecked")
+    public void testPublishedConnectionPoolDS() throws ConfigurationException, InvalidSyntaxException, SQLException {
+        BundleContext context = mock(BundleContext.class);
+        final DataSourceFactory dsf = mock(DataSourceFactory.class);
 
         // Expect that a ConnectionPoolDataSource is created using the DataSourceFactory
-        ConnectionPoolDataSource cpds = c.createMock(ConnectionPoolDataSource.class);
-        expect(dsf.createConnectionPoolDataSource(anyObject(Properties.class))).andReturn(cpds);
+        ConnectionPoolDataSource cpds = mock(ConnectionPoolDataSource.class);
+        when(dsf.createConnectionPoolDataSource(any(Properties.class))).thenReturn(cpds);
 
         // Expect DataSource is registered as a service
-        ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
-        expect(
-            context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds),
-                anyObject(Dictionary.class))).andReturn(dsSreg);
-        dsSreg.unregister();
-        expectLastCall();
+        ServiceRegistration<?> dsSreg = mock(ServiceRegistration.class);
+        when(context.registerService(eq(ConnectionPoolDataSource.class.getName()), eq(cpds), any(Dictionary.class)))
+                .thenReturn(dsSreg);
 
         // create and publish the datasource
-        c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
-        properties.put(DataSourceRegistration.DATASOURCE_TYPE,
-            ConnectionPoolDataSource.class.getSimpleName());
+        properties.put(DataSourceRegistration.DATASOURCE_TYPE, ConnectionPoolDataSource.class.getSimpleName());
         DataSourceRegistration publisher = new DataSourceRegistration(context, dsf, properties, properties, null);
         publisher.close();
-        c.verify();
+        verify(dsSreg).unregister();
     }
 
-    @SuppressWarnings("resource")
     @Test
-    public void testPublishedXADS() throws ConfigurationException, InvalidSyntaxException,
-        SQLException {
-
-        IMocksControl c = EasyMock.createControl();
-        BundleContext context = c.createMock(BundleContext.class);
-        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
+    @SuppressWarnings("unchecked")
+    public void testPublishedXADS() throws ConfigurationException, InvalidSyntaxException, SQLException {
+        BundleContext context = mock(BundleContext.class);
+        final DataSourceFactory dsf = mock(DataSourceFactory.class);
 
         // Expect that a ConnectionPoolDataSource is created using the DataSourceFactory
-        XADataSource xads = c.createMock(XADataSource.class);
-        expect(dsf.createXADataSource(anyObject(Properties.class))).andReturn(xads);
+        XADataSource xads = mock(XADataSource.class);
+        when(dsf.createXADataSource(any(Properties.class))).thenReturn(xads);
 
         // Expect DataSource is registered as a service
-        ServiceRegistration dsSreg = c.createMock(ServiceRegistration.class);
-        expect(
-            context.registerService(eq(XADataSource.class.getName()), eq(xads),
-                anyObject(Dictionary.class))).andReturn(dsSreg);
+        ServiceRegistration<?> dsSreg = mock(ServiceRegistration.class);
 
-        // create and publish the datasource
-        c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceRegistration.DATASOURCE_TYPE, XADataSource.class.getSimpleName());
         new DataSourceRegistration(context, dsf, properties, properties, null);
-        c.verify();
+        verify(context).registerService(eq(XADataSource.class.getName()), eq(xads), any(Dictionary.class));
     }
 
     @SuppressWarnings("resource")
     @Test(expected = IllegalArgumentException.class)
     public void testError() throws ConfigurationException, InvalidSyntaxException, SQLException {
+        BundleContext context = mock(BundleContext.class);
+        final DataSourceFactory dsf = mock(DataSourceFactory.class);
 
-        IMocksControl c = EasyMock.createControl();
-        BundleContext context = c.createMock(BundleContext.class);
-        final DataSourceFactory dsf = c.createMock(DataSourceFactory.class);
-
-        // create and publish the datasource
-        c.replay();
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(DataSourceRegistration.JNDI_SERVICE_NAME, "test");
         properties.put(DataSourceRegistration.DATASOURCE_TYPE, "something else");
         new DataSourceRegistration(context, dsf, properties, properties, null);
-        c.verify();
+        verify(context).registerService(eq(DataSource.class.getName()), any(DataSource.class), any(Dictionary.class));
     }
 
 }

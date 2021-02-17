@@ -25,8 +25,8 @@ import java.util.Properties;
  */
 public class BeanConfig {
 
-    private Object bean;
-    private Map<String, Method> setters;
+    private final Object bean;
+    private final Map<String, Method> setters;
 
     private BeanConfig(Object bean) {
         this.bean = bean;

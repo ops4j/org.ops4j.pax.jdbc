@@ -124,12 +124,9 @@ public class DB2DataSourceFactory implements DataSourceFactory {
     @Override
     public Driver createDriver(Properties props) throws SQLException {
         try {
-            return Driver.class.cast(db2DriverClass.newInstance());
+            return (Driver) db2DriverClass.newInstance();
         }
-        catch (InstantiationException ex) {
-            throw new SQLException(ex);
-        }
-        catch (IllegalAccessException ex) {
+        catch (InstantiationException | IllegalAccessException ex) {
             throw new SQLException(ex);
         }
     }

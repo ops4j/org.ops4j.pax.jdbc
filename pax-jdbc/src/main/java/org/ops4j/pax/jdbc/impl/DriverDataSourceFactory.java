@@ -27,7 +27,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 public class DriverDataSourceFactory implements DataSourceFactory {
 
-    private Driver driver;
+    private final Driver driver;
 
     public DriverDataSourceFactory(Driver driver) {
         this.driver = driver;

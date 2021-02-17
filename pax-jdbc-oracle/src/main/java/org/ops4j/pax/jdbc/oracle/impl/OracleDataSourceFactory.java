@@ -50,7 +50,7 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
-            DataSource ds = DataSource.class.cast(oracleDataSourceClass.newInstance());
+            DataSource ds = (DataSource) oracleDataSourceClass.newInstance();
             setProperties(ds, oracleDataSourceClass, props);
             return ds;
         }
@@ -103,8 +103,7 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
         throws SQLException {
         try {
-            ConnectionPoolDataSource ds = ConnectionPoolDataSource.class
-                .cast(oracleConnectionPoolDataSourceClass.newInstance());
+            ConnectionPoolDataSource ds = (ConnectionPoolDataSource) oracleConnectionPoolDataSourceClass.newInstance();
             setProperties(ds, oracleConnectionPoolDataSourceClass, props);
             return ds;
         }
@@ -116,7 +115,7 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
         try {
-            XADataSource ds = XADataSource.class.cast(oracleXaDataSourceClass.newInstance());
+            XADataSource ds = (XADataSource) oracleXaDataSourceClass.newInstance();
             setProperties(ds, oracleXaDataSourceClass, props);
             return ds;
         }
@@ -128,13 +127,11 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     @Override
     public Driver createDriver(Properties props) throws SQLException {
         try {
-            return Driver.class.cast(oracleDriverClass.newInstance());
+            return (Driver) oracleDriverClass.newInstance();
         }
-        catch (InstantiationException ex) {
-            throw new SQLException(ex);
-        }
-        catch (IllegalAccessException ex) {
+        catch (InstantiationException | IllegalAccessException ex) {
             throw new SQLException(ex);
         }
     }
+
 }

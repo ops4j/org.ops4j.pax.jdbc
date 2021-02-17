@@ -47,8 +47,8 @@ public class DataSourceWrapper {
 
     public static final Logger LOG = LoggerFactory.getLogger(DataSourceWrapper.class);
 
-    private ServiceTracker<?, ?> tracker;
-    private CommonDataSource ds;
+    private final ServiceTracker<?, ?> tracker;
+    private final CommonDataSource ds;
 
     /**
      * A wrapper for data source service registered by application. This wrapper creates pooled {@link javax.sql.DataSource}

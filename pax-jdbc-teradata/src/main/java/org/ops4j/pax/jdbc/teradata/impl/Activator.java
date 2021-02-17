@@ -26,7 +26,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        // TODO Auto-generated method stub
         TeradataDataSourceFactory dsf = new TeradataDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "com.teradata.jdbc.TeraDriver");
@@ -36,8 +35,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        // TODO Auto-generated method stub
-
     }
 
 }

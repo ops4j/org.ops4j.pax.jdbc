@@ -15,10 +15,6 @@
  */
 package org.ops4j.pax.jdbc.config.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -28,12 +24,14 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author kameshs
  */
-@SuppressWarnings({
-                   "rawtypes", "unchecked"
-})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DecryptorTest {
 
     @Test
@@ -45,15 +43,13 @@ public class DecryptorTest {
         Decryptor decryptor = new Decryptor(getEncryptor());
         Dictionary decryptedConfig = decryptor.decrypt(dsProps);
 
-        for (Enumeration e = decryptedConfig.keys(); e.hasMoreElements();) {
-            String key = (String)e.nextElement();
+        for (Enumeration e = decryptedConfig.keys(); e.hasMoreElements(); ) {
+            String key = (String) e.nextElement();
             String expectedValue = String.valueOf(dsProps.get(key));
             String actualValue = String.valueOf(decryptedConfig.get(key));
             assertEquals(expectedValue, actualValue);
         }
     }
-
-
 
     @Test
     public void testDecryptWithEncryptedProperties() {
@@ -103,7 +99,7 @@ public class DecryptorTest {
         dsProps.put("timeout", 2000);
         Assert.assertEquals("testAlias", Decryptor.getAlias(dsProps));
     }
-    
+
     @Test(expected = RuntimeException.class)
     public void testDecryptWithTwoDifferentAliases() {
         Dictionary dsProps = new Hashtable<>();
@@ -117,7 +113,7 @@ public class DecryptorTest {
         assertTrue(Decryptor.isEncrypted("ENC(123456abce)"));
         assertFalse(Decryptor.isEncrypted("123456abce"));
     }
-    
+
     private StandardPBEStringEncryptor getEncryptor() {
         StandardPBEStringEncryptor textEncryptor = new StandardPBEStringEncryptor();
         textEncryptor.setPassword("myPassword");

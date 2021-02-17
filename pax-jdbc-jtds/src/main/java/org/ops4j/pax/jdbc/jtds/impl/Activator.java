@@ -28,8 +28,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         JTDSDataSourceFactory dsf = new JTDSDataSourceFactory();
         Dictionary<String, String> props = new Hashtable<String, String>();
-        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS,
-            "net.sourceforge.jtds.jdbc.Driver");
+        props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, "net.sourceforge.jtds.jdbc.Driver");
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "jtds");
         context.registerService(DataSourceFactory.class.getName(), dsf, props);
     }

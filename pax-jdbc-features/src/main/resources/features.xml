@@ -120,6 +120,7 @@
     </feature>
 
     <feature name="pax-jdbc-jtds" description="Provides JDBC jTDS DataSourceFactory" version="${project.version}">
+        <details>This feature relies on very old jtds driver. Please consider pax-jdbc-mssql feature instead.</details>
         <feature>pax-jdbc-spec</feature>
 
         <bundle>wrap:mvn:net.sourceforge.jtds/jtds/${version.net.sourceforge.jtds}</bundle>

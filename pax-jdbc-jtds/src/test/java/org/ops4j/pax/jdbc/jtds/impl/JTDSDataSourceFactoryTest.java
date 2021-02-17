@@ -19,21 +19,37 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.Test;
-
 import net.sourceforge.jtds.jdbc.Driver;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class JTDSDataSourceFactoryTest {
-    private static final String DB = "testdb";
-    private static final String SERVER = "testhost";
+
+    public static final Logger LOG = LoggerFactory.getLogger(JTDSDataSourceFactoryTest.class);
+
+    /*
+        $ podman run -itd --name pax.jdbc.sqlserver -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=PaxJdbc!(*67' -e 'MSSQL_PID=Express' \
+            -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+
+        $ podman logs -f pax.jdbc.sqlserver
+        SQL Server 2019 will run as non-root by default.
+        This container is running as user mssql.
+        ...
+        2021-02-17 07:11:08.81 spid26s     Server is listening on [ 'any' <ipv4> 1433].
+        ...
+     */
+
+    private static final String DB = "msdb";
+    private static final String SERVER = "localhost";
     private static final String PORT = "1433";
-    private static final String USER = "testuser";
-    private static final String PASSWORD = "testpassword";
+    private static final String USER = "sa";
+    private static final String PASSWORD = "PaxJdbc!(*67";
 
     @Test
     public void testDS() throws SQLException {
@@ -115,7 +131,7 @@ public class JTDSDataSourceFactoryTest {
         props.put("databaseName", DB);
         props.put("user", USER);
         props.put("password", PASSWORD);
-        props.put("url", "jdbc:jtds:sqlserver://testhost:1433/to-be-overwritten;domain=my-domain;useNTLMv2=true");
+        props.put("url", "jdbc:jtds:sqlserver://localhost:1433/to-be-overwritten;domain=my-domain;useNTLMv2=true");
         JtdsDataSource ds = dsf.createDataSource(props);
         validateDS(ds);
         assertEquals("my-domain", ds.getDomain());

@@ -28,8 +28,8 @@ import org.osgi.service.jdbc.DataSourceFactory;
 
 public class PoolingWrapper implements DataSourceFactory {
     
-    private PooledDataSourceFactory pdsf;
-    private DataSourceFactory dsf;
+    private final PooledDataSourceFactory pdsf;
+    private final DataSourceFactory dsf;
 
     public PoolingWrapper(PooledDataSourceFactory pdsf, DataSourceFactory dsf) {
         this.pdsf = pdsf;

@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 
 public class DriverDataSource implements DataSource {
 
-    private static Logger log = LoggerFactory.getLogger(DriverDataSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DriverDataSource.class);
 
-    private Driver driver;
-    private String url;
-    private String user;
-    private String password;
+    private final Driver driver;
+    private final String url;
+    private final String user;
+    private final String password;
 
     public DriverDataSource(Driver driver, String url, String user, String password) {
         this.driver = driver;
@@ -51,12 +51,12 @@ public class DriverDataSource implements DataSource {
 
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
-        log.warn("setLogWriter() has no effect");
+        LOG.warn("setLogWriter() has no effect");
     }
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-        log.warn("setLoginTimeout() has no effect");
+        LOG.warn("setLoginTimeout() has no effect");
     }
 
     @Override

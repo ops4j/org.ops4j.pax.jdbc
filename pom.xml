@@ -151,31 +151,39 @@
         <version.com.zaxxer.hikari>3.4.5</version.com.zaxxer.hikari>
         <version.junit>4.13.1</version.junit>
 
+        <version.javax.el>3.0.0</version.javax.el>
+        <version.javax.enterprise.cdi>2.0.SP1</version.javax.enterprise.cdi>
+        <!-- javax.inject/javax.inject/1 is not an OSGi bundle -->
+        <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
+        <version.javax.interceptor>1.2.2</version.javax.interceptor>
+        <version.javax.transaction>1.2</version.javax.transaction>
+
         <version.org.apache.aries.transaction.jdbc>2.1.3</version.org.apache.aries.transaction.jdbc>
         <version.org.apache.aries.transaction.manager>1.3.3</version.org.apache.aries.transaction.manager>
         <version.org.apache.aries.util>1.1.3</version.org.apache.aries.util>
         <version.org.apache.commons.dbcp2>2.8.0</version.org.apache.commons.dbcp2>
         <version.org.apache.commons.pool2>2.9.0</version.org.apache.commons.pool2>
-        <version.org.apache.felix.configadmin>1.9.16</version.org.apache.felix.configadmin>
+        <version.org.apache.felix.configadmin>1.9.20</version.org.apache.felix.configadmin>
+        <version.org.apache.felix.metatype>1.2.4</version.org.apache.felix.metatype>
         <version.org.apache.felix.framework>5.6.12</version.org.apache.felix.framework>
         <version.org.apache.geronimo.connector>3.1.4</version.org.apache.geronimo.connector>
         <version.org.apache.geronimo.specs.j2ee-connector_1.6>1.0</version.org.apache.geronimo.specs.j2ee-connector_1.6>
         <version.org.apache.geronimo.specs.jta_1.1>1.1.1</version.org.apache.geronimo.specs.jta_1.1>
         <version.org.apache.geronimo.specs.validation_1.0>1.1</version.org.apache.geronimo.specs.validation_1.0>
-        <version.org.apache.karaf>4.2.11-SNAPSHOT</version.org.apache.karaf>
+        <version.org.apache.karaf>4.2.10</version.org.apache.karaf>
         <version.org.apache.logging.log4j>2.12.1</version.org.apache.logging.log4j>
         <version.org.apache.servicemix.bundles.c3p0>0.9.5.4_1</version.org.apache.servicemix.bundles.c3p0>
         <version.org.apache.servicemix.bundles.cglib>3.3.0_1</version.org.apache.servicemix.bundles.cglib>
         <version.org.apache.servicemix.bundles.jasypt>1.9.3_1</version.org.apache.servicemix.bundles.jasypt>
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
 
-        <version.org.easymock>3.4</version.org.easymock>
         <!-- 3.13.0.v20171204-1916 exports org.osgi.framework package with version 1.9 -->
         <version.org.eclipse.tycho>3.11.2.v20161107-1947</version.org.eclipse.tycho>
 
         <version.org.jboss.jboss-transaction-spi>7.6.0.Final</version.org.jboss.jboss-transaction-spi>
         <version.org.jboss.narayana>5.9.8.Final</version.org.jboss.narayana>
 
+        <version.org.mockito>3.7.7</version.org.mockito>
         <version.org.ops4j.base>1.5.1</version.org.ops4j.base>
         <version.org.ops4j.pax.exam>4.13.1</version.org.ops4j.pax.exam>
         <version.org.ops4j.pax.logging>1.11.2</version.org.ops4j.pax.logging>
@@ -186,46 +194,54 @@
         <version.org.osgi>6.0.0</version.org.osgi>
         <version.org.osgi.service.jdbc>1.0.0</version.org.osgi.service.jdbc>
 
-        <version.org.slf4j>1.7.28</version.org.slf4j>
+        <version.org.slf4j>1.7.30</version.org.slf4j>
 
         <!-- versions of JDBC drivers -->
 
-        <version.com.h2database>1.4.199</version.com.h2database>
+        <version.com.h2database>1.4.200</version.com.h2database>
         <version.com.microsoft.sqlserver.jdbc>7.4.1.jre8</version.com.microsoft.sqlserver.jdbc>
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
-        <version.mysql>8.0.17</version.mysql>
+        <version.mysql>8.0.23</version.mysql>
         <version.net.sourceforge.jtds>1.3.1</version.net.sourceforge.jtds>
         <version.org.apache.derby>10.14.2.0</version.org.apache.derby>
-        <version.org.hsqldb>2.5.0</version.org.hsqldb>
-        <version.org.mariadb.jdbc>2.4.4</version.org.mariadb.jdbc>
+        <!-- 10.15.x is for JDK11+ -->
+<!--        <version.org.apache.derby>10.15.2.0</version.org.apache.derby>-->
+        <version.org.hsqldb>2.5.1</version.org.hsqldb>
+        <version.org.mariadb.jdbc>2.7.2</version.org.mariadb.jdbc>
         <version.org.postgresql>42.2.8</version.org.postgresql>
-        <version.org.xerial.sqlite>3.28.0</version.org.xerial.sqlite>
+        <version.org.xerial.sqlite>3.34.0</version.org.xerial.sqlite>
     </properties>
 
     <modules>
         <module>pax-jdbc</module>
+
         <module>pax-jdbc-common</module>
+        <module>pax-jdbc-pool-common</module>
+
+        <module>pax-jdbc-config</module>
+
         <module>pax-jdbc-db2</module>
         <module>pax-jdbc-derby</module>
         <module>pax-jdbc-derbyclient</module>
         <module>pax-jdbc-hsqldb</module>
         <module>pax-jdbc-mysql</module>
-        <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-mariadb</module>
+        <module>pax-jdbc-sqlite</module>
         <module>pax-jdbc-oracle</module>
         <module>pax-jdbc-jtds</module>
-        <module>pax-jdbc-config</module>
-        <module>pax-jdbc-pool-common</module>
-        <module>pax-jdbc-pool-aries</module>
-        <module>pax-jdbc-pool-c3p0</module>
-        <module>pax-jdbc-pool-dbcp2</module>
-        <module>pax-jdbc-pool-hikaricp</module>
-        <module>pax-jdbc-pool-narayana</module>
-        <module>pax-jdbc-pool-transx</module>
-        <module>pax-jdbc-features</module>
-        <module>pax-jdbc-itest</module>
-        <module>pax-jdbc-karaf-itest</module>
         <module>pax-jdbc-teradata</module>
+
+<!--        <module>pax-jdbc-pool-aries</module>-->
+<!--        <module>pax-jdbc-pool-c3p0</module>-->
+<!--        <module>pax-jdbc-pool-dbcp2</module>-->
+<!--        <module>pax-jdbc-pool-hikaricp</module>-->
+<!--        <module>pax-jdbc-pool-narayana</module>-->
+<!--        <module>pax-jdbc-pool-transx</module>-->
+
+<!--        <module>pax-jdbc-features</module>-->
+
+<!--        <module>pax-jdbc-itest</module>-->
+<!--        <module>pax-jdbc-karaf-itest</module>-->
     </modules>
 
     <repositories>
@@ -770,14 +786,40 @@
             <!-- APIs -->
 
             <dependency>
-                <!--
-                    javax.transaction:javax.transaction-api additionally requires cdi-api,
-                    interceptor-api and el-api so we stick to JTA 1.1
-                -->
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jta_1.1_spec</artifactId>
-                <version>${version.org.apache.geronimo.specs.jta_1.1}</version>
+                <groupId>javax.transaction</groupId>
+                <artifactId>javax.transaction-api</artifactId>
+                <version>${version.javax.transaction}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <version>${version.javax.enterprise.cdi}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>${version.javax.el}</version>
+            </dependency>
+            <!--
+                Exclusions are needed before https://github.com/eclipse-ee4j/interceptor-api/issues/31
+                which is fixed in jakarta.interceptor-api-1.2.6
+            -->
+            <dependency>
+                <groupId>javax.interceptor</groupId>
+                <artifactId>javax.interceptor-api</artifactId>
+                <version>${version.javax.interceptor}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.annotation</groupId>
+                        <artifactId>javax.annotation-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.ejb</groupId>
+                        <artifactId>javax.ejb-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-validation_1.0_spec</artifactId>
@@ -846,9 +888,9 @@
                 <version>${version.junit}</version>
             </dependency>
             <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>${version.org.easymock}</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${version.org.mockito}</version>
             </dependency>
 
             <!-- Logging dependencies -->
@@ -862,16 +904,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${version.org.slf4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${version.ch.qos.logback}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${version.ch.qos.logback}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
@@ -964,52 +996,6 @@
 
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-
-        <!-- OSGi -->
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.jdbc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Test dependencies -->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Logging dependencies -->
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-
-    </dependencies>
 
     <profiles>
         <!-- Checkstyle: `mvn -Pcs validate` -->

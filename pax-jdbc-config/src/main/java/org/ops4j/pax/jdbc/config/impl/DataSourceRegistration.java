@@ -121,7 +121,7 @@ public class DataSourceRegistration implements Closeable {
         } else if (XADataSource.class.getSimpleName().equals(typeName)) {
             return XADataSource.class;
         } else {
-            String msg = String.format("Problem in DataSource config : %s must be one of %s , %s, %s",
+            String msg = String.format("Problem in DataSource config : %s must be one of %s, %s, %s",
                 DATASOURCE_TYPE, //
                 DataSource.class.getSimpleName(), //
                 ConnectionPoolDataSource.class.getSimpleName(), //

@@ -26,43 +26,57 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.easymock.Capture;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createControl;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.newCapture;
-import org.easymock.IMocksControl;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.ops4j.pax.jdbc.config.ConfigLoader;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExternalConfigLoaderTest {
 
-    private IMocksControl c;
+    public static final Logger LOG = LoggerFactory.getLogger(ExternalConfigLoaderTest.class);
+
     private BundleContext context;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        c = createControl();
-        context = c.createMock(BundleContext.class);
-        Capture<String> capture = newCapture();
-        expect(context.createFilter(capture(capture))).andStubAnswer(() -> FrameworkUtil.createFilter(capture.getValue()));
-        context.addServiceListener(anyObject(ServiceListener.class), anyString());
-        ServiceReference ref1 = c.createMock(ServiceReference.class);
-        ServiceReference ref2 = c.createMock(ServiceReference.class);
-        ServiceReference[] refs = new ServiceReference[]{ref1, ref2};
+        context = mock(BundleContext.class);
+        when(context.createFilter(anyString())).thenAnswer(new Answer<Filter>() {
+            @Override
+            public Filter answer(InvocationOnMock invocation) throws Throwable {
+                return FrameworkUtil.createFilter(invocation.getArgument(0, String.class));
+            }
+        });
+        ServiceReference<FileConfigLoader> ref1 = mock(ServiceReference.class);
+        ServiceReference<CustomConfigLoader> ref2 = mock(ServiceReference.class);
+        ServiceReference<?>[] refs = new ServiceReference[] { ref1, ref2 };
         String filter = "(" + Constants.OBJECTCLASS + "=" + ConfigLoader.class.getName() + ")";
-        expect(context.getServiceReferences((String) null, filter)).andReturn(refs);
-        expect(context.getService(ref1)).andReturn(new FileConfigLoader());
-        expect(context.getService(ref2)).andReturn(new CustomConfigLoader());
-        c.replay();
+
+        when(context.getServiceReferences((String) null, filter)).thenReturn(refs);
+        when(context.getService(ref1)).thenReturn(new FileConfigLoader());
+        when(context.getService(ref2)).thenReturn(new CustomConfigLoader());
+    }
+
+    @After
+    public void check() throws Exception {
+        verify(context, times(1)).addServiceListener(any(ServiceListener.class), anyString());
     }
 
     @Test
@@ -77,7 +91,7 @@ public class ExternalConfigLoaderTest {
         externalConfigLoader.resolve(dsProps);
 
         for (Enumeration<String> e = dsProps.keys(); e.hasMoreElements();) {
-            String key = (String) e.nextElement();
+            String key = e.nextElement();
             String expectedValue = String.valueOf(expectedProps.get(key));
             String actualValue = String.valueOf(dsProps.get(key));
             assertEquals(expectedValue, actualValue);
@@ -135,9 +149,9 @@ public class ExternalConfigLoaderTest {
         try {
             final File file = File.createTempFile("externalPaxJdbcConfig-", ".secret");
             file.deleteOnExit();
-            
-            System.out.println("CREATED SECRET: " + file.getAbsolutePath());
-            
+
+            LOG.info("CREATED SECRET: {}", file.getAbsolutePath());
+
             Files.write(Paths.get(file.toURI()), value.getBytes());
             
             return file.getAbsolutePath();

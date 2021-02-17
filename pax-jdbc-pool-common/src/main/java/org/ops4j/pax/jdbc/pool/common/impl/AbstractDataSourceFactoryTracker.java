@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * Watches for DataSourceFactory services and creates/destroys a PooledDataSourceFactory for each
  * existing DataSourceFactory
  */
-@SuppressWarnings("rawtypes")
 public abstract class AbstractDataSourceFactoryTracker extends
     ServiceTracker<DataSourceFactory, ServiceRegistration<DataSourceFactory>> {
 
@@ -49,7 +48,7 @@ public abstract class AbstractDataSourceFactoryTracker extends
     }
 
     @Override
-    public ServiceRegistration addingService(ServiceReference<DataSourceFactory> reference) {
+    public ServiceRegistration<DataSourceFactory> addingService(ServiceReference<DataSourceFactory> reference) {
         if (reference.getProperty("pooled") != null) {
             // Make sure we do not react on our own service for the pooled factory
             return null;

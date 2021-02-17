@@ -31,7 +31,7 @@ public class Decryptor {
     private static final char ALIAS_SEPARATOR = ',';
     private static final String DECRYPTOR_ALIAS = "decryptor";
 
-    private StringEncryptor decryptor;
+    private final StringEncryptor decryptor;
 
     /**
      * Create new decryptor instance.

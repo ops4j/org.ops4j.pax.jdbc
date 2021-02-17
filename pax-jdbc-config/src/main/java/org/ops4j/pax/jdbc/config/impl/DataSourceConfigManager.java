@@ -35,16 +35,15 @@ import java.util.Set;
  * Watches for DataSource configs in OSGi configuration admin and creates / destroys the trackers
  * for the DataSourceFactories and pooling support
  */
-@SuppressWarnings({"rawtypes"})
 public class DataSourceConfigManager implements ManagedServiceFactory {
 
-    private BundleContext context;
-    private ExternalConfigLoader externalConfigLoader;
+    private final BundleContext context;
+    private final ExternalConfigLoader externalConfigLoader;
 
     /**
      * Stores one ServiceTracker for DataSourceFactories for each config pid
      */
-    private Map<String, ServiceTracker<?, ?>> trackers;
+    private final Map<String, ServiceTracker<?, ?>> trackers;
 
     public DataSourceConfigManager(BundleContext context, ExternalConfigLoader externalConfigLoader) {
         this.context = context;
@@ -73,7 +72,7 @@ public class DataSourceConfigManager implements ManagedServiceFactory {
         String phFilter = getPreHookFilter(loadedConfig);
 
         ServiceTrackerHelper helper = ServiceTrackerHelper.helper(context);
-        ServiceTracker<?, ?> tracker;
+        ServiceTracker<?, ServiceTracker<?, ?>> tracker;
 
         if (Objects.nonNull(pdsfFilter)) {
             tracker = helper.track(StringEncryptor.class, seFilter, se ->
