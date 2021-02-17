@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
  * in persistence.xml as jta-data-source
  */
 public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
+
     protected static final String POOL_PREFIX = "pool.";
     protected static final String FACTORY_PREFIX = "factory.";
     protected static final String INITIAL_SIZE = "initialSize";
@@ -105,7 +106,7 @@ public class DbcpPooledDataSourceFactory implements PooledDataSourceFactory {
             DataSource ds = dsf.createDataSource(getNonPoolProps(props));
             DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(ds);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory, null);
-            GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
+            GenericObjectPoolConfig<PoolableConnection> conf = new GenericObjectPoolConfig<>();
 
             Map<String, String> poolProps = getPoolProps(props);
             String initialSize = poolProps.get(INITIAL_SIZE);

@@ -18,75 +18,56 @@ package org.ops4j.pax.jdbc.pool.hikaricp.impl.ds;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.sql.DataSource;
 
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
-import org.junit.Assert;
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.pool.hikaricp.impl.HikariPooledDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-import com.zaxxer.hikari.HikariDataSource;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class HikariPooledDataSourceFactoryTest {
 
     @Test
     public void testcreateDataSource() throws SQLException {
-        IMocksControl c = EasyMock.createControl();
-        DataSourceFactory dataSourceFactory = c.createMock(DataSourceFactory.class);
-        DataSource dataSource = c.createMock(DataSource.class);
+        DataSourceFactory dataSourceFactory = mock(DataSourceFactory.class);
+        DataSource dataSource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
 
-        dataSource.setLoginTimeout(30);
-        EasyMock.expectLastCall().anyTimes();
+        when(connection.isValid(anyInt())).thenReturn(true);
+        when(connection.getAutoCommit()).thenReturn(true);
+        when(connection.isReadOnly()).thenReturn(false);
+        when(connection.getTransactionIsolation()).thenReturn(Connection.TRANSACTION_NONE);
+        when(connection.getNetworkTimeout()).thenReturn(0);
 
-        Connection connection = c.createMock(Connection.class);
+        when(dataSource.getConnection()).thenReturn(connection);
 
-
-        EasyMock.expect(connection.isValid(EasyMock.anyInt())).andReturn(true).anyTimes();
-
-        connection.setAutoCommit(true);
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(connection.getAutoCommit()).andReturn(true).anyTimes();
-
-        connection.setReadOnly(false);
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(connection.isReadOnly()).andReturn(false).anyTimes();
-
-        EasyMock.expect(connection.getTransactionIsolation()).andReturn(Connection.TRANSACTION_NONE).anyTimes();
-
-        connection.clearWarnings();
-        EasyMock.expectLastCall().anyTimes();
-
-        connection.setNetworkTimeout(EasyMock.anyObject(), EasyMock.anyInt());
-        EasyMock.expectLastCall().anyTimes();
-
-        EasyMock.expect(connection.getNetworkTimeout()).andReturn(0).anyTimes();
-
-        EasyMock.expect(dataSource.getConnection()).andReturn(connection).anyTimes();
-
-        EasyMock.expect(dataSourceFactory.createDataSource(EasyMock.anyObject(Properties.class)))
-                .andReturn(dataSource).atLeastOnce();
+        when(dataSourceFactory.createDataSource(any(Properties.class))).thenReturn(dataSource);
 
         HikariPooledDataSourceFactory pdsf = new HikariPooledDataSourceFactory();
-
-        c.replay();
         DataSource ds = pdsf.create(dataSourceFactory, createValidProps());
-        c.verify();
-        Assert.assertEquals(HikariDataSource.class, ds.getClass());
-        
-        Assert.assertEquals(((HikariDataSource)ds).getMaximumPoolSize(), 8);
+
+        verify(dataSource).setLoginTimeout(30);
+        verify(connection).getNetworkTimeout();
+        verify(connection, atLeastOnce()).setNetworkTimeout(any(), anyInt());
+
+        assertEquals(HikariDataSource.class, ds.getClass());
+        assertEquals(((HikariDataSource)ds).getMaximumPoolSize(), 8);
 
         try {
             pdsf.create(dataSourceFactory, createInvalidPoolConfig());
         } catch (RuntimeException e) {
-            Assert.assertEquals(
+            assertEquals(
                     "Property dummy does not exist on target class com.zaxxer.hikari.HikariConfig",
                     e.getMessage());
         }
-
-     
     }
 
     private Properties createValidProps() {

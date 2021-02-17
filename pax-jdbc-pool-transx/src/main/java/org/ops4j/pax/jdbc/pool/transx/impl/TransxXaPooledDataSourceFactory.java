@@ -37,8 +37,9 @@ import java.util.Properties;
  * in persistence.xml as jta-data-source
  */
 public class TransxXaPooledDataSourceFactory extends TransxPooledDataSourceFactory {
-    private  static final Logger LOG = LoggerFactory.getLogger(TransxXaPooledDataSourceFactory.class);
-    private TransactionManager tm;
+
+    private static final Logger LOG = LoggerFactory.getLogger(TransxXaPooledDataSourceFactory.class);
+    private final TransactionManager tm;
 
     /**
      * Initialize XA PooledDataSourceFactory
@@ -57,7 +58,7 @@ public class TransxXaPooledDataSourceFactory extends TransxPooledDataSourceFacto
             Object local = poolProps.remove("local");
             CommonDataSource ds;
             TransactionSupportLevel tsl;
-            if (local != null && "true".equals(local)) {
+            if ("true".equals(local)) {
                 ds = dsf.createDataSource(getNonPoolProps(props));
                 tsl = TransactionSupportLevel.LocalTransaction;
             } else {

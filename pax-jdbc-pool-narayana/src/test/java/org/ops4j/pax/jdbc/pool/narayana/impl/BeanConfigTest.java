@@ -21,10 +21,13 @@ import java.util.Map;
 import org.apache.commons.dbcp2.PoolableConnection;
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.common.BeanConfig;
+
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class BeanConfigTest {
 
@@ -35,31 +38,27 @@ public class BeanConfigTest {
         props.put("testOnBorrow", "true");
         props.put("maxWaitMillis", "1000");
         props.put("jmxNameBase", "name");
-        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+        GenericObjectPoolConfig<?> config = new GenericObjectPoolConfig<>();
         BeanConfig.configure(config, props);
         Assert.assertEquals(2, config.getMaxIdle());
         Assert.assertTrue(config.getTestOnBorrow());
         Assert.assertEquals(1000, config.getMaxWaitMillis());
         Assert.assertEquals("name", config.getJmxNameBase());
     }
-    
+
     @Test
     public void testPoolableConnectionFactory() throws Exception {
-        Map<String, String> props = new HashMap<String, String>();
+        Map<String, String> props = new HashMap<>();
         props.put("validationQuery", "dummyQuery");
         props.put("validationQueryTimeout", "1");
         PoolableConnectionFactory pcf = new PoolableConnectionFactory(null, null);
         BeanConfig.configure(pcf, props);
 
-        PoolableConnection connection = EasyMock.createMock(PoolableConnection.class);
-        connection.validate(EasyMock.eq("dummyQuery"), EasyMock.eq(1));
-        EasyMock.expectLastCall();
-        EasyMock.expect(connection.isClosed()).andReturn(false);
-        EasyMock.replay(connection);
+        PoolableConnection connection = mock(PoolableConnection.class);
 
         pcf.validateConnection(connection);
-
-        EasyMock.verify(connection);
+        verify(connection).validate(eq("dummyQuery"), eq(1));
+        verify(connection).isClosed();
     }
 
 }

@@ -71,7 +71,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
             DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
-            GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
+            GenericObjectPoolConfig<PoolableConnection> conf = new GenericObjectPoolConfig<>();
             BeanConfig.configure(conf, getPoolProps(props));
             BeanConfig.configure(pcf, getPrefixed(props, FACTORY_PREFIX));
             GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>(pcf, conf);

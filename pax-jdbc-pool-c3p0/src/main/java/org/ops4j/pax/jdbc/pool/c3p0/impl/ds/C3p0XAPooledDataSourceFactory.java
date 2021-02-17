@@ -17,24 +17,23 @@ package org.ops4j.pax.jdbc.pool.c3p0.impl.ds;
 
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 
+import com.mchange.v2.c3p0.DataSources;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mchange.v2.c3p0.DataSources;
-
 public class C3p0XAPooledDataSourceFactory extends C3p0PooledDataSourceFactory {
+
     private static final Logger LOG = LoggerFactory.getLogger(C3p0XAPooledDataSourceFactory.class);
     protected TransactionManager tm;
 
     /**
      * Initialize XA PoolingDataSourceFactory
-     * 
+     *
      * @param tm
      *            transaction manager (Only needed for XA mode)
      */
@@ -49,18 +48,16 @@ public class C3p0XAPooledDataSourceFactory extends C3p0PooledDataSourceFactory {
             closeDataSource(config);
             final XADataSource unpooledDataSource = dsf.createXADataSource(getNonPoolProps(config));
             return DataSources.pooledDataSource((DataSource) unpooledDataSource, config);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
-            }
-            else if (e instanceof RuntimeException) {
+            } else if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
-            }
-            else {
+            } else {
                 throw new RuntimeException(e.getMessage(), e);
             }
         }
     }
+
 }

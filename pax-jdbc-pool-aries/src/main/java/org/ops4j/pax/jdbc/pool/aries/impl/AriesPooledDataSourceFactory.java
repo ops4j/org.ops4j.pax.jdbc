@@ -36,6 +36,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
  * in persistence.xml as jta-data-source
  */
 public class AriesPooledDataSourceFactory implements PooledDataSourceFactory {
+
     protected static final String POOL_PREFIX = "pool.";
 
     public DataSource create(DataSourceFactory dsf, Properties props) throws SQLException {

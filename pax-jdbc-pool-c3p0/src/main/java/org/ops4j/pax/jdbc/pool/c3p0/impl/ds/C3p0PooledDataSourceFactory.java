@@ -17,17 +17,15 @@ package org.ops4j.pax.jdbc.pool.c3p0.impl.ds;
 
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.sql.DataSource;
-
-import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
-import org.osgi.service.jdbc.DataSourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.mchange.v2.c3p0.C3P0Registry;
 import com.mchange.v2.c3p0.DataSources;
 import com.mchange.v2.c3p0.PooledDataSource;
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
+import org.osgi.service.jdbc.DataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates pooled and optionally XA ready DataSources out of a non pooled DataSourceFactory. XA
@@ -36,6 +34,7 @@ import com.mchange.v2.c3p0.PooledDataSource;
  * in persistence.xml as jta-data-source
  */
 public class C3p0PooledDataSourceFactory implements PooledDataSourceFactory {
+
     protected static final String POOL_PREFIX = "c3p0.";
     private static final Logger LOG = LoggerFactory.getLogger(C3p0PooledDataSourceFactory.class);
 
@@ -49,9 +48,7 @@ public class C3p0PooledDataSourceFactory implements PooledDataSourceFactory {
         }
         return dsProps;
     }
-    
-  
-    
+
     protected final void closeDataSource(Properties props) throws SQLException {
         final String dataSourceName = props.getProperty("c3p0.dataSourceName");
         if (dataSourceName != null) {
@@ -71,16 +68,13 @@ public class C3p0PooledDataSourceFactory implements PooledDataSourceFactory {
             closeDataSource(config);
             final DataSource unpooledDataSource = dsf.createDataSource(getNonPoolProps(config));
             return DataSources.pooledDataSource(unpooledDataSource, config);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             LOG.error("Error creating pooled datasource" + e.getMessage(), e);
             if (e instanceof SQLException) {
                 throw (SQLException) e;
-            }
-            else if (e instanceof RuntimeException) {
+            } else if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
-            }
-            else {
+            } else {
                 throw new RuntimeException(e.getMessage(), e);
             }
         }

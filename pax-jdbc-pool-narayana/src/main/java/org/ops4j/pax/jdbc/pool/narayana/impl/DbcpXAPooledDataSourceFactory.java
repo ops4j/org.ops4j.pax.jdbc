@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
+
     private static final Logger LOG = LoggerFactory.getLogger(DbcpXAPooledDataSourceFactory.class);
 
     protected final TransactionManager tm;
@@ -82,7 +83,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             final XADataSource ds = dsf.createXADataSource(getNonPoolProps(props));
             DataSourceXAConnectionFactory connFactory = new DataSourceXAConnectionFactory(tm, ds);
             PoolableManagedConnectionFactory pcf = new PoolableManagedConnectionFactory(connFactory, null);
-            GenericObjectPoolConfig conf = new GenericObjectPoolConfig();
+            GenericObjectPoolConfig<PoolableConnection> conf = new GenericObjectPoolConfig<>();
 
             Map<String, String> poolProps = getPoolProps(props);
             String initialSize = poolProps.get(INITIAL_SIZE);
@@ -132,7 +133,7 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
         }
     }
     
-    class Wrapper implements XAResource {
+    static class Wrapper implements XAResource {
 
         private final XAConnection xaConnection;
         private final XAResource xaResource;
@@ -201,4 +202,5 @@ public class DbcpXAPooledDataSourceFactory extends DbcpPooledDataSourceFactory {
             xaResource.start(xid, i);
         }
     }
+
 }

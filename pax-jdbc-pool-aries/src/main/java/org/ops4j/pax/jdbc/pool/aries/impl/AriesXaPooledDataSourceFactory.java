@@ -34,7 +34,8 @@ import org.osgi.service.jdbc.DataSourceFactory;
  * in persistence.xml as jta-data-source
  */
 public class AriesXaPooledDataSourceFactory extends AriesPooledDataSourceFactory {
-    private AriesTransactionManager tm;
+
+    private final AriesTransactionManager tm;
 
     /**
      * Initialize XA PoolingDataSourceFactory

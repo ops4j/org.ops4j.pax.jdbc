@@ -172,7 +172,7 @@
         <version.org.apache.geronimo.specs.validation_1.0>1.1</version.org.apache.geronimo.specs.validation_1.0>
         <version.org.apache.karaf>4.2.10</version.org.apache.karaf>
         <version.org.apache.logging.log4j>2.12.1</version.org.apache.logging.log4j>
-        <version.org.apache.servicemix.bundles.c3p0>0.9.5.4_1</version.org.apache.servicemix.bundles.c3p0>
+        <version.org.apache.servicemix.bundles.c3p0>0.9.5.5_1</version.org.apache.servicemix.bundles.c3p0>
         <version.org.apache.servicemix.bundles.cglib>3.3.0_1</version.org.apache.servicemix.bundles.cglib>
         <version.org.apache.servicemix.bundles.jasypt>1.9.3_1</version.org.apache.servicemix.bundles.jasypt>
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
@@ -188,7 +188,7 @@
         <version.org.ops4j.pax.exam>4.13.1</version.org.ops4j.pax.exam>
         <version.org.ops4j.pax.logging>1.11.2</version.org.ops4j.pax.logging>
         <version.org.ops4j.pax.swissbox>1.8.3</version.org.ops4j.pax.swissbox>
-        <version.org.ops4j.pax.transx>0.4.4</version.org.ops4j.pax.transx>
+        <version.org.ops4j.pax.transx>0.5.0-SNAPSHOT</version.org.ops4j.pax.transx>
         <version.org.ops4j.pax.url>2.6.1</version.org.ops4j.pax.url>
 
         <version.org.osgi>6.0.0</version.org.osgi>
@@ -231,12 +231,12 @@
         <module>pax-jdbc-jtds</module>
         <module>pax-jdbc-teradata</module>
 
-<!--        <module>pax-jdbc-pool-aries</module>-->
-<!--        <module>pax-jdbc-pool-c3p0</module>-->
-<!--        <module>pax-jdbc-pool-dbcp2</module>-->
-<!--        <module>pax-jdbc-pool-hikaricp</module>-->
-<!--        <module>pax-jdbc-pool-narayana</module>-->
-<!--        <module>pax-jdbc-pool-transx</module>-->
+        <module>pax-jdbc-pool-aries</module>
+        <module>pax-jdbc-pool-c3p0</module>
+        <module>pax-jdbc-pool-dbcp2</module>
+        <module>pax-jdbc-pool-hikaricp</module>
+        <module>pax-jdbc-pool-narayana</module>
+        <module>pax-jdbc-pool-transx</module>
 
 <!--        <module>pax-jdbc-features</module>-->
 

@@ -17,14 +17,12 @@ package org.ops4j.pax.jdbc.pool.hikaricp.impl;
 
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.sql.DataSource;
-
-import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
-import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.ops4j.pax.jdbc.pool.common.PooledDataSourceFactory;
+import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
  * Creates pooled ready DataSources out of a non pooled DataSourceFactory. XA
@@ -32,6 +30,7 @@ import com.zaxxer.hikari.HikariDataSource;
  * in persistence.xml as jta-data-source
  */
 public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
+
     protected static final String POOL_PREFIX = "hikari.";
     protected static final String POOL_PREFIX2 = "pool.";
 
@@ -83,4 +82,5 @@ public class HikariPooledDataSourceFactory implements PooledDataSourceFactory {
             }
         }
     }
+
 }
