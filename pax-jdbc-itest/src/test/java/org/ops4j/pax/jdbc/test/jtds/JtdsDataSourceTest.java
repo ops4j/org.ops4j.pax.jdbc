@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import javax.inject.Inject;
-import javax.sql.DataSource;
 
 import org.junit.Rule;
 import org.junit.Test;

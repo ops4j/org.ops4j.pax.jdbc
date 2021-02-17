@@ -22,13 +22,10 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
-import net.sourceforge.jtds.jdbc.Driver;
-import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,10 +33,6 @@ import org.junit.rules.ExternalResource;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class JTDSDataSourceFactoryConnectTest {
 
