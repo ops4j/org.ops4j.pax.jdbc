@@ -171,7 +171,7 @@
         <version.org.apache.geronimo.specs.j2ee-connector_1.6>1.0</version.org.apache.geronimo.specs.j2ee-connector_1.6>
         <version.org.apache.geronimo.specs.validation_1.0>1.1</version.org.apache.geronimo.specs.validation_1.0>
         <version.org.apache.karaf>4.2.10</version.org.apache.karaf>
-        <version.org.apache.logging.log4j>2.12.1</version.org.apache.logging.log4j>
+        <version.org.apache.logging.log4j>2.14.0</version.org.apache.logging.log4j>
         <version.org.apache.servicemix.bundles.c3p0>0.9.5.5_1</version.org.apache.servicemix.bundles.c3p0>
         <version.org.apache.servicemix.bundles.cglib>3.3.0_1</version.org.apache.servicemix.bundles.cglib>
         <version.org.apache.servicemix.bundles.jasypt>1.9.3_1</version.org.apache.servicemix.bundles.jasypt>
