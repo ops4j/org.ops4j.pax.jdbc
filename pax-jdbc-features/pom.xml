@@ -150,6 +150,13 @@
             <groupId>org.apache.karaf.features</groupId>
             <artifactId>framework</artifactId>
             <type>kar</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
@@ -212,6 +219,7 @@
                                 <descriptor>mvn:org.apache.karaf.features/framework/${version.org.apache.karaf}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${version.org.apache.karaf}/xml/features</descriptor>
                                 <descriptor>file:${project.build.directory}/classes/features.xml</descriptor>
+                                <descriptor>file:${project.build.directory}/classes/features-gpl.xml</descriptor>
                             </descriptors>
                             <distribution>org.apache.karaf.features:framework</distribution>
                             <javase>1.8</javase>
@@ -227,6 +235,7 @@
                                 <feature>pax-jdbc-derbyclient</feature>
                                 <feature>pax-jdbc-h2</feature>
                                 <feature>pax-jdbc-hsqldb</feature>
+                                <feature>pax-jdbc-mysql</feature>
                                 <feature>pax-jdbc-mariadb</feature>
 <!--                                <feature>pax-jdbc-oracle</feature>-->
                                 <feature>pax-jdbc-postgresql</feature>

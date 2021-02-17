@@ -8,4 +8,6 @@ Bundle-Activator:\
   org.ops4j.pax.jdbc.pool.transx.impl.Activator
   
 Import-Package:\
+  javax.resource;version="[1.6,2)",\
+  javax.resource.*;version="[1.6,2)",\
   *

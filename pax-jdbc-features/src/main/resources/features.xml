@@ -23,12 +23,13 @@
     </repository>
 
     <feature name="pax-jdbc-spec" description="Provides OSGi JDBC Service spec" version="${project.version}">
-        <bundle>mvn:org.osgi/org.osgi.service.jdbc/${version.org.osgi.service.jdbc}</bundle>
-        <bundle>mvn:javax.transaction/javax.transaction-api/1.2</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
-        <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
-        <bundle dependency="true">mvn:javax.el/javax.el-api/3.0.0</bundle>
-        <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.2</bundle>
+        <bundle dependency="true">mvn:org.osgi/org.osgi.service.jdbc/${version.org.osgi.service.jdbc}</bundle>
+        <!-- it should be Karaf that installs "transaction-api" feature, that's why these bundles have dependency="true" -->
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/${version.javax.transaction}</bundle>
+        <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/${version.javax.interceptor}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/${version.org.apache.servicemix.bundles.javax-inject}</bundle>
+        <bundle dependency="true">mvn:javax.el/javax.el-api/${version.javax.el}</bundle>
+        <bundle dependency="true">mvn:javax.enterprise/cdi-api/${version.javax.enterprise.cdi}</bundle>
     </feature>
 
     <feature name="pax-jdbc" description="Provides JDBC Service support" version="${project.version}">
@@ -40,13 +41,13 @@
     <feature name="pax-jdbc-config" description="Provides JDBC Config support" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jasypt/${version.org.apache.servicemix.bundles.jasypt}</bundle>
-        <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-config/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-db2" description="Provides JDBC DB2 DataSourceFactory" version="${project.version}">
+        <details>This feature requires actual IBM DB2 JDBC driver installed</details>
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-db2/${project.version}</bundle>
@@ -93,6 +94,7 @@
     </feature>
 
     <feature name="pax-jdbc-oracle" description="Provides JDBC Oracle DataSourceFactory" version="${project.version}">
+        <details>This feature requires actual Oracle JDBC driver installed</details>
         <feature>pax-jdbc-spec</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-oracle/${project.version}</bundle>
@@ -101,7 +103,6 @@
     <feature name="pax-jdbc-postgresql" description="Provides JDBC PostgreSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.postgresql/postgresql/${version.org.postgresql}</bundle>
     </feature>
 
@@ -115,7 +116,6 @@
     <feature name="pax-jdbc-mssql" description="Provides JDBC MSSQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/${version.org.apache.geronimo.specs.jta_1.1}</bundle>
         <bundle>mvn:com.microsoft.sqlserver/mssql-jdbc/${version.com.microsoft.sqlserver.jdbc}</bundle>
     </feature>
 
@@ -123,17 +123,16 @@
         <details>This feature relies on very old jtds driver. Please consider pax-jdbc-mssql feature instead.</details>
         <feature>pax-jdbc-spec</feature>
 
-        <bundle>wrap:mvn:net.sourceforge.jtds/jtds/${version.net.sourceforge.jtds}</bundle>
+        <bundle dependency="true">wrap:mvn:net.sourceforge.jtds/jtds/${version.net.sourceforge.jtds}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-jtds/${project.version}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-dbcp2" description="Provides JDBC Pooling DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
         <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${version.org.apache.commons.pool2}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
-        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-dbcp2/${project.version}</bundle>
     </feature>
@@ -143,7 +142,6 @@
 
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.c3p0/${version.org.apache.servicemix.bundles.c3p0}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
-        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-c3p0/${project.version}</bundle>
     </feature>
@@ -151,21 +149,21 @@
     <feature name="pax-jdbc-pool-hikaricp" description="Provides JDBC Pooling DataSourceFactory using HikariCP" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
+        <bundle>mvn:com.zaxxer/HikariCP/${version.com.zaxxer.hikari}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
-        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-hikaricp/${project.version}</bundle>
-        <bundle>mvn:com.zaxxer/HikariCP/${version.com.zaxxer.hikari}</bundle>
     </feature>
 
     <feature name="pax-jdbc-pool-aries" description="Provides JDBC Pooling DataSourceFactory using Aries Transaction JDBC" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-j2ee-connector_1.6_spec/${version.org.apache.geronimo.specs.j2ee-connector_1.6}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/${version.org.apache.geronimo.specs.validation_1.0}</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/${version.org.apache.geronimo.connector}</bundle>
+<!--        <bundle dependency="true">mvn:javax.resource/javax.resource-api/${version.javax.resource}</bundle>-->
+        <!-- aries.jdbc only uses org.apache.geronimo.connector.outbound package, however javax.validation is needed to safisfy geronimo-connector -->
+        <bundle dependency="true">mvn:javax.validation/validation-api/${version.javax.validation}</bundle>
 
+        <bundle dependency="true">mvn:org.apache.geronimo.components/geronimo-connector/${version.org.apache.geronimo.connector}</bundle>
         <bundle dependency="true">mvn:org.apache.aries/org.apache.aries.util/${version.org.apache.aries.util}</bundle>
         <bundle dependency="true">mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/${version.org.apache.aries.transaction.manager}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
@@ -175,8 +173,8 @@
     <feature name="pax-jdbc-pool-narayana" description="Provides JDBC Pooling DataSourceFactory using Narayana Transaction Manager" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
         <bundle dependency="true">mvn:org.apache.commons/commons-pool2/${version.org.apache.commons.pool2}</bundle>
+        <bundle dependency="true">mvn:org.apache.commons/commons-dbcp2/${version.org.apache.commons.dbcp2}</bundle>
         <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${version.org.apache.servicemix.bundles.cglib}</bundle>
         <bundle dependency="true">mvn:org.jboss.narayana.osgi/narayana-osgi-jta/${version.org.jboss.narayana}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
@@ -185,8 +183,8 @@
 
     <feature name="pax-jdbc-pool-transx" description="Provides JDBC Pooling DataSourceFactory using Pax TransX JDBC" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
-        <feature>pax-transx-jdbc</feature>
         <feature>pax-transx-tm</feature>
+        <feature>pax-transx-jdbc</feature>
 
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-common/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-pool-transx/${project.version}</bundle>
