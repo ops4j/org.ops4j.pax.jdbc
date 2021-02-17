@@ -187,7 +187,7 @@
         <version.org.ops4j.base>1.5.1</version.org.ops4j.base>
         <version.org.ops4j.pax.exam>4.13.4</version.org.ops4j.pax.exam>
         <version.org.ops4j.pax.logging>1.11.7</version.org.ops4j.pax.logging>
-        <version.org.ops4j.pax.swissbox>1.8.3</version.org.ops4j.pax.swissbox>
+        <version.org.ops4j.pax.swissbox>1.8.4</version.org.ops4j.pax.swissbox>
         <version.org.ops4j.pax.transx>0.5.0-SNAPSHOT</version.org.ops4j.pax.transx>
         <version.org.ops4j.pax.url>2.6.5</version.org.ops4j.pax.url>
 
@@ -241,7 +241,7 @@
         <module>pax-jdbc-features</module>
 
         <module>pax-jdbc-itest</module>
-<!--        <module>pax-jdbc-karaf-itest</module>-->
+        <module>pax-jdbc-karaf-itest</module>
     </modules>
 
     <repositories>
@@ -635,7 +635,7 @@
             </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-extender</artifactId>
+                <artifactId>pax-swissbox-tracker</artifactId>
                 <version>${version.org.ops4j.pax.swissbox}</version>
             </dependency>
 
@@ -854,6 +854,16 @@
                 <groupId>org.apache.geronimo.components</groupId>
                 <artifactId>geronimo-connector</artifactId>
                 <version>${version.org.apache.geronimo.connector}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-jta_1.1_spec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-validation_1.0_spec</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!--JBoss components -->
@@ -878,6 +888,12 @@
                 <groupId>org.jboss.narayana.osgi</groupId>
                 <artifactId>narayana-osgi-jta</artifactId>
                 <version>${version.org.jboss.narayana}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.osgi</groupId>
+                        <artifactId>org.osgi.core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Test dependencies -->
