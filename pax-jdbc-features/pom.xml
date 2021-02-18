@@ -237,7 +237,7 @@
                                 <feature>pax-jdbc-hsqldb</feature>
                                 <feature>pax-jdbc-mysql</feature>
                                 <feature>pax-jdbc-mariadb</feature>
-<!--                                <feature>pax-jdbc-oracle</feature>-->
+                                <feature>pax-jdbc-oracle</feature>
                                 <feature>pax-jdbc-postgresql</feature>
                                 <feature>pax-jdbc-mssql</feature>
                                 <feature>pax-jdbc-jtds</feature>

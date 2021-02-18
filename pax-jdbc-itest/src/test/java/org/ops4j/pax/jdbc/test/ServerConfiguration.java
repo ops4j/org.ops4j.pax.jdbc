@@ -53,11 +53,12 @@ public class ServerConfiguration extends ExternalResource {
 
     public ServerConfiguration(String subprotocol) {
         this.subprotocol = subprotocol;
-        load();
         this.defaultPorts.put("mariadb", 3306);
         this.defaultPorts.put("mysql", 3307); // to not conflict with MariaDB
         this.defaultPorts.put("postgresql", 5432);
         this.defaultPorts.put("sqlserver", 1433);
+        this.defaultPorts.put("oracle", 1521);
+        load();
     }
 
     private void load() {

@@ -97,6 +97,7 @@
         <details>This feature requires actual Oracle JDBC driver installed</details>
         <feature>pax-jdbc-spec</feature>
 
+        <bundle dependency="true">wrap:mvn:com.oracle.database.jdbc/ojdbc8/${version.com.oracle.database.jdbc}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-oracle/${project.version}</bundle>
     </feature>
 
