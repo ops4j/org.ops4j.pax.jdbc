@@ -18,40 +18,24 @@ package org.ops4j.pax.jdbc.oracle.impl;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 
+import oracle.jdbc.OracleDriver;
+import oracle.jdbc.pool.OracleConnectionPoolDataSource;
+import oracle.jdbc.pool.OracleDataSource;
+import oracle.jdbc.xa.client.OracleXADataSource;
 import org.ops4j.pax.jdbc.common.BeanConfig;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 public class OracleDataSourceFactory implements DataSourceFactory {
 
-    private static final String ORACLE_DATASOURCE_CLASS = "oracle.jdbc.pool.OracleDataSource";
-    private static final String ORACLE_CONNECTIONPOOL_DATASOURCE_CLASS = "oracle.jdbc.pool.OracleConnectionPoolDataSource";
-    private static final String ORACLE_XA_DATASOURCE_CLASS = "oracle.jdbc.xa.client.OracleXADataSource";
-    private static final String ORACLE_DRIVER_CLASS = "oracle.jdbc.OracleDriver";
-    private final Class<?> oracleDataSourceClass;
-    private final Class<?> oracleConnectionPoolDataSourceClass;
-    private final Class<?> oracleXaDataSourceClass;
-    private final Class<?> oracleDriverClass;
-
-    public OracleDataSourceFactory() throws ClassNotFoundException {
-        ClassLoader classLoader = OracleDataSourceFactory.class.getClassLoader();
-        this.oracleDataSourceClass = classLoader.loadClass(ORACLE_DATASOURCE_CLASS);
-        this.oracleConnectionPoolDataSourceClass = classLoader
-            .loadClass(ORACLE_CONNECTIONPOOL_DATASOURCE_CLASS);
-        this.oracleXaDataSourceClass = classLoader.loadClass(ORACLE_XA_DATASOURCE_CLASS);
-        this.oracleDriverClass = classLoader.loadClass(ORACLE_DRIVER_CLASS);
-    }
-
     @Override
     public DataSource createDataSource(Properties props) throws SQLException {
         try {
-            DataSource ds = (DataSource) oracleDataSourceClass.newInstance();
-            setProperties(ds, oracleDataSourceClass, props);
+            OracleDataSource ds = new OracleDataSource();
+            setProperties(ds, props);
             return ds;
         }
         catch (Exception ex) {
@@ -59,52 +43,12 @@ public class OracleDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    private void setProperties(CommonDataSource ds, Class<?> clazz, Properties properties)
-        throws Exception {
-        Properties props = (Properties) properties.clone();
-
-        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
-        if (url != null) {
-            clazz.getMethod("setURL", String.class).invoke(ds, url);
-        }
-
-        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null && url == null) {
-            throw new SQLException("missing required property "
-                + DataSourceFactory.JDBC_DATABASE_NAME);
-        }
-        clazz.getMethod("setDatabaseName", String.class).invoke(ds, databaseName);
-
-        String serverName = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
-        clazz.getMethod("setServerName", String.class).invoke(ds, serverName);
-
-        String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
-        if (portNumber != null) {
-            int portNum = Integer.parseInt(portNumber);
-            try {
-                clazz.getMethod("setPortNumber", Integer.class).invoke(ds, portNum);
-            } catch (NoSuchMethodException e) {
-                clazz.getMethod("setPortNumber", int.class).invoke(ds, portNum);
-            }
-        }
-
-        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
-        clazz.getMethod("setUser", String.class).invoke(ds, user);
-
-        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
-        clazz.getMethod("setPassword", String.class).invoke(ds, password);
-
-        if (!props.isEmpty()) {
-            BeanConfig.configure(ds, props);
-        }
-    }
-
     @Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
         throws SQLException {
         try {
-            ConnectionPoolDataSource ds = (ConnectionPoolDataSource) oracleConnectionPoolDataSourceClass.newInstance();
-            setProperties(ds, oracleConnectionPoolDataSourceClass, props);
+            OracleConnectionPoolDataSource ds = new OracleConnectionPoolDataSource();
+            setProperties(ds, props);
             return ds;
         }
         catch (Exception ex) {
@@ -115,8 +59,8 @@ public class OracleDataSourceFactory implements DataSourceFactory {
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
         try {
-            XADataSource ds = (XADataSource) oracleXaDataSourceClass.newInstance();
-            setProperties(ds, oracleXaDataSourceClass, props);
+            OracleXADataSource ds = new OracleXADataSource();
+            setProperties(ds, props);
             return ds;
         }
         catch (Exception ex) {
@@ -126,11 +70,41 @@ public class OracleDataSourceFactory implements DataSourceFactory {
 
     @Override
     public Driver createDriver(Properties props) throws SQLException {
-        try {
-            return (Driver) oracleDriverClass.newInstance();
+        return new OracleDriver();
+    }
+
+    private void setProperties(oracle.jdbc.datasource.impl.OracleDataSource ds, Properties properties)
+        throws Exception {
+        Properties props = (Properties) properties.clone();
+
+        String url = (String) props.remove(DataSourceFactory.JDBC_URL);
+        if (url != null) {
+            ds.setURL(url);
         }
-        catch (InstantiationException | IllegalAccessException ex) {
-            throw new SQLException(ex);
+
+        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
+        if (databaseName == null && url == null) {
+            throw new SQLException("missing required property " + DataSourceFactory.JDBC_DATABASE_NAME);
+        }
+        ds.setDatabaseName(databaseName);
+
+        String serverName = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
+        ds.setServerName(serverName);
+
+        String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
+        if (portNumber != null) {
+            int portNum = Integer.parseInt(portNumber);
+            ds.setPortNumber(portNum);
+        }
+
+        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
+        ds.setUser(user);
+
+        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        ds.setPassword(password);
+
+        if (!props.isEmpty()) {
+            BeanConfig.configure(ds, props);
         }
     }
 
