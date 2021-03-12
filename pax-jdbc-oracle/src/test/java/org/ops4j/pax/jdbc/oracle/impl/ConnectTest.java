@@ -54,7 +54,6 @@ public class ConnectTest {
 
     /*
         A bit unofficial
-
         $ podman run -itd --name pax.jdbc.oracle -p 1521:1521 --privileged=true oracleinanutshell/oracle-xe-11g
      */
 
