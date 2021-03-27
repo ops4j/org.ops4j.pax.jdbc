@@ -61,8 +61,10 @@ public class HsqldbDataSourceFactory implements DataSourceFactory {
             ds.setPassword(password);
         }
 
-        String user = (String) props.remove(DataSourceFactory.JDBC_USER);
-        ds.setUser(user);
+        if (props.containsKey(DataSourceFactory.JDBC_USER)) {
+          String user = (String) props.remove(DataSourceFactory.JDBC_USER);
+          ds.setUser(user);
+        }
 
         if (!props.isEmpty()) {
             BeanConfig.configure(ds, props);
