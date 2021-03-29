@@ -42,6 +42,27 @@ public class TestDsf {
         try (Connection con = ds.getConnection()) {
             DatabaseMetaData md = con.getMetaData();
             LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+            LOG.info("Username: {}", md.getUserName());
+            try (Statement st = con.createStatement()) {
+                try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, SCHEMA_OWNER from INFORMATION_SCHEMA.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, owner: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testPropertyBasedNoJddbcUser() throws ClassNotFoundException, SQLException {
+        DataSourceFactory factory = new HsqldbDataSourceFactory();
+        Properties props = new Properties();
+        props.setProperty(DataSourceFactory.JDBC_URL, "jdbc:hsqldb:mem:.");
+        DataSource ds = factory.createDataSource(props);
+        try (Connection con = ds.getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+            LOG.info("Username: {}", md.getUserName());
 
             try (Statement st = con.createStatement()) {
                 try (ResultSet rs = st.executeQuery("select SCHEMA_NAME, SCHEMA_OWNER from INFORMATION_SCHEMA.SCHEMATA")) {
@@ -52,5 +73,6 @@ public class TestDsf {
             }
         }
     }
+
 
 }
