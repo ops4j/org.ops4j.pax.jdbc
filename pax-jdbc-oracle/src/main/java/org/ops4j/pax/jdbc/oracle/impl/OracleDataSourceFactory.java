@@ -73,7 +73,7 @@ public class OracleDataSourceFactory implements DataSourceFactory {
         return new OracleDriver();
     }
 
-    private void setProperties(oracle.jdbc.datasource.impl.OracleDataSource ds, Properties properties)
+    private void setProperties(oracle.jdbc.datasource.OracleDataSource ds, Properties properties)
         throws Exception {
         Properties props = (Properties) properties.clone();
 
