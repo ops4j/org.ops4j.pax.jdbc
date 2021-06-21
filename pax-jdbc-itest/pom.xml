@@ -176,8 +176,8 @@
         <!-- OSGi -->
 
         <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -37,13 +37,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
-import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
+import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackages;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.linkBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemPackage;
+import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 import static org.ops4j.pax.exam.CoreOptions.url;
@@ -114,10 +115,8 @@ public abstract class AbstractJdbcTest {
                 // set to "4" to see Felix wiring information
                 frameworkProperty("felix.log.level").value("1"),
 
-                // needed by MariaDB
-                bootDelegationPackage("javax.sql.*"),
-                // needed by MySQL
-                bootDelegationPackage("javax.security.auth.*"),
+                bootDelegationPackages("javax.sql.*", "javax.security.auth.*", "sun.*", "com.sun.*", "javax.transaction", "javax.transaction.xa", "javax.security.*", "jdk.internal.reflect.*", "jdk.internal.reflect"),
+                systemPackages("javax.transaction;version=1.2", "javax.transaction.xa;version=1.2"),
 
                 // added implicitly by pax-exam, if pax.exam.system=test
                 // these resources are provided inside org.ops4j.pax.exam:pax-exam-link-mvn jar
