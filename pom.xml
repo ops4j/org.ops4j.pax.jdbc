@@ -182,9 +182,9 @@
         <!-- 3.13.0.v20171204-1916 exports org.osgi.framework package with version 1.9 -->
         <version.org.eclipse.tycho>3.11.2.v20161107-1947</version.org.eclipse.tycho>
 
-        <version.org.jboss.jboss-transaction-spi>7.6.0.Final</version.org.jboss.jboss-transaction-spi>
-        <version.org.jboss.logging>3.4.1.Final</version.org.jboss.logging>
-        <version.org.jboss.narayana>5.10.6.Final</version.org.jboss.narayana>
+        <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
+        <version.org.jboss.logging>3.4.2.Final</version.org.jboss.logging>
+        <version.org.jboss.narayana>5.12.1.Final</version.org.jboss.narayana>
 
         <version.org.mockito>3.12.4</version.org.mockito>
         <version.org.objenesis>3.2</version.org.objenesis>
