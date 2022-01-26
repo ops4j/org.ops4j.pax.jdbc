@@ -148,7 +148,8 @@
 
         <version.biz.aQute.bnd>6.1.0</version.biz.aQute.bnd>
         <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
-        <version.com.zaxxer.hikari>3.4.5</version.com.zaxxer.hikari>
+        <!-- 5.x is JDK 11 -->
+        <version.com.zaxxer.hikari>4.0.3</version.com.zaxxer.hikari>
         <version.junit>4.13.2</version.junit>
 
         <version.javax.el>3.0.0</version.javax.el>
