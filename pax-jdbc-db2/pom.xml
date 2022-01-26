@@ -82,11 +82,15 @@
         <profile>
             <id>third-party</id>
             <dependencies>
-                <!-- mvn install:install-file -DgroupId=com.ibm.db2 -DartifactId=db2jcc4 -Dversion=4.28.11 -Dpackaging=jar -Dfile=/path/to/db2jcc4-4.28.11.jar -->
+                <!--
+                    $ mvn install:install-file -DgroupId=com.ibm.db2 -DartifactId=db2jcc4 -Dversion=4.31.10 -Dpackaging=jar -Dfile=/path/to/db2jcc4-4.31.10.jar
+                    $ md5sum db2jcc4-4.31.10.jar
+                    4811177a4384529d78631f5874fa6c6e  db2jcc4-4.31.10.jar
+                -->
                 <dependency>
                     <groupId>com.ibm.db2</groupId>
                     <artifactId>db2jcc4</artifactId>
-                    <version>4.28.11</version>
+                    <version>4.31.10</version>
                 </dependency>
             </dependencies>
         </profile>

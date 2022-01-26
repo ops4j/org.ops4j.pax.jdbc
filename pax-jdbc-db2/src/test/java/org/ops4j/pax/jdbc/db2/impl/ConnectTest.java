@@ -65,7 +65,7 @@ public class ConnectTest {
     @Rule
     public ExternalResource resource = new ExternalResource() {
         @Override
-        protected void before() throws Throwable {
+        protected void before() {
             try (Socket socket = new Socket()) {
                 InetSocketAddress endpoint = new InetSocketAddress("localhost", 50000);
                 socket.connect(endpoint, (int) TimeUnit.SECONDS.toMillis(5));
@@ -94,6 +94,28 @@ public class ConnectTest {
 
             try (Statement st = con.createStatement()) {
                 try (ResultSet rs = st.executeQuery("select SCHEMANAME, OWNER from SYSCAT.SCHEMATA")) {
+                    while (rs.next()) {
+                        LOG.info("Schema: {}, owner: {}", rs.getString(1), rs.getString(2));
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void currentSchemaConnectTest() throws ClassNotFoundException, SQLException {
+        DataSourceFactory factory = new DB2DataSourceFactory();
+        Properties props = new Properties();
+        props.setProperty(DataSourceFactory.JDBC_URL, "jdbc:db2://localhost:50000/paxjdbc:currentSchema=SYSCAT;password=paxjdbc;");
+        props.setProperty(DataSourceFactory.JDBC_USER, "db2inst1");
+        DataSource ds = factory.createDataSource(props);
+        try (Connection con = ds.getConnection()) {
+            DatabaseMetaData md = con.getMetaData();
+            LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
+
+            try (Statement st = con.createStatement()) {
+                // see - "SCHEMATA" without "SYSCAT."
+                try (ResultSet rs = st.executeQuery("select SCHEMANAME, OWNER from SCHEMATA")) {
                     while (rs.next()) {
                         LOG.info("Schema: {}, owner: {}", rs.getString(1), rs.getString(2));
                     }

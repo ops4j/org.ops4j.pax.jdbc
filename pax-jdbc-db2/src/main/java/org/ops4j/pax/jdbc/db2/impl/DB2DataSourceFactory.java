@@ -19,6 +19,8 @@ import java.net.URI;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.CommonDataSource;
@@ -85,7 +87,6 @@ public class DB2DataSourceFactory implements DataSourceFactory {
                 }
             }
 
-            props.remove("url");
             BeanConfig.configure(ds, props);
 
             return ds;
@@ -107,10 +108,34 @@ public class DB2DataSourceFactory implements DataSourceFactory {
         if (suburl.startsWith("/")) {
             suburl = suburl.substring(1);
         }
+        String database = null;
+        int colonPos = suburl.indexOf(':');
+        if (colonPos > 0) {
+            database = suburl.substring(0, colonPos);
+            suburl = suburl.substring(colonPos + 1);
+        }
+        Map<String, String> properties = new HashMap<>();
         String[] parts = suburl.split(";");
-        String database = parts[0];
+        for (String part : parts) {
+            if (part.contains("=")) {
+                // it's a property
+                String[] nv = part.trim().split("=");
+                properties.put(nv[0].trim(), nv[1].trim());
+            } else if (!"".equals(part.trim())) {
+                // let's treat it as database name - but only once
+                if (database == null) {
+                    database = part.trim();
+                }
+            }
+        }
+        if (database == null) {
+            // let's look for databaseName property
+            if (properties.containsKey(DB2_JDBC_DATABASE_NAME)) {
+                database = properties.get(DB2_JDBC_DATABASE_NAME);
+            }
+        }
 
-        //if path is null, it means that url for db2 of type 2, which can not be used - host and port value will be unknown
+        // if path is null, it means that url for db2 of type 2, which can not be used - host and port value will be unknown
         if ("".equals(uri.getPath())) {
             throw new IllegalArgumentException("The supplied URL is no db2 (type 4) url: " + url);
         }
@@ -119,6 +144,9 @@ public class DB2DataSourceFactory implements DataSourceFactory {
         props.put(DB2_JDBC_DATABASE_NAME, database);
         props.put(DB2_JDBC_PORT_NUMBER, Integer.toString(uri.getPort()));
         props.put(DB2_JDBC_DRIVER_TYPE, "4");
+
+        // add remaining properties
+        props.putAll(properties);
     }
 
     @Override
