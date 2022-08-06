@@ -215,7 +215,7 @@
         <!-- 2.6.x is for JDK11+ -->
         <version.org.hsqldb>2.5.2</version.org.hsqldb>
         <version.org.mariadb.jdbc>2.7.4</version.org.mariadb.jdbc>
-        <version.org.postgresql>42.3.3</version.org.postgresql>
+        <version.org.postgresql>42.4.1</version.org.postgresql>
         <version.org.xerial.sqlite>3.36.0.3</version.org.xerial.sqlite>
     </properties>
 
