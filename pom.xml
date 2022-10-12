@@ -65,10 +65,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.jdbc.git</connection>
-        <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.jdbc.git</developerConnection>
+        <connection>scm:git:https://github.com/ops4j/org.ops4j.pax.jdbc.git</connection>
+        <developerConnection>scm:git:https://github.com/ops4j/org.ops4j.pax.jdbc.git</developerConnection>
         <url>https://github.com/ops4j/org.ops4j.pax.jdbc/tree/master</url>
-        <tag>HEAD</tag>
     </scm>
 
     <developers>
