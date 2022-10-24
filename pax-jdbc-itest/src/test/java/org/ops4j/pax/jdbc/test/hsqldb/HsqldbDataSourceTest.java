@@ -29,6 +29,7 @@ import org.ops4j.pax.jdbc.test.AbstractJdbcTest;
 import org.ops4j.pax.jdbc.test.ServerConfiguration;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
@@ -43,7 +44,7 @@ public class HsqldbDataSourceTest extends AbstractJdbcTest {
         return combine(regressionDefaults(), //
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc"), //
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-hsqldb"), //
-                mvnBundle("org.hsqldb", "hsqldb") //
+                wrappedBundle("mvn:org.hsqldb/hsqldb/" + System.getProperty("hsqldb.jdbc.version") + "/jar/jdk8") //
         );
     }
 

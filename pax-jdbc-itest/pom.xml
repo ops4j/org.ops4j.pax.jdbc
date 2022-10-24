@@ -253,6 +253,7 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>provided</scope>
+            <classifier>jdk8</classifier>
         </dependency>
 
         <dependency>
@@ -355,6 +356,7 @@
                         -->
                         <pax.exam.configuration>file:src/test/resources/controlled-exam.properties</pax.exam.configuration>
                         <oracle.jdbc.version>${version.com.oracle.database.jdbc}</oracle.jdbc.version>
+                        <hsqldb.jdbc.version>${version.org.hsqldb}</hsqldb.jdbc.version>
                     </systemPropertyVariables>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <runOrder>alphabetical</runOrder>

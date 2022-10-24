@@ -82,7 +82,7 @@
     <feature name="pax-jdbc-hsqldb" description="Provides JDBC HSQLDB DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:org.hsqldb/hsqldb/${version.org.hsqldb}</bundle>
+        <bundle dependency="true">wrap:mvn:org.hsqldb/hsqldb/${version.org.hsqldb}/jar/jdk8</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-hsqldb/${project.version}</bundle>
     </feature>
 
