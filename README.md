@@ -11,7 +11,8 @@ Its licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Documentation
 
-* <http://team.ops4j.org/wiki/display/PAXJDBC/Documentation>
+* https://github.com/ops4j/org.ops4j.pax.jdbc/wiki
+* https://ops4j1.jira.com/wiki/spaces/PAXJDBC/pages/23953600/Documentation (**This documentation is outdated**, please help to transfer it to the [github wiki](https://github.com/ops4j/org.ops4j.pax.jdbc/wiki))
 
 ## Build
 
@@ -27,7 +28,7 @@ Run Build:
 
 ## Issue Tracking
 
-* <https://ops4j1.jira.com/projects/PAXJDBC>
+* https://github.com/ops4j/org.ops4j.pax.jdbc/issues
 
 ## Continuous Integration Builds
 
