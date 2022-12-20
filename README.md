@@ -33,7 +33,7 @@ Run Build:
 
 We have a continuous integration build set up here:
 
-* <http://ci.ops4j.org/jenkins/job/org.ops4j.pax.jdbc>
+* https://github.com/ops4j/org.ops4j.pax.jdbc/actions
 
 Snapshot artifacts are being published to:
 
