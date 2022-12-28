@@ -15,6 +15,7 @@
  */
 package org.ops4j.pax.jdbc.sqlite.impl;
 
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -30,33 +31,60 @@ import org.sqlite.SQLiteDataSource;
 
 public class SqliteDataSourceFactory implements DataSourceFactory {
 
-    @Override
-    public DataSource createDataSource(Properties props) throws SQLException {
-        SQLiteDataSource dataSource = new SQLiteDataSource();
-        String url = props.getProperty(JDBC_URL);
-        if (url == null) {
-            dataSource.setUrl("jdbc:sqlite:" + props.getProperty(JDBC_DATABASE_NAME));
-            props.remove(JDBC_DATABASE_NAME);
-        } else {
-            dataSource.setUrl(url);
-            props.remove(JDBC_URL);
-        }
+	private final class SQLiteDataSourceExtension extends SQLiteDataSource {
+		private String username;
+		private String password;
 
-        if (!props.isEmpty()) {
-            BeanConfig.configure(dataSource, props);
-        }
-        return dataSource;
-    }
+		public SQLiteDataSourceExtension(String username, String password) {
+			this.username = username;
+			this.password = password;
+		}
 
-    @Override
+		@Override
+		public Connection getConnection() throws SQLException {
+			return super.getConnection(username, password);
+		}
+	}
+
+	@Override
+	public DataSource createDataSource(Properties props) throws SQLException {
+		String username = removeProperty(props, JDBC_USER);
+		String password = removeProperty(props, JDBC_PASSWORD);
+		SQLiteDataSource dataSource = new SQLiteDataSourceExtension(username, password);
+		if (props != null) {
+			String url = props.getProperty(JDBC_URL);
+			if (url == null) {
+				dataSource.setUrl("jdbc:sqlite:" + props.getProperty(JDBC_DATABASE_NAME));
+				props.remove(JDBC_DATABASE_NAME);
+			} else {
+				dataSource.setUrl(url);
+				props.remove(JDBC_URL);
+			}
+			if (!props.isEmpty()) {
+				BeanConfig.configure(dataSource, props, false);
+			}
+		}
+		return dataSource;
+	}
+
+    private String removeProperty(Properties props, String property) {
+    	if (props != null) {
+    		String value = props.getProperty(property);
+    		props.remove(property);
+    		return value;
+    	}
+		return null;
+	}
+
+	@Override
     public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props)
         throws SQLException {
-        throw new UnsupportedOperationException();
+        throw new SQLException();
     }
 
     @Override
     public XADataSource createXADataSource(Properties props) throws SQLException {
-        throw new UnsupportedOperationException();
+        throw new SQLException();
     }
 
     @Override

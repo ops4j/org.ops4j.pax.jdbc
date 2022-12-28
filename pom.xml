@@ -179,8 +179,7 @@
         <version.org.apache.servicemix.bundles.jasypt>1.9.3_1</version.org.apache.servicemix.bundles.jasypt>
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
 
-        <!-- 3.12.100 is the last version exporting org.osgi.framework 1.8 (R6) -->
-        <version.org.eclipse.platform.osgi>3.12.100</version.org.eclipse.platform.osgi>
+        <version.org.eclipse.platform.osgi>3.18.200</version.org.eclipse.platform.osgi>
 
         <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
         <version.org.jboss.logging>3.4.3.Final</version.org.jboss.logging>
@@ -196,7 +195,8 @@
         <version.org.ops4j.pax.url>2.6.11</version.org.ops4j.pax.url>
 
         <version.org.osgi>6.0.0</version.org.osgi>
-        <version.org.osgi.service.jdbc>1.0.1</version.org.osgi.service.jdbc>
+        <version.org.osgi.service.jdbc>1.1.0</version.org.osgi.service.jdbc>
+        <version.org.osgi.service.jdbc.tck>8.1.0</version.org.osgi.service.jdbc.tck>
 
         <version.org.slf4j>1.7.32</version.org.slf4j>
 
@@ -215,6 +215,7 @@
         <version.org.mariadb.jdbc>2.7.4</version.org.mariadb.jdbc>
         <version.org.postgresql>42.3.7</version.org.postgresql>
         <version.org.xerial.sqlite>3.36.0.3</version.org.xerial.sqlite>
+        <version.osgi-test-framework>0.0.1</version.osgi-test-framework>
     </properties>
 
     <modules>
@@ -247,6 +248,7 @@
 
         <module>pax-jdbc-itest</module>
         <module>pax-jdbc-karaf-itest</module>
+        <module>pax-jdbc-tck</module>
     </modules>
 
     <repositories>
@@ -736,6 +738,12 @@
                 <artifactId>org.osgi.service.jdbc</artifactId>
                 <version>${version.org.osgi.service.jdbc}</version>
             </dependency>
+            <dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.test.cases.jdbc</artifactId>
+				<version>${version.org.osgi.service.jdbc.tck}</version>
+				<scope>test</scope>
+			</dependency>
 
             <dependency>
                 <groupId>org.apache.felix</groupId>
@@ -1035,7 +1043,12 @@
             </dependency>
 
             <!-- Other dependencies -->
-
+			<dependency>
+				<groupId>de.laeubisoft</groupId>
+				<artifactId>osgi-test-framework</artifactId>
+				<version>${version.osgi-test-framework}</version>
+				<scope>test</scope>
+			</dependency>
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
                 <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
