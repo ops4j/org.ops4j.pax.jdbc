@@ -179,8 +179,7 @@
         <version.org.apache.servicemix.bundles.jasypt>1.9.3_1</version.org.apache.servicemix.bundles.jasypt>
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
 
-        <!-- 3.12.100 is the last version exporting org.osgi.framework 1.8 (R6) -->
-        <version.org.eclipse.platform.osgi>3.12.100</version.org.eclipse.platform.osgi>
+        <version.org.eclipse.platform.osgi>3.18.200</version.org.eclipse.platform.osgi>
 
         <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
         <version.org.jboss.logging>3.4.3.Final</version.org.jboss.logging>
