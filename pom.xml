@@ -203,7 +203,7 @@
         <!-- versions of JDBC drivers -->
 
         <version.com.h2database>2.1.210</version.com.h2database>
-        <version.com.microsoft.sqlserver.jdbc>9.4.1.jre8</version.com.microsoft.sqlserver.jdbc>
+        <version.com.microsoft.sqlserver.jdbc>12.1.0.jre8-preview</version.com.microsoft.sqlserver.jdbc>
         <version.com.oracle.database.jdbc>21.4.0.0.1</version.com.oracle.database.jdbc>
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
         <version.mysql>8.0.28</version.mysql>
