@@ -152,7 +152,7 @@
         <version.junit>4.13.2</version.junit>
 
         <version.jakarta.el>3.0.3</version.jakarta.el>
-        <version.javax.enterprise.cdi>2.0.SP1</version.javax.enterprise.cdi>
+        <version.javax.enterprise.cdi>2.0</version.javax.enterprise.cdi>
         <!-- javax.inject/javax.inject/1 is not an OSGi bundle -->
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
         <version.javax.interceptor>1.2.2</version.javax.interceptor>
