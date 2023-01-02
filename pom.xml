@@ -124,7 +124,7 @@
         <plugin.dependency.org.commonjava.maven.enforcer>1.3</plugin.dependency.org.commonjava.maven.enforcer>
         <plugin.maven-failsafe-plugin>2.22.2</plugin.maven-failsafe-plugin>
         <plugin.maven-gpg-plugin>3.0.1</plugin.maven-gpg-plugin>
-        <plugin.maven-install-plugin>2.5.2</plugin.maven-install-plugin>
+        <plugin.maven-install-plugin>3.1.0</plugin.maven-install-plugin>
         <plugin.maven-jar-plugin>3.3.0</plugin.maven-jar-plugin>
         <plugin.maven-javadoc-plugin>3.3.1</plugin.maven-javadoc-plugin>
         <plugin.maven-release-plugin>2.5.3</plugin.maven-release-plugin>
