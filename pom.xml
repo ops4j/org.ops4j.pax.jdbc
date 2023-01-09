@@ -159,7 +159,7 @@
         <version.javax.transaction>1.2</version.javax.transaction>
         <version.javax.validation>1.1.0.Final</version.javax.validation>
 
-        <version.net.bytebuddy>1.12.20</version.net.bytebuddy>
+        <version.net.bytebuddy>1.12.21</version.net.bytebuddy>
 
         <version.org.apache.aries.transaction.jdbc>2.1.3</version.org.apache.aries.transaction.jdbc>
         <version.org.apache.aries.transaction.manager>1.3.3</version.org.apache.aries.transaction.manager>
