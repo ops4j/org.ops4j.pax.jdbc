@@ -28,9 +28,10 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         SqliteDataSourceFactory dsf = new SqliteDataSourceFactory();
-        Dictionary<String, String> props = new Hashtable<String, String>();
+        Dictionary<String, Object> props = new Hashtable<>();
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_CLASS, JDBC.class.getName());
         props.put(DataSourceFactory.OSGI_JDBC_DRIVER_NAME, "sqlite");
+        props.put(DataSourceFactory.OSGI_JDBC_CAPABILITY, new String[] {DataSourceFactory.OSGI_JDBC_CAPABILITY_DATASOURCE, DataSourceFactory.OSGI_JDBC_CAPABILITY_DRIVER});
         context.registerService(DataSourceFactory.class.getName(), dsf, props);
     }
 

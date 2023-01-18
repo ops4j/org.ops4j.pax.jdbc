@@ -75,6 +75,9 @@ public class OracleDataSourceFactory implements DataSourceFactory {
 
     private void setProperties(oracle.jdbc.datasource.OracleDataSource ds, Properties properties)
         throws Exception {
+    	if (properties==null) {
+    		return;
+    	}
         Properties props = (Properties) properties.clone();
 
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);

@@ -37,6 +37,9 @@ public class MariaDbDataSourceFactory implements DataSourceFactory {
     }
 
     private void setProperties(MariaDbDataSource ds, Properties properties) throws SQLException {
+    	if (properties==null) {
+    		return;
+    	}
         Properties props = (Properties) properties.clone();
         String url = (String) props.remove(DataSourceFactory.JDBC_URL);
         if (url != null) {
@@ -66,7 +69,7 @@ public class MariaDbDataSourceFactory implements DataSourceFactory {
         ds.setUser(user);
 
         if (!props.isEmpty()) {
-            BeanConfig.configure(ds, props);
+            BeanConfig.configure(ds, props, false);
         }
     }
 

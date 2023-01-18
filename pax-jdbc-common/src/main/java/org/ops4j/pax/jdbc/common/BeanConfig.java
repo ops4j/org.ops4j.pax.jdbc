@@ -56,11 +56,14 @@ public class BeanConfig {
      *            properties to set.
      */
     public static void configure(Object bean, Properties props) {
+    	configure(bean, props, true);
+    }
+    public static void configure(Object bean, Properties props, boolean failOnMissing) {
         final Map<String, String> map = new HashMap<>();
         for (String key : props.stringPropertyNames()) {
             map.put(key, props.getProperty(key));
         }
-        BeanConfig.configure(bean, map);
+        BeanConfig.configure(bean, map, failOnMissing);
     }
 
     /**
@@ -72,18 +75,24 @@ public class BeanConfig {
      *            properties to set. The keys in the Map have to match the bean property names.
      */
     public static void configure(Object bean, Map<String, String> props) {
+    	
+    }
+    public static void configure(Object bean, Map<String, String> props, boolean failOnMissing) {
         BeanConfig beanConfig = new BeanConfig(bean);
         for (String key : props.keySet()) {
-            beanConfig.trySetProperty(key, props.get(key));
+            beanConfig.trySetProperty(key, props.get(key), failOnMissing);
         }
     }
 
-    private void trySetProperty(String key, String value) {
+    private void trySetProperty(String key, String value, boolean failOnMissing) {
         try {
             Method method = setters.get(key);
             if (method == null) {
+            	if (failOnMissing) {
                 throw new IllegalArgumentException("No setter in " + bean.getClass()
                     + " for property " + key);
+            	}
+            	return;
             }
             Class<?> paramClass = method.getParameterTypes()[0];
             if (paramClass == int.class || paramClass == Integer.class) {
