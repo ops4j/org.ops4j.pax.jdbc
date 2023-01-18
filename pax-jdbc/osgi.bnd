@@ -5,7 +5,7 @@ Bundle-Activator:\
   org.ops4j.pax.jdbc.impl.Activator
 
 Import-Package:\
-  org.osgi.service.jdbc; version="[1.0,1.1)",\
+  org.osgi.service.jdbc; version="[1.0,2)",\
   *
 
 Provide-Capability:\
