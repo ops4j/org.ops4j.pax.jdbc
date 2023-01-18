@@ -59,6 +59,7 @@ public class MsSQLNativeDataSourceTest extends AbstractJdbcTest {
         props.setProperty(DataSourceFactory.JDBC_DATASOURCE_NAME, "testds");
         props.setProperty(DataSourceFactory.JDBC_USER, config.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, config.getPassword());
+        props.setProperty(DataSourceFactory.JDBC_URL, "jdbc:sqlserver://localhost:1433;database=msdb;trustServerCertificate=true");
         try (Connection con = dsf.createDataSource(props).getConnection()) {
             DatabaseMetaData md = con.getMetaData();
             LOG.info("DB: {}/{}", md.getDatabaseProductName(), md.getDatabaseProductVersion());
