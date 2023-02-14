@@ -201,7 +201,7 @@
 
         <version.com.h2database>2.1.210</version.com.h2database>
         <version.com.microsoft.sqlserver.jdbc>11.2.3.jre8</version.com.microsoft.sqlserver.jdbc>
-        <version.com.oracle.database.jdbc>21.4.0.0.1</version.com.oracle.database.jdbc>
+        <version.com.oracle.database.jdbc>21.9.0.0</version.com.oracle.database.jdbc>
         <!-- see https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-upgrading-to-8.0.html -->
         <version.mysql>8.0.28</version.mysql>
         <version.net.sourceforge.jtds>1.3.1</version.net.sourceforge.jtds>
