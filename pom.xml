@@ -157,7 +157,7 @@
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
         <version.javax.interceptor>1.2.2</version.javax.interceptor>
         <version.javax.transaction>1.2</version.javax.transaction>
-        <version.javax.validation>1.1.0.Final</version.javax.validation>
+        <version.javax.validation>2.0.1.Final</version.javax.validation>
 
         <version.net.bytebuddy>1.12.21</version.net.bytebuddy>
 
