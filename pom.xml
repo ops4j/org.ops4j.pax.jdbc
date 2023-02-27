@@ -114,7 +114,7 @@
         <!-- versions of Maven plugins -->
 
         <!-- Maven plugins from org.apache.maven.plugins (and their dependencies) -->
-        <plugin.maven-checkstyle-plugin>3.2.1</plugin.maven-checkstyle-plugin>
+        <plugin.maven-checkstyle-plugin>3.1.2</plugin.maven-checkstyle-plugin>
         <plugin.dependency.com.puppycrawl.tools.checkstyle>8.40</plugin.dependency.com.puppycrawl.tools.checkstyle>
         <plugin.maven-clean-plugin>3.1.0</plugin.maven-clean-plugin>
         <plugin.maven-compiler-plugin>3.8.1</plugin.maven-compiler-plugin>
