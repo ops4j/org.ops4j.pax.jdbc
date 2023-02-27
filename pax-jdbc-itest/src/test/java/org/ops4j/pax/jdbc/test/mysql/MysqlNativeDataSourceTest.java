@@ -53,7 +53,7 @@ public class MysqlNativeDataSourceTest extends AbstractJdbcTest {
     public Option[] config() {
         return combine(regressionDefaults(), //
                 mvnBundle("org.ops4j.pax.jdbc", "pax-jdbc-mysql"), //
-                mvnBundle("mysql", "mysql-connector-java") //
+                mvnBundle("com.mysql", "mysql-connector-j") //
         );
     }
 

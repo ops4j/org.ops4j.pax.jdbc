@@ -25,7 +25,7 @@
     <feature name="pax-jdbc-mysql" description="Provides JDBC MySQL DataSourceFactory" version="${project.version}">
         <feature>pax-jdbc-spec</feature>
 
-        <bundle dependency="true">mvn:mysql/mysql-connector-java/${version.mysql}</bundle>
+        <bundle dependency="true">mvn:com.mysql/mysql-connector-j/${version.mysql}</bundle>
         <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc-mysql/${project.version}</bundle>
     </feature>
 
