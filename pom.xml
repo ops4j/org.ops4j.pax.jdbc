@@ -137,7 +137,7 @@
         <plugin.maven-surefire-plugin>2.22.2</plugin.maven-surefire-plugin>
 
         <!-- Other Maven plugins (and their dependencies) -->
-        <plugin.felix.maven-bundle-plugin>5.1.4</plugin.felix.maven-bundle-plugin>
+        <plugin.felix.maven-bundle-plugin>5.1.8</plugin.felix.maven-bundle-plugin>
         <plugin.mojo.build-helper-maven-plugin>3.3.0</plugin.mojo.build-helper-maven-plugin>
         <plugin.mycila.license-maven-plugin>4.1</plugin.mycila.license-maven-plugin>
         <plugin.ops4j.osgi-report-maven-plugin>0.1.1</plugin.ops4j.osgi-report-maven-plugin>
