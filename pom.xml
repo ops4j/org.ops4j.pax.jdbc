@@ -211,7 +211,7 @@
         <version.org.hsqldb>2.7.1</version.org.hsqldb>
         <version.org.mariadb.jdbc>2.7.4</version.org.mariadb.jdbc>
         <version.org.postgresql>42.5.1</version.org.postgresql>
-        <version.org.xerial.sqlite>3.36.0.3</version.org.xerial.sqlite>
+        <version.org.xerial.sqlite>3.41.2.2</version.org.xerial.sqlite>
     </properties>
 
     <modules>
