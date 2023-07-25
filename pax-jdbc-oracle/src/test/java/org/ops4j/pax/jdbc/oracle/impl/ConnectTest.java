@@ -76,7 +76,6 @@ public class ConnectTest {
     };
 
     @Test
-//    @Ignore("I can't run Oracle via docker/podman on Fedora 33...")
     public void connectTest() throws ClassNotFoundException, SQLException {
         DataSourceFactory factory = new OracleDataSourceFactory();
         Properties props = new Properties();

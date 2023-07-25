@@ -48,6 +48,8 @@
             $ podman run --name pax.jdbc.mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=paxjdbc -d mysql
         5) PostgreSQL:
             $ podman run --name pax.jdbc.postgresql -e POSTGRES_USER=paxjdbc -e POSTGRES_PASSWORD=paxjdbc -p 5432:5432 -d postgres:latest
+        6) Oracle (a bit unofficial):
+            $ podman run -itd --name pax.jdbc.oracle -p 1521:1521 --privileged=true oracleinanutshell/oracle-xe-11g
     </description>
 
     <dependencies>
