@@ -750,11 +750,17 @@
                 <version>${version.org.osgi.service.jdbc}</version>
             </dependency>
             <dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.test.cases.jdbc</artifactId>
-				<version>${version.org.osgi.service.jdbc.tck}</version>
-				<scope>test</scope>
-			</dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.test.cases.jdbc</artifactId>
+                <version>${version.org.osgi.service.jdbc.tck}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>${version.org.eclipse.platform.osgi}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.felix</groupId>
@@ -1048,12 +1054,12 @@
             </dependency>
 
             <!-- Other dependencies -->
-			<dependency>
-				<groupId>de.laeubisoft</groupId>
-				<artifactId>osgi-test-framework</artifactId>
-				<version>${version.osgi-test-framework}</version>
-				<scope>test</scope>
-			</dependency>
+            <dependency>
+                <groupId>de.laeubisoft</groupId>
+                <artifactId>osgi-test-framework</artifactId>
+                <version>${version.osgi-test-framework}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
                 <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>

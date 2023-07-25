@@ -29,7 +29,7 @@ import de.laeubisoft.osgi.junit5.framework.extension.FrameworkExtension;
 @WithBundle(value = "org.xerial.sqlite-jdbc", start = true, isolated = true)
 //pax-jdbc-mariadb --> actually obsolete see: https://github.com/ops4j/org.ops4j.pax.jdbc/issues/277
 @WithBundle(value = "org.ops4j.pax.jdbc.mariadb", start = true, isolated = true)
-@WithBundle(value = "org.mariadb.jdbc", start = true, isolated = true)
+@WithBundle(value = "mariadb-java-client", start = true, isolated = true)
 //pax-db2 TODO how to test? seems not OpenSource?
 // @WithBundle(value = "org.ops4j.pax.jdbc.db2", start = true, isolated = true)
 
