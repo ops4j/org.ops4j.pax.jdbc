@@ -44,7 +44,7 @@ public class MysqlDataSourceFactoryTest {
     public static final Logger LOG = LoggerFactory.getLogger(MysqlDataSourceFactoryTest.class);
 
     /*
-        $ podman run --name pax.jdbc.mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=paxjdbc -d mysql
+        $ podman run --name pax.jdbc.mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=paxjdbc -d mysql
      */
 
     @Rule
@@ -52,11 +52,11 @@ public class MysqlDataSourceFactoryTest {
         @Override
         protected void before() throws Throwable {
             try (Socket socket = new Socket()) {
-                InetSocketAddress endpoint = new InetSocketAddress("localhost", 3306);
+                InetSocketAddress endpoint = new InetSocketAddress("localhost", 3307);
                 socket.connect(endpoint, (int) TimeUnit.SECONDS.toMillis(5));
-                Assume.assumeTrue("MySQL DB should start and listen on port 3306", true);
+                Assume.assumeTrue("MySQL DB should start and listen on port 3307", true);
             } catch (Exception ex) {
-                Assume.assumeTrue("MySQL DB should start and listen on port 3306", false);
+                Assume.assumeTrue("MySQL DB should start and listen on port 3307", false);
             }
         }
 
@@ -69,7 +69,7 @@ public class MysqlDataSourceFactoryTest {
     public void configuration() throws SQLException {
         Properties properties = new Properties();
         // osgi.jdbc specific property
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:mysql://localhost:3306/mysql");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:mysql://localhost:3307/mysql");
         properties.setProperty(DataSourceFactory.JDBC_USER, "root");
         properties.setProperty(DataSourceFactory.JDBC_PASSWORD, "paxjdbc");
         // mysql specific property
