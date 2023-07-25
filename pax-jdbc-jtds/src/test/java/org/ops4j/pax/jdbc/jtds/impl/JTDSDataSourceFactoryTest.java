@@ -35,13 +35,14 @@ public class JTDSDataSourceFactoryTest {
 
     /*
         $ podman run -itd --name pax.jdbc.sqlserver -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=PaxJdbc!(*67' -e 'MSSQL_PID=Express' \
-            -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+            -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
 
         $ podman logs -f pax.jdbc.sqlserver
-        SQL Server 2019 will run as non-root by default.
+        SQL Server 2022 will run as non-root by default.
         This container is running as user mssql.
         ...
-        2021-02-17 07:11:08.81 spid26s     Server is listening on [ 'any' <ipv4> 1433].
+        2023-07-25 17:22:07.53 spid39s     Server is listening on [ ::1 <ipv6> 1431] accept sockets 1.
+        2023-07-25 17:22:07.53 spid39s     Server is listening on [ 127.0.0.1 <ipv4> 1431] accept sockets 1.
         ...
      */
 

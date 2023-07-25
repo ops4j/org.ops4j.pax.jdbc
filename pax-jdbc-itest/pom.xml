@@ -41,7 +41,7 @@
             $ java -jar $DERBY_HOME/lib/derbyrun.jar server start
         2) MS SQL Server (for official and jtds drivers):
             $ podman run -itd --name pax.jdbc.sqlserver -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=PaxJdbc!(*67' -e 'MSSQL_PID=Express' \
-                        -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+                        -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
         3) MariaDB:
             $ podman run --name pax.jdbc.mariadb -p 3306:3306 -e MYSQL_ROOT_PASSWORD=paxjdbc -d mariadb
         4) MySQL:
