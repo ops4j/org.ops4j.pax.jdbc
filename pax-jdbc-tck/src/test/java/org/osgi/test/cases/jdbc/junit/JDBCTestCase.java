@@ -52,7 +52,7 @@ import org.osgi.test.common.annotation.InjectBundleContext;
 import org.osgi.test.junit5.service.ServiceSource;
 
 // This class is copied from the OSGi repository as long as there is not updated release of the testcase
-public class JDBCTestCase {
+public abstract class JDBCTestCase {
 
     static String databaseName = "dbName";
     static String dataSourceName = "dsName";
