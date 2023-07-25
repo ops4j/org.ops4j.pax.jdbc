@@ -59,9 +59,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
     @Test
     public void createDataSourceAndConnection() throws SQLException {
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
+        props.setProperty(DataSourceFactory.JDBC_URL, dbConfig.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         try (Connection con = dsf.createDataSource(props).getConnection()) {
@@ -84,8 +82,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
         assertNotNull(dsf);
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
+        props.setProperty(DataSourceFactory.JDBC_URL, dbConfig.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         try (Connection con = dsf.createDataSource(props).getConnection()) {
@@ -109,7 +106,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
 
         assertNotNull(dsf);
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
+        props.setProperty(DataSourceFactory.JDBC_URL, dbConfig.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, dbConfig.getPassword());
         try (Connection con = dsf.createDataSource(props).getConnection()) {
@@ -130,9 +127,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
     public void failOnMissingPassword() throws SQLException {
         assertNotNull(dsf);
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
+        props.setProperty(DataSourceFactory.JDBC_URL, dbConfig.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         DataSource dataSource = dsf.createDataSource(props);
         try {
@@ -146,9 +141,7 @@ public class MariaDbNativeDataSourceTest extends AbstractJdbcTest {
     @Test
     public void failOnWrongPassword() throws SQLException {
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_SERVER_NAME, dbConfig.getServerName());
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, dbConfig.getDatabaseName());
-        props.setProperty(DataSourceFactory.JDBC_PORT_NUMBER, dbConfig.getPortNumberSt());
+        props.setProperty(DataSourceFactory.JDBC_URL, dbConfig.getUrl());
         props.setProperty(DataSourceFactory.JDBC_USER, dbConfig.getUser());
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "wrong");
         DataSource dataSource = dsf.createDataSource(props);
