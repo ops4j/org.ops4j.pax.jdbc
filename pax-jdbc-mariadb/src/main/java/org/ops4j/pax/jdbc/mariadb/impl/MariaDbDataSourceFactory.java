@@ -42,28 +42,15 @@ public class MariaDbDataSourceFactory implements DataSourceFactory {
         if (url != null) {
             ds.setUrl(url);
         }
-        String databaseName = (String) props.remove(DataSourceFactory.JDBC_DATABASE_NAME);
-        if (databaseName == null && url == null) {
-            throw new SQLException("missing required property "
-                + DataSourceFactory.JDBC_DATABASE_NAME);
-        }
-        ds.setDatabaseName(databaseName);
 
-        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
-        ds.setPassword(password);
-
-        String portNumber = (String) props.remove(DataSourceFactory.JDBC_PORT_NUMBER);
-        if (portNumber != null) {
-            ds.setPortNumber(Integer.parseInt(portNumber));
-        }
-
-        String serverName = (String) props.remove(DataSourceFactory.JDBC_SERVER_NAME);
-        if (serverName != null) {
-            ds.setServerName(serverName);
-        }
+        // since driver version 3, databaseName, portNumber and serverName (hostname) are no longer
+        // passed individually
 
         String user = (String) props.remove(DataSourceFactory.JDBC_USER);
         ds.setUser(user);
+
+        String password = (String) props.remove(DataSourceFactory.JDBC_PASSWORD);
+        ds.setPassword(password);
 
         if (!props.isEmpty()) {
             BeanConfig.configure(ds, props);
