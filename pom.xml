@@ -180,7 +180,7 @@
         <version.org.apache.servicemix.bundles.jasypt>1.9.3_1</version.org.apache.servicemix.bundles.jasypt>
         <version.org.apache.servicemix.bundles.javax-inject>1_3</version.org.apache.servicemix.bundles.javax-inject>
 
-        <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
+        <version.org.jboss.jboss-transaction-spi>8.0.0.Final</version.org.jboss.jboss-transaction-spi>
         <version.org.jboss.logging>3.4.3.Final</version.org.jboss.logging>
         <version.org.jboss.narayana>5.12.7.Final</version.org.jboss.narayana>
 
