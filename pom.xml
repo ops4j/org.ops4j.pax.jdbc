@@ -200,7 +200,7 @@
 
         <!-- versions of JDBC drivers -->
 
-        <version.com.h2database>2.2.220</version.com.h2database>
+        <version.com.h2database>2.2.224</version.com.h2database>
         <!-- 12.2.0.jre8 has non-optional import for jdk.net package -->
         <version.com.microsoft.sqlserver.jdbc>12.3.1.jre8-preview</version.com.microsoft.sqlserver.jdbc>
         <version.com.oracle.database.jdbc>23.2.0.0</version.com.oracle.database.jdbc>
