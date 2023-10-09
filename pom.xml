@@ -184,7 +184,7 @@
         <version.org.jboss.logging>3.4.3.Final</version.org.jboss.logging>
         <version.org.jboss.narayana>5.12.7.Final</version.org.jboss.narayana>
 
-        <version.org.mockito>4.11.0</version.org.mockito>
+        <version.org.mockito>5.6.0</version.org.mockito>
         <version.org.objenesis>3.3</version.org.objenesis>
         <version.org.ops4j.base>1.5.1</version.org.ops4j.base>
         <version.org.ops4j.pax.exam>4.13.5</version.org.ops4j.pax.exam>
