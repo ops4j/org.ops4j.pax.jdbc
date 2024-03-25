@@ -211,7 +211,7 @@
         <version.org.apache.derby>10.14.2.0</version.org.apache.derby>
         <version.org.hsqldb>2.7.2</version.org.hsqldb>
         <version.org.mariadb.jdbc>3.1.4</version.org.mariadb.jdbc>
-        <version.org.postgresql>42.6.2</version.org.postgresql>
+        <version.org.postgresql>42.7.3</version.org.postgresql>
         <version.org.xerial.sqlite>3.42.0.0</version.org.xerial.sqlite>
     </properties>
 
