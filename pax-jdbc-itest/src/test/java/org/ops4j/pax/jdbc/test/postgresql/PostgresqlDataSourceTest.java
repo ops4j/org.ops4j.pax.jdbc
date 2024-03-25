@@ -36,6 +36,10 @@ import static org.ops4j.pax.exam.OptionUtils.combine;
 
 public class PostgresqlDataSourceTest extends AbstractJdbcTest {
 
+    /*
+        $ podman run --name pax.jdbc.postgresql -p 5432:5432 -e POSTGRES_PASSWORD=paxjdbc -d postgres
+     */
+
     @Rule
     public ServerConfiguration config = new ServerConfiguration("postgresql");
 
