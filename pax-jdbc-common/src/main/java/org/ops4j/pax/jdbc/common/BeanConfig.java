@@ -16,6 +16,7 @@
 package org.ops4j.pax.jdbc.common;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -34,7 +35,7 @@ public class BeanConfig {
     }
 
     private static Map<String, Method> findSettersForBean(Object bean) {
-        Map<String, Method> setters = new HashMap<String, Method>();
+        Map<String, Method> setters = new HashMap<>();
         for (Method method : bean.getClass().getMethods()) {
             String name = method.getName();
             if (name.startsWith("set") && method.getParameterTypes().length == 1) {
@@ -94,8 +95,9 @@ public class BeanConfig {
             }
             else if (paramClass == boolean.class || paramClass == Boolean.class) {
                 method.invoke(bean, Boolean.parseBoolean(value));
-            }
-            else if (paramClass == String.class) {
+            } else if (paramClass == Duration.class) {
+                method.invoke(bean, Duration.ofSeconds(Long.parseLong(value)));
+            } else if (paramClass == String.class) {
                 method.invoke(bean, value);
             }
         }

@@ -15,6 +15,7 @@
  */
 package org.ops4j.pax.jdbc.pool.dbcp2.impl;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class BeanConfigTest {
         PoolableConnection connection = mock(PoolableConnection.class);
 
         pcf.validateConnection(connection);
-        verify(connection).validate(eq("dummyQuery"), eq(1));
+        verify(connection).validate(eq("dummyQuery"), eq(Duration.ofSeconds(1)));
         verify(connection).isClosed();
     }
 
