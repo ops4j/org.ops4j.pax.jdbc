@@ -117,7 +117,7 @@
         <plugin.maven-assembly-plugin>3.7.1</plugin.maven-assembly-plugin>
         <!-- version 3.1.2 is the last one compatible with JDK8 -->
         <plugin.maven-checkstyle-plugin>3.1.2</plugin.maven-checkstyle-plugin>
-        <plugin.dependency.com.puppycrawl.tools.checkstyle>8.40</plugin.dependency.com.puppycrawl.tools.checkstyle>
+        <plugin.dependency.com.puppycrawl.tools.checkstyle>10.17.0</plugin.dependency.com.puppycrawl.tools.checkstyle>
         <plugin.maven-clean-plugin>3.3.2</plugin.maven-clean-plugin>
         <plugin.maven-compiler-plugin>3.13.0</plugin.maven-compiler-plugin>
         <plugin.maven-dependency-plugin>3.6.1</plugin.maven-dependency-plugin>
